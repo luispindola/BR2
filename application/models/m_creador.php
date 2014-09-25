@@ -18,5 +18,6 @@ class M_creador extends CI_Model
         $menu = $menu.'</ul>';
         return $menu;
     }
+    
 }
 ?>

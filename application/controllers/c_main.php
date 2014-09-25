@@ -29,7 +29,8 @@ class C_main extends CI_Controller
                         $acceso = $acceso.'<tr><td><h2>Tel&eacute;fono movil: </h2></td><td>'.$row->telefono_movil.'</td></tr>';
                         $acceso = $acceso.'<tr><td><h2>Tel&eacute;fono oficina: </h2></td><td>'.$row->telefono_oficina.'</td></tr>';
                         $acceso = $acceso.'<tr><td><h2>Otros datos: </h2></td><td>'.$row->otros_datos.'</td></tr>';
-                        $acceso = $acceso.'<tr><td><h2>Ultima visita: </h2></td><td>'.$this->M_usuarios->ultimavisita($user->id).'</td></tr>';
+                        $this->load->model('M_fechas');
+                        $acceso = $acceso.'<tr><td><h2>Ultima visita: </h2></td><td>'.$this->M_fechas->tiempodesde($this->M_usuarios->ultimavisita($user->id)).'</td></tr>';
                         $acceso = $acceso.'</table><br/>';
                     }
                 }

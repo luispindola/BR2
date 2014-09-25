@@ -11,7 +11,6 @@ class C_main extends CI_Controller
         }
         else
         {
-            
             $this -> load -> model('M_usuarios');
             if ($this -> M_usuarios -> validar_id($user->id))
             {

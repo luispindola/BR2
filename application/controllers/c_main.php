@@ -16,7 +16,6 @@ class C_main extends CI_Controller
             if ($this -> M_usuarios -> validar_id($user->id))
             {
                 //Si encontró usuario
-                $this -> M_usuarios -> registrar($user -> id,"Inicio","Inicio del sistema"); //Crea registro de visita
                 $acceso = '<h1>Bienvenido</h1>';
                 $acceso = $acceso.'<table width=50% BORDER CELLPADDING=10 CELLSPACING=0>';       
                 $acceso = $acceso.'<tr><td><h2>Nombre: </h2></td><td>'.$user->username.'</td></tr>'; 
@@ -30,7 +29,8 @@ class C_main extends CI_Controller
                         $acceso = $acceso.'<tr><td><h2>Tel&eacute;fono movil: </h2></td><td>'.$row->telefono_movil.'</td></tr>';
                         $acceso = $acceso.'<tr><td><h2>Tel&eacute;fono oficina: </h2></td><td>'.$row->telefono_oficina.'</td></tr>';
                         $acceso = $acceso.'<tr><td><h2>Otros datos: </h2></td><td>'.$row->otros_datos.'</td></tr>';
-                        $acceso = $acceso.'</table><br/>';   
+                        $acceso = $acceso.'<tr><td><h2>Ultima visita: </h2></td><td>'.$this->M_usuarios->ultimavisita($user->id).'</td></tr>';
+                        $acceso = $acceso.'</table><br/>';
                     }
                 }
                 $acceso = $acceso.'Para agregar o modificar su informaci&oacute;n, entre en el men&uacute; Usuario / Informaci&oacute;n de usuario';
@@ -38,6 +38,7 @@ class C_main extends CI_Controller
                 $this->session->set_userdata('username',$user->username);
                 $this->session->set_userdata('correo',$user->email);
                 $this->session->set_userdata('nivel_acceso',$row->nivel_acceso);
+                $this->M_usuarios->registrar($user->id,"Inicio","Inicio del sistema"); //Crea registro de visita
             }
             else 
             {

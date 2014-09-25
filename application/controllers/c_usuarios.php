@@ -31,9 +31,9 @@ class C_usuarios extends CI_Controller
             {
                 foreach ($query->result() as $row)
                 {   
-                    $acceso = $acceso.'<tr><td><h2>Tel&eacute;fono movil: </h2></td><td>'.$row->telefono_movil.'</td></tr>';
-                    $acceso = $acceso.'<tr><td><h2>Tel&eacute;fono oficina: </h2></td><td>'.$row->telefono_oficina.'</td></tr>';
-                    $acceso = $acceso.'<tr><td><h2>Otros datos: </h2></td><td>'.$row->otros_datos.'</td></tr>';
+                    $acceso = $acceso.'<tr><td><h2>Tel&eacute;fono movil: </h2></td><td><input maxlength="20" id="telefono_movil" name="telefono_movil" size="1" style="height: 22px; width: 196px" type="text" value="'.$row->telefono_movil.'" /></td></tr>';
+                    $acceso = $acceso.'<tr><td><h2>Tel&eacute;fono oficina: </h2></td><td><input maxlength="20" id="telefono_oficina" name="telefono_oficina" size="1" style="height: 22px; width: 196px" type="text" value="'.$row->telefono_oficina.'" /></td></tr>';
+                    $acceso = $acceso.'<tr><td><h2>Otros datos: </h2></td><td><textarea cols="47" id="otros_datos" name="otros_datos" rows="6">'.$row->otros_datos.'</textarea></p></td></tr>';
                     $acceso = $acceso.'</table><br/>';   
                 }
             }

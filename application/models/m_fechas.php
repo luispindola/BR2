@@ -9,7 +9,7 @@ class M_fechas extends CI_Model
     {// en el formato date("Y-m-d H:i:s")
         date_default_timezone_set('America/Los_Angeles'); //Establece Zona horaria
         if(empty($date)) {
-            return "No date provided";
+            return "Fecha no proporcionada";
         }
         $periods         = array("segundo", "minuto", "hora", "día", "semana", "mes", "año", "decada");
         $lengths         = array("60","60","24","7","4.35","12","10");
@@ -17,13 +17,13 @@ class M_fechas extends CI_Model
         $unix_date         = strtotime($date);
            // check validity of date
         if(empty($unix_date)) {    
-            return "Bad date";
+            return "Formato incorrecto";
         }
         // is it future date or past date
         if($now > $unix_date) 
         {    
             $difference     = $now - $unix_date;
-            $tense         = "hace";
+            $tense         = "Hace";
         } else 
         {
             $difference     = $unix_date - $now;

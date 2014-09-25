@@ -10,7 +10,8 @@ class C_main extends CI_Controller
             $acceso = "<h1>Acceso restingido</h1>";
         }
         else
-        {
+        {        
+          
             $this -> load -> model('M_usuarios');
             if ($this -> M_usuarios -> validar_id($user->id))
             {

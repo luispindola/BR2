@@ -41,5 +41,18 @@ class M_usuarios extends CI_Model
         $SQL = $SQL.$id_reg.", ".$id_usuario." ,'".$seccion."' ,'".$descripcion."','".date("Y-m-d H:i:s")."')";
         $query = $this->db->query($SQL);//Ejecuta la consulta
     }
+    function ultimavisita($id_usuario)
+    {
+        $SQL = "SELECT MAX(fecha) as MAX FROM br_registro_act";
+        $query = $this->db->query($SQL);//Ejecuta la consulta
+        if ($query->num_rows() > 0)
+        {
+            foreach ($query->result() as $row)
+            {
+                $ultima = $row->MAX;       
+            }
+        }
+        return $ultima;
+    }
 }
 ?>

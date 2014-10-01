@@ -45,6 +45,7 @@ class C_main extends CI_Controller
             {
                 //No encontró usuario
                 $acceso = '<h1>Usuario no autorizado</h1>';
+                $this->M_usuarios->registrar($user->id,"Inicio","Usuario no Autorizado"); //Crea registro de visita
             }
         }
         $this->load->model('M_creador');

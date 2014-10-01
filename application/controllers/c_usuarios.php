@@ -17,6 +17,7 @@ class C_usuarios extends CI_Controller
         if ($this->session->userdata('id_usuario'))
         {
             //Si tiene sesion iniciada
+            $acceso = '<h1>Informaci&oacute;n de usuario</h1>';
             $this->load->model('M_usuarios');
             if (isset($_POST['guardar']))//Si el boton Guardar fue presionado
             {
@@ -27,8 +28,8 @@ class C_usuarios extends CI_Controller
                 $SQL = $SQL."WHERE id_usuario = '".$this->session->userdata('id_usuario')."'";
                 $query = $this->db->query($SQL);
                 $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Información_usuario","Datos de usuario actualizados"); //Crea registro de visita                           
+                $acceso = $acceso.'<p><strong><span style="color: #517901">Datos actualizados correctamente.</span></strong></p>';
             }
-            $acceso = '<h1>Informaci&oacute;n de usuario</h1>';
             $acceso = $acceso.'<form id="form" method="post">';
             $acceso = $acceso.'<table width=50% BORDER CELLPADDING=10 CELLSPACING=0>';       
             $acceso = $acceso.'<tr><td><h2>Nombre: </h2></td><td>'.$this->session->userdata('username').'</td></tr>'; 
@@ -56,5 +57,44 @@ class C_usuarios extends CI_Controller
             );
             $this->load->view('v_limpia',$datos_vista);
         }else{header('Location: index.php');}
+    }
+    public function registro_act($pag = null,$id_usuario = null)
+    {
+        $this->load->helper('url');
+        $this->load->model("M_creador");
+        $this->load->library('pagination');
+        
+        $menu = $this->M_creador->menu();//Creador de menu
+        $acceso = '<h1>Registro de actividad</h1>';
+        //--------------
+        
+        $acceso = $acceso.'<table width=70% BORDER CELLPADDING=10 CELLSPACING=0>';   
+        $acceso = $acceso.'<tr><td>';
+        $acceso = $acceso.$this->M_creador->desplegable_usuarios();
+        $acceso = $acceso.'</tr></td>';
+        $acceso = $acceso.'<tr><td>';
+        
+        //$acceso = $acceso.'Pag = '.$pag;
+
+        $config['base_url'] = site_url('c_usuarios/registro_act/');
+        $config['total_rows'] = 200;
+        $config['per_page'] = 20; 
+        $config['first_link'] = 'Primera';
+        $config['next_link'] = '»';
+        $config['prev_link'] = '«';
+        $config['last_link'] = 'Última';
+        $this->pagination->initialize($config); 
+        $acceso = $acceso. $this->pagination->create_links();
+        
+        
+        $acceso = $acceso.'</tr></td>';   
+        $acceso = $acceso.'</table>';
+        
+        //--------------
+        $datos_vista = array(
+        'datos_inicio'   =>  $acceso,
+        'menu'           =>  $menu
+        );
+        $this->load->view('v_limpia',$datos_vista);
     }
 }

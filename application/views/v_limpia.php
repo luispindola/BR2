@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta name="BancoDeReactivos" content="MSHTML 8.00.6001.18928"   >
-    <!--<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">-->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <style>
         a.navwhite:link { text-decoration: none; color: #ffffff; font-family: Verdana, Arial, sans-serif; font-size: 10px; font-weight: bold; }
         a.navwhite:visited { text-decoration: none; color: #ffffff; font-family: Verdana, Arial, sans-serif; font-size: 10px; font-weight: bold; }
@@ -50,9 +50,9 @@
             </tr>
             <tr>
                 <td>
-                    <p>&nbsp;</p>
+                    <p>
                     <?php echo($datos_inicio); ?>
-                    <p>&nbsp;</p>
+                    </p>
                 </td>
             </tr>
         </tbody>

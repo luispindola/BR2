@@ -138,9 +138,9 @@ class C_usuarios extends CI_Controller
         {
             foreach ($query->result() as $row)
             {   
-                $acceso = $acceso.'<tr bgcolor="#D8D8D8",';//Color de fondo
-                $acceso = $acceso.' onmouseover="this.style.backgroundColor=\'#FAFAFA\';"';//Color con mause sobre
-                $acceso = $acceso.' onmouseout="this.style.backgroundColor=\'#D8D8D8\';">';//Regresar al mismo color
+                $acceso = $acceso.'<tr bgcolor="#FAFAFA",';//Color de fondo
+                $acceso = $acceso.' onmouseover="this.style.backgroundColor=\'#F2F2F2\';"';//Color con mause sobre
+                $acceso = $acceso.' onmouseout="this.style.backgroundColor=\'#FAFAFA\';">';//Regresar al mismo color
                 $acceso = $acceso.'<td>'.$row->id_reg.'</td>';
                 $acceso = $acceso.'<td>'.$row->name.'</td>';
                 $acceso = $acceso.'<td>'.$row->email.'</td>';

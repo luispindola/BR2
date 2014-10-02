@@ -39,8 +39,14 @@ class M_creador extends CI_Model
                     $option = $option.'selected="selected" ';
                 }
                 $option = $option.'value = "'.$row->id_usuario.'">';
-                $option = $option.$row->name.'</option>';
+                $option = $option.$row->name.'</option>';              
             }
+            $option = $option.'<option ';
+            if ($id_usuario==null)
+            {
+            $option = $option.'selected="selected" ';
+            }
+            $option = $option.'value="Todos">Todos</option>';
         }
         $option = $option.'</select>';
         return $option;

@@ -51,6 +51,33 @@ class M_creador extends CI_Model
         $option = $option.'</select>';
         return $option;
     }
+    function desplegable_nivel_acceso($nivel_acceso = null)
+    {
+        $option = '<select id="nivel_acceso" name="nivel_acceso" size="1" style="width: 350px">';
+        $option = $option.'<option ';
+        if ($nivel_acceso == 'Elaborador')
+        {$option = $option.'selected="selected" ';}
+        $option = $option.'value = "Elaborador">Elaborador</option>';
+        
+        $option = $option.'<option ';
+        if ($nivel_acceso == 'Revisor')
+        {$option = $option.'selected="selected" ';}
+        $option = $option.'value = "Revisor">Revisor</option>';
+        
+        $option = $option.'<option ';
+        if ($nivel_acceso == 'Administrador')
+        {$option = $option.'selected="selected" ';}
+        $option = $option.'value = "Administrador">Administrador</option>';
+        
+        if (($nivel_acceso <> 'Elaborador') and ($nivel_acceso <> 'Revisor') and ($nivel_acceso <> 'Administrador'))
+        {
+            $option = $option.'<option ';
+            $option = $option.'selected="selected" ';
+            $option = $option.'value = "elegir">Elija un Nivel de acceso</option>';
+        }
+        $option = $option.'</select>';
+        return $option;
+    }
     
 }
 ?>

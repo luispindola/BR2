@@ -279,15 +279,37 @@ class C_usuarios extends CI_Controller
         {//la session es correcta:
             $this->load->helper('url');
             $this->load->model("M_creador");
+            $this->load->model("M_usuarios");
+            
             $menu = $this->M_creador->menu();//Creador de menu
             
             if (isset($_POST['excluir']))
-            {
-                //OJO OJO OJO OJO
-                $datos_inicio = 'Usuario excluidos';
+            {//Se precionó el boton excluir
+                $SQL = "DELETE FROM br_usuarios WHERE (id_usuario = ".$id_usuario.")";
+                $query = $this->db->query($SQL);//Ejecuta la consulta
+                    
+                $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Excluir usuario","Excluir Usr: ".$id_usuario); //Crea registro de visita                           
+                
+                $datos_inicio = '<h1><font color="#FF0000">Usuario excluido</font></h1>';
+                
+                //Cargar datos de vista vlimpia
+                $datos_vista = array(
+                'datos_inicio'   =>  $datos_inicio,
+                'menu'           =>  $menu
+                );
             }
             else
-            {
+            {    
+                if (isset($_POST['cambiar_nivel_acceso']))
+                {//Se precionó boton cambiar nicel de acceso
+                    //UPDATE SQL ------
+                    $SQL = "UPDATE br_usuarios SET nivel_acceso = '".$_POST['nivel_acceso']."' ";
+                    $SQL = $SQL."WHERE id_usuario = ".$id_usuario;
+                    $query = $this->db->query($SQL);//Ejecuta la consulta
+                    
+                    $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Cambiar Nivel Acceso","Cambia niv a Usr: ".$id_usuario." al nivel: ".$_POST['nivel_acceso']); //Crea registro de visita                           
+                }
+ 
                 //Iniciar consulta
                 $SQL = "SELECT br_usuarios.id_usuario, ";
                 $SQL = $SQL."br_usuarios.nivel_acceso, ";
@@ -320,10 +342,22 @@ class C_usuarios extends CI_Controller
                         $datos_inicio = $datos_inicio.'<td width=50%><h2>Correo electr&oacute;nico:</h2></td>';
                         $datos_inicio = $datos_inicio.'<td>'.$row->email.'</td>';
                         $datos_inicio = $datos_inicio.'</tr>';
-                        $datos_inicio = $datos_inicio.'<tr>';
+
+                        $datos_inicio = $datos_inicio.'<tr>';//Desplegable para cambiar nivel de acceso
                         $datos_inicio = $datos_inicio.'<td width=50%><h2>Nivel de acceso:</h2></td>';
-                        $datos_inicio = $datos_inicio.'<td>'.$row->nivel_acceso.'</td>';//Falta permitir mover niv acceso
+                        //OJO NO PERIMITIR QUITAR Administrador AL SUPER USER
+                        if ($row->id == 890)
+                        {//Es el super user
+                            $datos_inicio = $datos_inicio.'<td>'.$row->nivel_acceso.'</tr>';
+                        }
+                        else
+                        {//Es otro usuario
+                            $datos_inicio = $datos_inicio.'<td>'.$this->M_creador->desplegable_nivel_acceso($row->nivel_acceso);//Desplegable para cambiar nivel de acceso
+                            $datos_inicio = $datos_inicio.'<BR><input id="cambiar_nivel_acceso" name="cambiar_nivel_acceso" size="44" type="submit" value="Cambiar Nivel de acceso" />';
+                            $datos_inicio = $datos_inicio.'</td>';
+                        }
                         $datos_inicio = $datos_inicio.'</tr>';
+
                         $datos_inicio = $datos_inicio.'<tr>';
                         $datos_inicio = $datos_inicio.'<td width=50%><h2>Tel&eacute;fono movil:</h2></td>';
                         $datos_inicio = $datos_inicio.'<td>'.$row->telefono_movil.'</td>';
@@ -352,12 +386,15 @@ class C_usuarios extends CI_Controller
                     $datos_inicio = $datos_inicio.'</table>';
                     $datos_inicio = $datos_inicio.'</form>';
                 }//END IF NUM REG >0
+
+                //Cargar datos de vista vlimpia
+                $datos_vista = array(
+                'datos_inicio'   =>  $datos_inicio,
+                'menu'           =>  $menu
+                );
             }//END IF $_POST['excluir']
+            
             //Cargar vista vlimpia
-            $datos_vista = array(
-            'datos_inicio'   =>  $datos_inicio,
-            'menu'           =>  $menu
-            );
             $this->load->view('v_limpia',$datos_vista);
         }
         //Session no existe
@@ -369,15 +406,80 @@ class C_usuarios extends CI_Controller
         {//la session es correcta:
             $this->load->helper('url');
             $this->load->model("M_creador");
+            $this->load->model("M_usuarios");
             $menu = $this->M_creador->menu();//Creador de menu
+                      
+            //Iniciar consulta
+            $SQL = "SELECT * FROM bancodereact_users WHERE (id = ".$id_usuario.")";
+            $query = $this->db->query($SQL);//Ejecuta la consulta
+            if ($query->num_rows() > 0)
+            {
+                $datos_inicio = '<h1>Agregar usuario</h1>';
+                $datos_inicio = $datos_inicio.'<form id="form" method="post">';//Se crea una forma post
+                $datos_inicio = $datos_inicio.'<table width=50% BORDER CELLPADDING=10 CELLSPACING=0>';  
+                foreach($query->result() as $row)
+                {
+                    $datos_inicio = $datos_inicio.'<tr>';
+                    $datos_inicio = $datos_inicio.'<td><h2>Id:</h2></td>';
+                    $datos_inicio = $datos_inicio.'<td>'.$row->id.'</td>';
+                    $datos_inicio = $datos_inicio.'</tr>';
+                    $datos_inicio = $datos_inicio.'<tr>';
+                    $datos_inicio = $datos_inicio.'<td><h2>Nombre:</h2></td>';
+                    $datos_inicio = $datos_inicio.'<td>'.$row->name.'</td>';
+                    $datos_inicio = $datos_inicio.'</tr>';
+                    $datos_inicio = $datos_inicio.'<tr>';
+                    $datos_inicio = $datos_inicio.'<td><h2>Correo electr&oacute;nico:</h2></td>';
+                    $datos_inicio = $datos_inicio.'<td>'.$row->email.'</td>';
+                    $datos_inicio = $datos_inicio.'</tr>';
+                    $datos_inicio = $datos_inicio.'<tr>';
+                    $datos_inicio = $datos_inicio.'<td><h2>Nivel de acceso:</h2></td>';
+                    $datos_inicio = $datos_inicio.'<td>'.$this->M_creador->desplegable_nivel_acceso().'</td>';
+                    $datos_inicio = $datos_inicio.'</tr>';
+                    $datos_inicio = $datos_inicio.'<tr>';
+                    $datos_inicio = $datos_inicio.'<td></td>';
+                    $datos_inicio = $datos_inicio.'<td><p><input id="agregar_usuario" name="agregar_usuario" size="44" style="height: 33px; width: 179px" type="submit" value="Agregar usuario" /></p></td>';
+                    $datos_inicio = $datos_inicio.'</tr>';
+                }
+                $datos_inicio = $datos_inicio.'</table>';
+                $datos_inicio = $datos_inicio.'</form>';
+            }//END IF registros > 0
             
-            $datos_inicio = 'Agregar usuario';
-            
-            //Cargar vista vlimpia
-            $datos_vista = array(
-            'datos_inicio'   =>  $datos_inicio,
-            'menu'           =>  $menu
-            );
+            if (isset($_POST['agregar_usuario']))
+            {//Se preciono el boton
+                if ($_POST['nivel_acceso'] == 'elegir')
+                {// No se ha elegido un nivel de acceso
+                    $datos_inicio = $datos_inicio.'<p><h2><font color="#FF0000">Debe seleccionar un nivel de acceso para agregar al usuario</font></h2></p>';
+                    //Cargar vista vlimpia
+                    $datos_vista = array(
+                    'datos_inicio'   =>  $datos_inicio,
+                    'menu'           =>  $menu
+                    );
+                }
+                else
+                {// Nivel de acceso elegido
+                    //Crear consulta
+                    $SQL = "INSERT INTO br_usuarios (id_usuario, nivel_acceso) VALUES ";
+                    $SQL = $SQL."(".$id_usuario.", '".$_POST['nivel_acceso']."')";
+                    $query = $this->db->query($SQL);//Ejecuta la consulta
+                    
+                    $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Agregar usuario","Agregado ".$row->email." nivel: ".$_POST['nivel_acceso']); //Crea registro de visita                           
+                    
+                    $datos_inicio = '<h2>Usuario "'.$row->name.'" agregado</h2>';
+                    //Cargar vista vlimpia
+                    $datos_vista = array(
+                    'datos_inicio'   =>  $datos_inicio,
+                    'menu'           =>  $menu
+                    );
+                }
+            }
+            else
+            {//No se ha presionado el boton
+                //Cargar vista vlimpia
+                $datos_vista = array(
+                'datos_inicio'   =>  $datos_inicio,
+                'menu'           =>  $menu
+                );
+            }
             $this->load->view('v_limpia',$datos_vista);
         }//END IF Session no existe
         else{header('Location: index.php');}

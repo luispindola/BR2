@@ -7,12 +7,18 @@ class C_main extends CI_Controller
         include('../spin.php');
         $user = JFactory::getUser();
         if (($user->username) == null)//chekar session iniciada en Joomla
-        {$datos_inicio = "<h1>Acceso restingido</h1>";}
+        {//No hay session de joomla
+            $datos_inicio = "<h1>Acceso restingido</h1>";
+            $this->session->unset_userdata('id_usuario');
+            $this->session->unset_userdata('username');
+            $this->session->unset_userdata('correo');
+            $this->session->unset_userdata('nivel_acceso');
+        }
         else//Si existe session en joomla
         {        
             $this -> load -> model('M_usuarios');
             if ($this -> M_usuarios -> validar_id($user->id))
-            {
+            {//Usuario Incluido en el BdeR
                 //Si encontró usuario
                 $datos_inicio = '<h1>Bienvenido</h1>';
                 $datos_inicio = $datos_inicio.'<table width=50% BORDER CELLPADDING=10 CELLSPACING=0>';       
@@ -44,6 +50,10 @@ class C_main extends CI_Controller
             {
                 //No encontró usuario
                 $datos_inicio = '<h1>Usuario no autorizado</h1>';
+                $this->session->unset_userdata('id_usuario');
+                $this->session->unset_userdata('username');
+                $this->session->unset_userdata('correo');
+                $this->session->unset_userdata('nivel_acceso');
                 $this->M_usuarios->registrar($user->id,"Inicio","Usuario no Autorizado"); //Crea registro de visita
             }
         }

@@ -10,15 +10,18 @@ class M_creador extends CI_Model
         $this->load->helper('url');
         $menu = '<ul>';
         $menu = $menu.'<li><a href="'.site_url('c_main').'">Inicio</a></li>';
-        $menu = $menu.'<li><a href="'.site_url('c_usuarios').'">Usuarios</a>';
-            $menu = $menu.'<ul>';
-            $menu = $menu.'<li><a href="'.site_url('c_usuarios/informacion_usuario').'">Informaci&oacute;n de usuario</a></li>';
-            if ($this->session->userdata('nivel_acceso') == 'Administrador')
-            {$menu = $menu.'<li><a href="'.site_url('c_usuarios/registro_act').'">Registro de Actividad</a></li>';}
-            if ($this->session->userdata('nivel_acceso') == 'Administrador')
-            {$menu = $menu.'<li><a href="'.site_url('c_usuarios/agregar_usuarios/id').'">Agregar Usuarios</a></li>';}
-            $menu = $menu.'</ul>';
-        $menu = $menu.'</li>';
+        if ($this->session->userdata('id_usuario'))
+        {//Muestra el resto del menu si hay variables de session
+            $menu = $menu.'<li><a href="'.site_url('c_usuarios').'">Usuarios</a>';
+                $menu = $menu.'<ul>';
+                $menu = $menu.'<li><a href="'.site_url('c_usuarios/informacion_usuario').'">Informaci&oacute;n de usuario</a></li>';
+                if ($this->session->userdata('nivel_acceso') == 'Administrador')
+                {$menu = $menu.'<li><a href="'.site_url('c_usuarios/registro_act').'">Registro de Actividad</a></li>';}
+                if ($this->session->userdata('nivel_acceso') == 'Administrador')
+                {$menu = $menu.'<li><a href="'.site_url('c_usuarios/agregar_usuarios/id').'">Agregar Usuarios</a></li>';}
+                $menu = $menu.'</ul>';
+            $menu = $menu.'</li>';
+        }
         $menu = $menu.'</ul>';
         return $menu;
     }

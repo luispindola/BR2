@@ -244,7 +244,14 @@ class C_usuarios extends CI_Controller
                     $datos_inicio = $datos_inicio.'<td>'.$row->name.'</td>';
                     $datos_inicio = $datos_inicio.'<td>'.$row->email.'</td>';
                     $datos_inicio = $datos_inicio.'<td>'.$row->nivel_acceso.'</td>';
-                    $datos_inicio = $datos_inicio.'<td><input type="button" value="Agregar o excluir usuario" onClick="window.location =\''.  site_url('c_usuarios/agregar_usuario/'.$row->id).'\';"/> </td>';
+                    if ($row->nivel_acceso)
+                    {//Si es usuario del BR
+                        $datos_inicio = $datos_inicio.'<td><input type="button" value="Excluir usuario" onClick="window.location =\''.  site_url('c_usuarios/excluir_usuario/'.$row->id).'\';"/> </td>';
+                    }
+                    else
+                    {//No es usuario del BR
+                        $datos_inicio = $datos_inicio.'<td><input type="button" value="Agregar usuario" onClick="window.location =\''.  site_url('c_usuarios/agregar_usuario/'.$row->id).'\';"/> </td>';
+                    }
                     $datos_inicio = $datos_inicio.'</tr>';
                 }
             }
@@ -266,7 +273,7 @@ class C_usuarios extends CI_Controller
         //Session no existe
         else{header('Location: index.php');}
     }
-    public function agregar_usuario($id_usuario = null)
+    public function excluir_usuario($id_usuario = null)
     {
         if ($this->session->userdata('nivel_acceso') == 'Administrador')//Validar session
         {//la session es correcta:
@@ -274,36 +281,78 @@ class C_usuarios extends CI_Controller
             $this->load->model("M_creador");
             $menu = $this->M_creador->menu();//Creador de menu
             
-            //Iniciar consulta
-            $SQL = "SELECT br_usuarios.id_usuario, ";
-            $SQL = $SQL."br_usuarios.nivel_acceso, ";
-            $SQL = $SQL."br_usuarios.telefono_movil, ";
-            $SQL = $SQL."br_usuarios.telefono_oficina, ";
-            $SQL = $SQL."br_usuarios.otros_datos, ";
-            $SQL = $SQL."bancodereact_users.name, ";
-            $SQL = $SQL."bancodereact_users.email, ";
-            $SQL = $SQL."bancodereact_users.id ";
-            $SQL = $SQL."FROM bancodereact_users LEFT JOIN br_usuarios ";
-            $SQL = $SQL."ON (bancodereact_users.id = br_usuarios.id_usuario) ";
-            $SQL = $SQL."WHERE (br_usuarios.id_usuario = ".$id_usuario.")";
-            $query = $this->db->query($SQL);//Ejecuta la consulta
-             if ($query->num_rows() > 0)
+            if (isset($_POST['excluir']))
             {
-                
-            
-                $datos_inicio = '<h1>Agregar o excluir usuario</h1>';
-                $datos_inicio = $datos_inicio.'<form id="form" method="post">';//Se crea una forma post
-                $datos_inicio = $datos_inicio.'<table width=50% BORDER CELLPADDING=10 CELLSPACING=0>';  
-                foreach($query->result() as $row)
+                //OJO OJO OJO OJO
+                $datos_inicio = 'Usuario excluidos';
+            }
+            else
+            {
+                //Iniciar consulta
+                $SQL = "SELECT br_usuarios.id_usuario, ";
+                $SQL = $SQL."br_usuarios.nivel_acceso, ";
+                $SQL = $SQL."br_usuarios.telefono_movil, ";
+                $SQL = $SQL."br_usuarios.telefono_oficina, ";
+                $SQL = $SQL."br_usuarios.otros_datos, ";
+                $SQL = $SQL."bancodereact_users.name, ";
+                $SQL = $SQL."bancodereact_users.email, ";
+                $SQL = $SQL."bancodereact_users.id ";
+                $SQL = $SQL."FROM bancodereact_users LEFT JOIN br_usuarios ";
+                $SQL = $SQL."ON (bancodereact_users.id = br_usuarios.id_usuario) ";
+                $SQL = $SQL."WHERE (br_usuarios.id_usuario = ".$id_usuario.")";
+                $query = $this->db->query($SQL);//Ejecuta la consulta
+                 if ($query->num_rows() > 0)
                 {
-                    $datos_inicio = $datos_inicio.'<tr>';
-                    $datos_inicio = $datos_inicio.'<td width=50%><h2>Nombre:</h2></td>';
-                    $datos_inicio = $datos_inicio.'<td>'.$row->name.'</td>';
-                    $datos_inicio = $datos_inicio.'</tr>';
-                }
-              
-                $datos_inicio = $datos_inicio.'</table>';
-            }//END IF 
+                    $datos_inicio = '<h1><font color="#FF0000">Excluir usuario</font></h1>';
+                    $datos_inicio = $datos_inicio.'<form id="form" method="post">';//Se crea una forma post
+                    $datos_inicio = $datos_inicio.'<table width=50% BORDER CELLPADDING=10 CELLSPACING=0>';  
+                    foreach($query->result() as $row)
+                    {
+                        $datos_inicio = $datos_inicio.'<tr>';
+                        $datos_inicio = $datos_inicio.'<td width=50%><h2>Id:</h2></td>';
+                        $datos_inicio = $datos_inicio.'<td>'.$row->id.'</td>';
+                        $datos_inicio = $datos_inicio.'</tr>';
+                        $datos_inicio = $datos_inicio.'<tr>';
+                        $datos_inicio = $datos_inicio.'<td width=50%><h2>Nombre:</h2></td>';
+                        $datos_inicio = $datos_inicio.'<td>'.$row->name.'</td>';
+                        $datos_inicio = $datos_inicio.'</tr>';
+                        $datos_inicio = $datos_inicio.'<tr>';
+                        $datos_inicio = $datos_inicio.'<td width=50%><h2>Correo electr&oacute;nico:</h2></td>';
+                        $datos_inicio = $datos_inicio.'<td>'.$row->email.'</td>';
+                        $datos_inicio = $datos_inicio.'</tr>';
+                        $datos_inicio = $datos_inicio.'<tr>';
+                        $datos_inicio = $datos_inicio.'<td width=50%><h2>Nivel de acceso:</h2></td>';
+                        $datos_inicio = $datos_inicio.'<td>'.$row->nivel_acceso.'</td>';//Falta permitir mover niv acceso
+                        $datos_inicio = $datos_inicio.'</tr>';
+                        $datos_inicio = $datos_inicio.'<tr>';
+                        $datos_inicio = $datos_inicio.'<td width=50%><h2>Tel&eacute;fono movil:</h2></td>';
+                        $datos_inicio = $datos_inicio.'<td>'.$row->telefono_movil.'</td>';
+                        $datos_inicio = $datos_inicio.'</tr>';
+                        $datos_inicio = $datos_inicio.'<tr>';
+                        $datos_inicio = $datos_inicio.'<td width=50%><h2>Tel&eacute;fono oficina:</h2></td>';
+                        $datos_inicio = $datos_inicio.'<td>'.$row->telefono_oficina.'</td>';
+                        $datos_inicio = $datos_inicio.'</tr>';
+                        $datos_inicio = $datos_inicio.'<tr>';
+                        $datos_inicio = $datos_inicio.'<td width=50%><h2>Otros datos:</h2></td>';
+                        $datos_inicio = $datos_inicio.'<td>'.$row->otros_datos.'</td>';
+                        $datos_inicio = $datos_inicio.'</tr>';
+                        $datos_inicio = $datos_inicio.'<tr>';
+                        $datos_inicio = $datos_inicio.'<td width=50%></td>';
+                        //OJO NO PERIMITIR ELUMINAR AL SUPER USER
+                        if ($row->id == 890)
+                        {//Es el super user
+                            $datos_inicio = $datos_inicio.'<td><h2><font color="#FF0000">El sistema no permite eliminar al Administrador SuperUser</font></h2></td>';
+                        }
+                        else
+                        {//Es un usuario normal
+                            $datos_inicio = $datos_inicio.'<td><p><input id="excluir" name="excluir" size="44" style="height: 33px; width: 179px" type="submit" value="Excluir" /></p></td>';
+                        }
+                        $datos_inicio = $datos_inicio.'</tr>';
+                    }
+                    $datos_inicio = $datos_inicio.'</table>';
+                    $datos_inicio = $datos_inicio.'</form>';
+                }//END IF NUM REG >0
+            }//END IF $_POST['excluir']
             //Cargar vista vlimpia
             $datos_vista = array(
             'datos_inicio'   =>  $datos_inicio,
@@ -312,6 +361,25 @@ class C_usuarios extends CI_Controller
             $this->load->view('v_limpia',$datos_vista);
         }
         //Session no existe
+        else{header('Location: index.php');}
+    }
+    public function agregar_usuario($id_usuario = null)
+    {
+        if ($this->session->userdata('nivel_acceso') == 'Administrador')//Validar session
+        {//la session es correcta:
+            $this->load->helper('url');
+            $this->load->model("M_creador");
+            $menu = $this->M_creador->menu();//Creador de menu
+            
+            $datos_inicio = 'Agregar usuario';
+            
+            //Cargar vista vlimpia
+            $datos_vista = array(
+            'datos_inicio'   =>  $datos_inicio,
+            'menu'           =>  $menu
+            );
+            $this->load->view('v_limpia',$datos_vista);
+        }//END IF Session no existe
         else{header('Location: index.php');}
     }
 }

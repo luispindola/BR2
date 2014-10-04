@@ -13,9 +13,9 @@ class M_creador extends CI_Model
         $menu = $menu.'<li><a href="'.site_url('c_usuarios').'">Usuarios</a>';
             $menu = $menu.'<ul>';
             $menu = $menu.'<li><a href="'.site_url('c_usuarios/informacion_usuario').'">Informaci&oacute;n de usuario</a></li>';
-            if ($this->session->userdata('nivel_acceso') == 'A')
+            if ($this->session->userdata('nivel_acceso') == 'Administrador')
             {$menu = $menu.'<li><a href="'.site_url('c_usuarios/registro_act').'">Registro de Actividad</a></li>';}
-            if ($this->session->userdata('nivel_acceso') == 'A')
+            if ($this->session->userdata('nivel_acceso') == 'Administrador')
             {$menu = $menu.'<li><a href="'.site_url('c_usuarios/agregar_usuarios/id').'">Agregar Usuarios</a></li>';}
             $menu = $menu.'</ul>';
         $menu = $menu.'</li>';

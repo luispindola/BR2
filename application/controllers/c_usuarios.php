@@ -60,7 +60,7 @@ class C_usuarios extends CI_Controller
     }
     public function registro_act($pag=null)
     {
-        if ($this->session->userdata('id_usuario'))//Validar session
+        if ($this->session->userdata('nivel_acceso') == 'Administrador')//Validar nivel de acceso de session
         {//la session es correcta:
             $this->load->helper('url');
             $this->load->model("M_creador");
@@ -177,7 +177,7 @@ class C_usuarios extends CI_Controller
     }
     public function agregar_usuarios($order = null, $pag=null)
     {
-        if ($this->session->userdata('id_usuario'))//Validar session
+        if ($this->session->userdata('nivel_acceso') == 'Administrador')//Validar session
         {//la session es correcta:
             $this->load->helper('url');
             $this->load->model("M_creador");
@@ -231,7 +231,7 @@ class C_usuarios extends CI_Controller
             $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_usuarios/agregar_usuarios/name/'.$pag).'"><font color="#FFFFFF">Nombre</font></a></th>';
             $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_usuarios/agregar_usuarios/email/'.$pag).'"><font color="#FFFFFF">Correo-e</font></a></th>';
             $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_usuarios/agregar_usuarios/nivel_acceso/'.$pag).'"><font color="#FFFFFF">Nivel de acceso</font></a></th>';
-            $datos_inicio = $datos_inicio.'<th>Acciones</th>';
+            $datos_inicio = $datos_inicio.'<th width=10%>Acciones</th>';
             $datos_inicio = $datos_inicio.'</tr>';
             if ($query->num_rows() > 0)
             {
@@ -244,7 +244,7 @@ class C_usuarios extends CI_Controller
                     $datos_inicio = $datos_inicio.'<td>'.$row->name.'</td>';
                     $datos_inicio = $datos_inicio.'<td>'.$row->email.'</td>';
                     $datos_inicio = $datos_inicio.'<td>'.$row->nivel_acceso.'</td>';
-                    $datos_inicio = $datos_inicio.'<td><input type="button" value="Agregar o excluir usuario" onClick="window.location =\'algo.php\';"/> </td>';
+                    $datos_inicio = $datos_inicio.'<td><input type="button" value="Agregar o excluir usuario" onClick="window.location =\''.  site_url('c_usuarios/agregar_usuario/'.$row->id).'\';"/> </td>';
                     $datos_inicio = $datos_inicio.'</tr>';
                 }
             }
@@ -256,6 +256,54 @@ class C_usuarios extends CI_Controller
             $datos_inicio = $datos_inicio.'Se encontraron '.$total_rows.' registros';//comentario opcional
             //$datos_inicio = $datos_inicio.'<br/>'.$SQL;//Debug
             
+            //Cargar vista vlimpia
+            $datos_vista = array(
+            'datos_inicio'   =>  $datos_inicio,
+            'menu'           =>  $menu
+            );
+            $this->load->view('v_limpia',$datos_vista);
+        }
+        //Session no existe
+        else{header('Location: index.php');}
+    }
+    public function agregar_usuario($id_usuario = null)
+    {
+        if ($this->session->userdata('nivel_acceso') == 'Administrador')//Validar session
+        {//la session es correcta:
+            $this->load->helper('url');
+            $this->load->model("M_creador");
+            $menu = $this->M_creador->menu();//Creador de menu
+            
+            //Iniciar consulta
+            $SQL = "SELECT br_usuarios.id_usuario, ";
+            $SQL = $SQL."br_usuarios.nivel_acceso, ";
+            $SQL = $SQL."br_usuarios.telefono_movil, ";
+            $SQL = $SQL."br_usuarios.telefono_oficina, ";
+            $SQL = $SQL."br_usuarios.otros_datos, ";
+            $SQL = $SQL."bancodereact_users.name, ";
+            $SQL = $SQL."bancodereact_users.email, ";
+            $SQL = $SQL."bancodereact_users.id ";
+            $SQL = $SQL."FROM bancodereact_users LEFT JOIN br_usuarios ";
+            $SQL = $SQL."ON (bancodereact_users.id = br_usuarios.id_usuario) ";
+            $SQL = $SQL."WHERE (br_usuarios.id_usuario = ".$id_usuario.")";
+            $query = $this->db->query($SQL);//Ejecuta la consulta
+             if ($query->num_rows() > 0)
+            {
+                
+            
+                $datos_inicio = '<h1>Agregar o excluir usuario</h1>';
+                $datos_inicio = $datos_inicio.'<form id="form" method="post">';//Se crea una forma post
+                $datos_inicio = $datos_inicio.'<table width=50% BORDER CELLPADDING=10 CELLSPACING=0>';  
+                foreach($query->result() as $row)
+                {
+                    $datos_inicio = $datos_inicio.'<tr>';
+                    $datos_inicio = $datos_inicio.'<td width=50%><h2>Nombre:</h2></td>';
+                    $datos_inicio = $datos_inicio.'<td>'.$row->name.'</td>';
+                    $datos_inicio = $datos_inicio.'</tr>';
+                }
+              
+                $datos_inicio = $datos_inicio.'</table>';
+            }//END IF 
             //Cargar vista vlimpia
             $datos_vista = array(
             'datos_inicio'   =>  $datos_inicio,

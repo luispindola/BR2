@@ -6,6 +6,7 @@ class C_usuarios extends CI_Controller
         $this->load->model('M_creador');
         $menu = $this->M_creador->menu();//Crear menu
         $datos_inicio = '<h1>Usuarios</h1>';
+        $datos_inicio = $datos_inicio.'<h2>'.$menu.'</h2>';
         $datos_vista = array(
         'datos_inicio'   =>  $datos_inicio,
         'menu'           =>  $menu

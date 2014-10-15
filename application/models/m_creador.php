@@ -10,6 +10,7 @@ class M_creador extends CI_Model
         $this->load->helper('url');
         $menu = '<ul>';
         $menu = $menu.'<li><a href="'.site_url('c_main').'">Inicio</a></li>';
+        
         if ($this->session->userdata('id_usuario'))
         {//Muestra el resto del menu si hay variables de session
             $menu = $menu.'<li><a href="'.site_url('c_usuarios').'">Usuarios</a>';
@@ -22,6 +23,17 @@ class M_creador extends CI_Model
                 $menu = $menu.'</ul>';
             $menu = $menu.'</li>';
         }
+        
+        if ($this->session->userdata('id_usuario'))
+        {//Muestra el resto del menu si hay variables de session
+            $menu = $menu.'<li><a href="'.site_url('c_tablas_esp').'">Tablas de Especificaciones</a>';
+                $menu = $menu.'<ul>';
+                $menu = $menu.'<li><a href="'.site_url('c_tablas_esp/listado').'">Informaci&oacute;n de usuario</a></li>';
+                
+                $menu = $menu.'</ul>';
+            $menu = $menu.'</li>';
+        }
+        
         $menu = $menu.'</ul>';
         return $menu;
     }

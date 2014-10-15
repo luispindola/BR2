@@ -14,6 +14,6 @@ class C_tablas_esp extends CI_Controller
         $this->load->view('v_limpia',$datos_vista);
     }
 }
-
+//prueba
 
 ?>

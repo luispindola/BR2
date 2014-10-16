@@ -3,7 +3,6 @@ class C_main extends CI_Controller
 {
     public function index()
     {
-        
         include('../spin.php');
         $user = JFactory::getUser();
         if (($user->username) == null)//chekar session iniciada en Joomla
@@ -16,7 +15,6 @@ class C_main extends CI_Controller
         }
         else//Si existe session en joomla
         {        
-            $this -> load -> model('M_usuarios');
             if ($this -> M_usuarios -> validar_id($user->id))
             {//Usuario Incluido en el BdeR
                 //Si encontró usuario
@@ -57,7 +55,6 @@ class C_main extends CI_Controller
                 $this->M_usuarios->registrar($user->id,"Inicio","Usuario no Autorizado"); //Crea registro de visita
             }
         }
-        $this->load->model('M_creador');
         $menu = $this->M_creador->menu();
         $datos_vista = array(
             'datos_inicio'   =>  $datos_inicio,

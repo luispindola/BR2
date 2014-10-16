@@ -63,5 +63,9 @@ class C_tablas_esp extends CI_Controller
         }
         else{header('Location: '.site_url('c_main'));}
     }
+    public function usuarios_elaboradores()
+    {
+        
+    }
 }
 ?>

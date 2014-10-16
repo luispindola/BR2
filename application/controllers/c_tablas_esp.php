@@ -3,7 +3,6 @@ class C_tablas_esp extends CI_Controller
 {
     public function index()
     {
-        $this->load->model('M_creador');
         $menu = $this->M_creador->menu();//Crear menu
         $datos_inicio = '<h1>Tablas de especificaciones</h1>';
         $datos_inicio = $datos_inicio.'<h2>'.$menu.'</h2>';
@@ -19,17 +18,15 @@ class C_tablas_esp extends CI_Controller
     }
     public function agregar()
     {
+        $this->load->model('M_tablas_esp');
         if ($this->session->userdata('nivel_acceso') == 'Administrador')//Validar nivel de acceso de session
         {
-            
-            $this->load->helper('url');
-            $this->load->model("M_creador");
             $menu = $this->M_creador->menu();//Creador de menu
             
             if(isset($_POST['regresar'])){ header('Location: '.site_url('c_tablas_esp')); }
             //Si existe variable de session de nombre de usuario
             $error = "";
-            $this->load->model('M_tablas_esp');
+            
             if (isset($_POST['ok']))
             {//Se preciono el boton de cargar
                 //echo("type: ".$_FILES["archivo"]["type"]);
@@ -43,7 +40,11 @@ class C_tablas_esp extends CI_Controller
                     move_uploaded_file($_FILES["archivo"]["tmp_name"], "img/temp/temp.xls");
                     $error = $this->M_tablas_esp->procesar_archivo($_POST['asignatura'],$_POST['ciclos']);
                     if ($error == "")
-                    {header('Location:'.site_url('c_tablas_esp'));}
+                    {
+                        header('Location:'.site_url('c_tablas_esp'));
+                        //Registrar agregar tabla
+                    $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Agregar Tabla de Esp","Asignatura: ".$_POST['asignatura']." ciclo: ".$_POST['ciclos']);
+                    }
                 }else
                 {
                     $error = '<p class="error">El archivo no tiene extención correcta. Se requiere extención "xls"</p>';
@@ -60,7 +61,7 @@ class C_tablas_esp extends CI_Controller
             
             //Llama vista
         }
-        else{header('Location: index.php');}
+        else{header('Location: '.site_url('c_main'));}
     }
 }
 ?>

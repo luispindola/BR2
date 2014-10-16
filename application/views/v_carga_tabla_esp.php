@@ -50,29 +50,40 @@
             </tr>
             <tr>
                 <td>
+                    <h1>Agregar tabla de especificaciones</h1>
                     <p>
-                        <br/>
-                        <font color="#FF0000">
-                        <?php echo($algun_error); ?>
+                        <font color="#FF0000"><strong><big>
+                        <?php echo($algun_error); ?></big>
+                        </strong>
                         </fonT>
                         <br/>
                     </p>
                     <form method="post" name="cargadat" id="cargadat" enctype="multipart/form-data">
+                    <table width=50% BORDER CELLPADDING=10 CELLSPACING=0>
+                    <tr><td>
                     <p>
                        <label>1 Seleccionar Archivo <small>tipo xls</small></label>
                        <input type=file name="archivo" id="archivo">
                     </p>
+                    </td></tr>
+                    <tr><td>
                     <p>
                         <label>2 Seleccionar Asignatura <small></small></label>
                         <?php echo($carga_asignatura); ?>
                     </p>
+                    </td></tr>
+                    <tr><td>
                     <p>
                         <label>3 Seleccionar Ciclo <small></small></label>
                         <?php echo($carga_ciclo); ?>
                     </p>
+                    </td></tr>
+                    <tr><td>
                     <input type=submit value="Cargar Archivo" name="ok" id="ok">
 
                     <input type=submit value="Regresar" name="regresar" id="regresar">
+                    </td></tr>
+                    </table>
                     </form>
                 </td>
             </tr>

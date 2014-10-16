@@ -5,6 +5,7 @@ class M_usuarios extends CI_Model
     {
         parent::__construct();
     }
+    //ESTE MODULO ESTA CARGADO POR DEFAULT
     function validar_id($id_usuario)
     {
         $SQL = "SELECT id_usuario FROM br_usuarios WHERE id_usuario = '".$id_usuario."'";

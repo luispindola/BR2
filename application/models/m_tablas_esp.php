@@ -69,7 +69,6 @@ class M_tablas_esp extends CI_Model
              else
              {//No existe
                  $this->load->model('M_tablas_esp');
-                 $this->load->model('M_creador');
                  $id_tablas_esp = $this->M_tablas_esp->obtener_ultimo_id_tablas_esp();
                  $renglonExcel = 1;
                  while ($data->sheets[0]['cells'][$renglonExcel][1]<>"")
@@ -162,7 +161,6 @@ class M_tablas_esp extends CI_Model
                      }
                  }
              }
-
          }else
          {//Error Encabezados incorrectos
              $error = '<p class="error">El archivo no tiene los encabezados de columna requeridos.</p>';   
@@ -172,19 +170,19 @@ class M_tablas_esp extends CI_Model
          if ($error <> "")
          {return $error;}
     }
-   function obtener_ultimo_id_tablas_esp()
-   {
-        $ssql = "SELECT MAX(id_tablas_esp) AS max_id FROM br_tablas_esp";
-        $query = $this->db->query($ssql);//Ejecuta el query
+    function obtener_ultimo_id_tablas_esp()
+    {
+         $ssql = "SELECT MAX(id_tablas_esp) AS max_id FROM br_tablas_esp";
+         $query = $this->db->query($ssql);//Ejecuta el query
+         $row = $query->row_array();//Carga el registro en un arreglo
+         return $row['max_id'];
+    }
+    function dame_asignatura($id_asignatura)
+    {
+        $SQL = "SELECT asignatura FROM br_asignatura WHERE id_asignatura = ".$id_asignatura;
+        $query = $this->db->query($SQL);//Ejecuta el query
         $row = $query->row_array();//Carga el registro en un arreglo
-        return $row['max_id'];
-   }
-   function dame_asignatura($id_asignatura)
-   {
-       $SQL = "SELECT asignatura FROM br_asignatura WHERE id_asignatura = ".$id_asignatura;
-       $query = $this->db->query($SQL);//Ejecuta el query
-       $row = $query->row_array();//Carga el registro en un arreglo
-       return $row['asignatura'];
-   }
+        return $row['asignatura'];
+    }
 }
 ?>

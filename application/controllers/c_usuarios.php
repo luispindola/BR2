@@ -180,9 +180,9 @@ class C_usuarios extends CI_Controller
     {
         if ($this->session->userdata('nivel_acceso') == 'Administrador')//Validar session
         {//la session es correcta:
-            $this->load->helper('url');
-            $this->load->model("M_creador");
+            
             $this->load->library('pagination');
+            
             $menu = $this->M_creador->menu();//Creador de menu
             
             $datos_inicio = '<h1>Agregar usuarios</h1>';
@@ -405,9 +405,7 @@ class C_usuarios extends CI_Controller
     {
         if ($this->session->userdata('nivel_acceso') == 'Administrador')//Validar session
         {//la session es correcta:
-            $this->load->helper('url');
-            $this->load->model("M_creador");
-            $this->load->model("M_usuarios");
+            
             $menu = $this->M_creador->menu();//Creador de menu
                       
             //Iniciar consulta

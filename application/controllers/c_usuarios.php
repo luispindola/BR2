@@ -63,8 +63,6 @@ class C_usuarios extends CI_Controller
     {
         if ($this->session->userdata('nivel_acceso') == 'Administrador')//Validar nivel de acceso de session
         {//la session es correcta:
-            $this->load->helper('url');
-            $this->load->model("M_creador");
             $this->load->library('pagination');
 
             if (isset($_POST['buscar']))//Si se preciona e boton Buscar carga variable de session

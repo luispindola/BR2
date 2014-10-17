@@ -55,5 +55,15 @@ class M_usuarios extends CI_Model
         }
         return $ultima;
     }
+    function dame_usuario($id_usuario = null)
+    {
+        $SQL = "SELECT name FROM bancodereact_users WHERE (id = ".$id_usuario.")";
+        $query = $this->db->query($SQL);//Ejecuta la consulta
+        if ($query->num_rows() > 0)
+        {
+            $row = $query->row_array();//Carga el registro en un arreglo
+            return $row['name'];
+        }
+    }
 }
 ?>

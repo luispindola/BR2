@@ -58,22 +58,24 @@ class M_creador extends CI_Model
         $query = $this->db->query($SQL);//Ejecuta la consulta
         if ($query->num_rows() > 0)
         {
+            $seleccionado = 0;
             foreach ($query->result() as $row)
             {   
                 $option = $option.'<option ';
                 if ($id_usuario == $row->id_usuario)
                 {
                     $option = $option.'selected="selected" ';
+                    $seleccionado = 1;
                 }
                 $option = $option.'value = "'.$row->id_usuario.'">';
                 $option = $option.$row->name.'</option>';              
             }
             $option = $option.'<option ';
-            if ($id_usuario==null)
+            if ($seleccionado == 0)
             {
             $option = $option.'selected="selected" ';
             }
-            $option = $option.'value="Todos">Todos</option>';
+            $option = $option.'value="Todos">  </option>';
         }
         $option = $option.'</select>';
         return $option;

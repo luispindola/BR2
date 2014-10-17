@@ -219,6 +219,22 @@ class C_tablas_esp extends CI_Controller
             $menu = $this->M_creador->menu();//Creador de menu
             
             $datos_inicio = '<h1>Asignar Elaborador</h1>';
+            
+            if (isset($_POST['guardar']))//Si se presionó el boton guardar
+            {
+                /*
+                UPDATE Br_tablas_esp SET Br_tablas_esp.id_usuario_editor = "892"
+                WHERE (((Br_tablas_esp.id_asignatura)="1") AND ((Br_tablas_esp.ciclo)="2012-2013 NON"));
+                */
+                $SQL = "UPDATE br_tablas_esp SET br_tablas_esp.id_usuario_editor = '".$_POST['id_usuario']."' ";
+                $SQL = $SQL."WHERE ((br_tablas_esp.id_asignatura = ".$id_asignatura.") ";
+                $SQL = $SQL."AND (br_tablas_esp.ciclo = '".str_replace("%20"," ",$ciclo)."'))";        
+                $query = $this->db->query($SQL);//Ejecuta la consulta
+                $this->load->model('M_tablas_esp');
+                $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Asignar elaborador","Asignatura: ".$this->M_tablas_esp->dame_asignatura($id_asignatura)." Ciclo: ".str_replace("%20"," ",$ciclo)." Usuario Asignado: ".$_POST['id_usuario']); //Crea registro de visita                           
+                $datos_inicio = $datos_inicio.'<p><strong><span style="color: #517901">Elaborador asignado correctamente.</span></strong></p>';
+            }
+            
             $datos_inicio = $datos_inicio.'<form id="form" method="post">';//Se crea una forma post
             $datos_inicio = $datos_inicio.'<table width=50% BORDER CELLPADDING=10 CELLSPACING=0>';
             
@@ -231,12 +247,12 @@ class C_tablas_esp extends CI_Controller
             GROUP BY Br_tablas_esp.id_asignatura, Br_asignaturas.semestre, 
             Br_tablas_esp.ciclo, Br_asignaturas.componente, Br_asignaturas.asignatura; 
             **/
-            $SQL = "SELECT br_tablas_esp.id_asignatura, br_asignaturas.semestre, ";
+            $SQL = "SELECT br_tablas_esp.id_asignatura, br_asignaturas.semestre, br_tablas_esp.id_usuario_editor, ";
             $SQL = $SQL."br_tablas_esp.ciclo, br_asignaturas.componente, br_asignaturas.asignatura, ";
             $SQL = $SQL."Count(br_tablas_esp.id_tablas_esp) AS reactivos ";
             $SQL = $SQL."FROM br_tablas_esp INNER JOIN br_asignaturas ";
             $SQL = $SQL."ON br_tablas_esp.id_asignatura = br_asignaturas.id_asignatura ";
-            $SQL = $SQL."GROUP BY br_tablas_esp.id_asignatura, br_asignaturas.semestre, ";
+            $SQL = $SQL."GROUP BY br_tablas_esp.id_asignatura, br_asignaturas.semestre, br_tablas_esp.id_usuario_editor, ";
             $SQL = $SQL."br_tablas_esp.ciclo, br_asignaturas.componente, br_asignaturas.asignatura ";
             $SQL = $SQL."HAVING ((br_tablas_esp.id_asignatura = '".$id_asignatura."') ";
             $SQL = $SQL."AND (br_tablas_esp.ciclo = '".str_replace("%20"," ",$ciclo)."'))";
@@ -251,10 +267,8 @@ class C_tablas_esp extends CI_Controller
                     $datos_inicio = $datos_inicio.'<tr><td><h2>Semestre: </h2></td><td>'.$row->semestre.'</td></tr>';
                     $datos_inicio = $datos_inicio.'<tr><td><h2>Componente: </h2></td><td>'.$row->componente.'</td></tr>';
                     $datos_inicio = $datos_inicio.'<tr><td><h2>Reactivos: </h2></td><td>'.$row->reactivos.'</td></tr>';
-                    $datos_inicio = $datos_inicio.'<tr><td><h2>Asignar usuario: </h2></td><td> desplegable </td></tr>';
-                    
-                    
-                    
+                    $datos_inicio = $datos_inicio.'<tr><td><h2>Asignar usuario: </h2></td><td>'.$this->M_creador->desplegable_usuarios($row->id_usuario_editor).'</td></tr>';
+                    $datos_inicio = $datos_inicio.'<tr><td><h2> </h2></td><td><input id="guardar" name="guardar" size="44" style="height: 33px; width: 179px" type="submit" value="Guardar" /></td></tr>';
                 }
             }
             
@@ -269,6 +283,82 @@ class C_tablas_esp extends CI_Controller
             $this->load->view('v_limpia',$datos_vista);
         }
         else{header('Location: '.site_url('c_main'));}
+    }
+    public function desasignar_elaborador($id_asignatura = null, $ciclo = null)
+    {
+            if ($this->session->userdata('nivel_acceso') == 'Administrador')//Validar nivel de acceso de session
+        {
+            $menu = $this->M_creador->menu();//Creador de menu
+            
+            $datos_inicio = '<h1>Desasignar Elaborador</h1>';
+            
+            if (isset($_POST['guardar']))//Si se presionó el boton guardar
+            {
+                /*
+                UPDATE Br_tablas_esp SET Br_tablas_esp.id_usuario_editor = "892"
+                WHERE (((Br_tablas_esp.id_asignatura)="1") AND ((Br_tablas_esp.ciclo)="2012-2013 NON"));
+                */
+                $SQL = "UPDATE br_tablas_esp SET br_tablas_esp.id_usuario_editor = '' ";
+                $SQL = $SQL."WHERE ((br_tablas_esp.id_asignatura = ".$id_asignatura.") ";
+                $SQL = $SQL."AND (br_tablas_esp.ciclo = '".str_replace("%20"," ",$ciclo)."'))";        
+                $query = $this->db->query($SQL);//Ejecuta la consulta
+                $this->load->model('M_tablas_esp');
+                $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Desasignar elaborador","Asignatura: ".$this->M_tablas_esp->dame_asignatura($id_asignatura)." Ciclo: ".str_replace("%20"," ",$ciclo)." Usuario DesAsignado"); //Crea registro de visita                           
+                $datos_inicio = $datos_inicio.'<p><strong><span style="color: #517901">Elaborador Desasignado correctamente.</span></strong></p>';
+            }
+            
+            $datos_inicio = $datos_inicio.'<form id="form" method="post">';//Se crea una forma post
+            $datos_inicio = $datos_inicio.'<table width=50% BORDER CELLPADDING=10 CELLSPACING=0>';
+            
+            /**
+            SELECT Br_tablas_esp.id_asignatura, Br_asignaturas.semestre, 
+            Br_tablas_esp.ciclo, Br_asignaturas.componente, Br_asignaturas.asignatura, 
+            Count(Br_tablas_esp.id_tablas_esp) AS CuentaDeid_tablas_esp
+            FROM Br_tablas_esp INNER JOIN Br_asignaturas 
+            ON Br_tablas_esp.id_asignatura = Br_asignaturas.id_asignatura
+            GROUP BY Br_tablas_esp.id_asignatura, Br_asignaturas.semestre, 
+            Br_tablas_esp.ciclo, Br_asignaturas.componente, Br_asignaturas.asignatura; 
+            **/
+            $SQL = "SELECT br_tablas_esp.id_asignatura, br_asignaturas.semestre, br_tablas_esp.id_usuario_editor, ";
+            $SQL = $SQL."br_tablas_esp.ciclo, br_asignaturas.componente, br_asignaturas.asignatura, ";
+            $SQL = $SQL."Count(br_tablas_esp.id_tablas_esp) AS reactivos ";
+            $SQL = $SQL."FROM br_tablas_esp INNER JOIN br_asignaturas ";
+            $SQL = $SQL."ON br_tablas_esp.id_asignatura = br_asignaturas.id_asignatura ";
+            $SQL = $SQL."GROUP BY br_tablas_esp.id_asignatura, br_asignaturas.semestre, br_tablas_esp.id_usuario_editor, ";
+            $SQL = $SQL."br_tablas_esp.ciclo, br_asignaturas.componente, br_asignaturas.asignatura ";
+            $SQL = $SQL."HAVING ((br_tablas_esp.id_asignatura = '".$id_asignatura."') ";
+            $SQL = $SQL."AND (br_tablas_esp.ciclo = '".str_replace("%20"," ",$ciclo)."'))";
+            //DEBUG $datos_inicio = $datos_inicio.$SQL;
+            $query = $this->db->query($SQL);//Ejecuta la consulta
+            if ($query->num_rows() > 0)
+            {
+                foreach ($query->result() as $row)
+                {   
+                    $datos_inicio = $datos_inicio.'<tr><td><h2>Asignatura: </h2></td><td>'.$row->asignatura.'</td></tr>'; 
+                    $datos_inicio = $datos_inicio.'<tr><td><h2>Ciclo: </h2></td><td>'.$row->ciclo.'</td></tr>';
+                    $datos_inicio = $datos_inicio.'<tr><td><h2>Semestre: </h2></td><td>'.$row->semestre.'</td></tr>';
+                    $datos_inicio = $datos_inicio.'<tr><td><h2>Componente: </h2></td><td>'.$row->componente.'</td></tr>';
+                    $datos_inicio = $datos_inicio.'<tr><td><h2>Reactivos: </h2></td><td>'.$row->reactivos.'</td></tr>';
+                    $datos_inicio = $datos_inicio.'<tr><td><h2>Usuario asignado: </h2></td><td>'.$this->M_usuarios->dame_usuario($row->id_usuario_editor).'</td></tr>';
+                    $datos_inicio = $datos_inicio.'<tr><td><h2> </h2></td><td><input id="guardar" name="guardar" size="44" style="height: 33px; width: 179px" type="submit" value="Desasignar Elaborador" /></td></tr>';
+                }
+            }
+            
+            $datos_inicio = $datos_inicio.'</table>';
+            $datos_inicio = $datos_inicio.'</form>';
+            
+            //Cargar vista vlimpia
+            $datos_vista = array(
+            'datos_inicio'   =>  $datos_inicio,
+            'menu'           =>  $menu
+            );
+            $this->load->view('v_limpia',$datos_vista);
+        }
+        else{header('Location: '.site_url('c_main'));}
+    }
+    public function usuarios_revisores($order = null, $pag = null)
+    {
+        
     }
 }
 ?>

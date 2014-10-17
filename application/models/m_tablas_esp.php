@@ -179,10 +179,13 @@ class M_tablas_esp extends CI_Model
     }
     function dame_asignatura($id_asignatura)
     {
-        $SQL = "SELECT asignatura FROM br_asignatura WHERE id_asignatura = ".$id_asignatura;
+        $SQL = "SELECT asignatura FROM br_asignaturas WHERE id_asignatura = ".$id_asignatura;
         $query = $this->db->query($SQL);//Ejecuta el query
-        $row = $query->row_array();//Carga el registro en un arreglo
-        return $row['asignatura'];
+        if ($query->num_rows() > 0)
+        {
+            $row = $query->row_array();//Carga el registro en un arreglo
+            return $row['asignatura'];
+        }
     }
 }
 ?>

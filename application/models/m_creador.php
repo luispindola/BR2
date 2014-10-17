@@ -29,12 +29,12 @@ class M_creador extends CI_Model
             $menu = $menu.'</li>';
         }
         
-        if ($this->session->userdata('id_usuario')) //MENU ABLAS DE DESPECIFICACIONES
+        if ($this->session->userdata('id_usuario')) //MENU TABLAS DE DE ESPECIFICACIONES
         {//Muestra el resto del menu si hay variables de session
             $menu = $menu.'<li><a href="'.site_url('c_tablas_esp').'">Tablas de Especificaciones</a>';
                 $menu = $menu.'<ul>';
                 
-                $menu = $menu.'<li><a href="'.site_url('c_tablas_esp/listado').'">Listado</a></li>';
+                $menu = $menu.'<li><a href="'.site_url('c_tablas_esp/listado/asignatura').'">Listado</a></li>';
                 
                 if ($this->session->userdata('nivel_acceso') == 'Administrador')
                 {$menu = $menu.'<li><a href="'.site_url('c_tablas_esp/agregar').'">Agregar Tabla de Esp</a></li>';}

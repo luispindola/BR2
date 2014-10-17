@@ -12,7 +12,7 @@ class C_tablas_esp extends CI_Controller
         );
         $this->load->view('v_limpia',$datos_vista);
     }
-    public function listado($pag=null)
+    public function listado($order = null, $pag=null)
     {
         if ($this->session->userdata('id_usuario'))
         {
@@ -20,13 +20,119 @@ class C_tablas_esp extends CI_Controller
             $menu = $this->M_creador->menu();//Crear menu
             $datos_inicio = '<h1>Listados de tablas de especificaciones</h1>';
             
+            /*
+            SELECT br_tablas_esp.id_asignatura, br_asignaturas.asignatura, br_tablas_esp.ciclo, 
+            br_asignaturas.semestre, br_asignaturas.componente, br_tablas_esp.id_usuario_editor, 
+            br_tablas_esp.id_usuario_revisor, Count(br_tablas_esp.id_tablas_esp) AS reactivos, 
+            Max(br_tablas_esp.f_creacion) AS f_creacion 
+            FROM br_tablas_esp INNER JOIN br_asignaturas 
+            ON br_tablas_esp.id_asignatura = br_asignaturas.id_asignatura
+            GROUP BY br_tablas_esp.id_asignatura, br_asignaturas.asignatura, br_tablas_esp.ciclo, 
+            br_asignaturas.semestre, br_asignaturas.componente, br_tablas_esp.id_usuario_editor, 
+            br_tablas_esp.id_usuario_revisor
+            HAVING (((br_tablas_esp.id_usuario_editor)="890") 
+            OR ((br_tablas_esp.id_usuario_revisor)="890")); 
+            */
+            $SQL = "SELECT br_tablas_esp.id_asignatura, br_asignaturas.asignatura, br_tablas_esp.ciclo, ";
+            $SQL = $SQL."br_asignaturas.semestre, br_asignaturas.componente, br_tablas_esp.id_usuario_editor, ";
+            $SQL = $SQL."br_tablas_esp.id_usuario_revisor, Count(br_tablas_esp.id_tablas_esp) AS reactivos, ";
+            $SQL = $SQL."Max(br_tablas_esp.f_creacion) AS f_creacion ";
+            $SQL = $SQL."FROM br_tablas_esp INNER JOIN br_asignaturas ";
+            $SQL = $SQL."ON br_tablas_esp.id_asignatura = br_asignaturas.id_asignatura ";
+            $SQL = $SQL."GROUP BY br_tablas_esp.id_asignatura, br_asignaturas.asignatura, br_tablas_esp.ciclo, ";
+            $SQL = $SQL."br_asignaturas.semestre, br_asignaturas.componente, br_tablas_esp.id_usuario_editor, ";
+            $SQL = $SQL."br_tablas_esp.id_usuario_revisor ";
+            $SQL = $SQL."HAVING (((br_tablas_esp.id_usuario_editor)= ".$this->session->userdata('id_usuario').") ";
+            $SQL = $SQL."OR ((br_tablas_esp.id_usuario_revisor)= ".$this->session->userdata('id_usuario')."))";
+            
+            $query = $this->db->query($SQL);//Ejecuta la consulta
+            
+            $total_rows = $query->num_rows();//Calculado num de registros
+            $per_page = 10;//Registros por pagina
+            
+            //Configuracion del paginador
+            $this->load->library('pagination');//Libreria de paginador
+            $config['base_url'] = site_url('c_tablas_esp/listado/'.$order.'/');
+            $config['total_rows'] = $total_rows; //total de registros
+            $config['per_page'] = $per_page; //registros por pagina
+            $config['first_link'] = '1'; //Ir al inicio
+            $config['next_link'] = '>>'; //Siguiente pag
+            $config['prev_link'] = '<<'; //Pag Anterior
+            $config['last_link'] = ceil($total_rows/$per_page);//Ultima pagina (ceil: Redondea hacia arriba)
+            $this->pagination->initialize($config); 
+            //Termina Configuracion del paginador   
+            
             $datos_inicio = $datos_inicio.'<form id="form" method="post">';//Se crea una forma post
             $datos_inicio = $datos_inicio.'<table width=70% BORDER CELLPADDING=10 CELLSPACING=0>';
             
-                    //PENDIENTE!
+            //Link del paginador
+            $datos_inicio = $datos_inicio.'<tr><td align="center">';            
+            $datos_inicio = $datos_inicio. $this->pagination->create_links();//Se crean los links del paginador
+            $datos_inicio = $datos_inicio.'</td></tr>'; 
+            
+            $datos_inicio = $datos_inicio.'<tr><td>';
+            
+            //Inicia tabla de datos
+            $datos_inicio = $datos_inicio.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';  
+            //Encabezados:
+            $datos_inicio = $datos_inicio.'<tr bgcolor="#517901", style="color: #FFFFFF">';//Define fondo y color de letra
+            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/listado/asignatura/'.$pag).'"><font color="#FFFFFF">Asignatura</font></a></th>';
+            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/listado/ciclo/'.$pag).'"><font color="#FFFFFF">Ciclo</font></a></th>';
+            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/listado/semestre/'.$pag).'"><font color="#FFFFFF">Semestre</font></a></th>';
+            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/listado/componente/'.$pag).'"><font color="#FFFFFF">Componente</font></a></th>';
+            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/listado/reactivos/'.$pag).'"><font color="#FFFFFF">Reactivos</font></a></th>';
+            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/listado/f_creacion/'.$pag).'"><font color="#FFFFFF">Fecha Creaci&oacuten</font></a></th>';
+            $datos_inicio = $datos_inicio.'<th width=10%>Editar</th>';
+            $datos_inicio = $datos_inicio.'</tr>';
+            //Fin Encabezados
+            //Inician Datos
+            if (isset($pag))//Se agrega LIMIT a la consulta para seleccionar la pagina
+            {$SQL = $SQL.' LIMIT '.$pag.', '.$per_page;}//Si se ha seleccionado una pagina
+            else
+            {$SQL = $SQL.' LIMIT 0, '.$per_page;}//Si es la primera pagina
+            
+            $query = $this->db->query($SQL);//Ejecuta la consulta
+            if ($query->num_rows() > 0)
+            {
+                foreach ($query->result() as $row)//Recorre la tabla
+                {  
+                    
+                    
+                    $datos_inicio = $datos_inicio.'<tr bgcolor="#FAFAFA",';//Color de fondo
+                    $datos_inicio = $datos_inicio.' onmouseover="this.style.backgroundColor=\'#F2F2F2\';"';//Color con mause sobre
+                    $datos_inicio = $datos_inicio.' onmouseout="this.style.backgroundColor=\'#FAFAFA\';">';//Regresar al mismo color
+                    
+                    $datos_inicio = $datos_inicio.'<td>'.$row->asignatura.'</td>';
+                    $datos_inicio = $datos_inicio.'<td>'.$row->ciclo.'</td>';
+                    $datos_inicio = $datos_inicio.'<td>'.$row->semestre.'</td>';
+                    $datos_inicio = $datos_inicio.'<td>'.$row->componente.'</td>';
+                    $datos_inicio = $datos_inicio.'<td>'.$row->reactivos.'</td>';
+                    $this->load->model('M_fechas');
+                    $datos_inicio = $datos_inicio.'<td>'.$this->M_fechas->tiempodesde($row->f_creacion).'</td>';
+                    $datos_inicio = $datos_inicio.'<td>';
+                    
+                    if ($row->id_usuario_editor == $this->session->userdata('id_usuario'))
+                    {$datos_inicio = $datos_inicio.'<input type="button" value="Entrar como Elaborador" onClick="window.location =\''.  site_url('c_tablas_esp/elaborador/'.$row->id_asignatura.'/'.$row->ciclo).'\';"/>';}
+                    
+                    if ($row->id_usuario_revisor == $this->session->userdata('id_usuario'))
+                    {$datos_inicio = $datos_inicio.'<input type="button" value="Entrar como Revisor" onClick="window.location =\''.  site_url('c_tablas_esp/revisor/'.$row->id_asignatura.'/'.$row->ciclo).'\';"/>';}                     
+                    
+                    $datos_inicio = $datos_inicio.'</td>';
+                    
+                    $datos_inicio = $datos_inicio.'</tr>';
+                }
+            }
+            //Fin Datos
+            
+            $datos_inicio = $datos_inicio.'</table>';
+            //Fin tabla de datos
+            
+            $datos_inicio = $datos_inicio.'</td></tr>';
             
             $datos_inicio = $datos_inicio.'</table>';
             $datos_inicio = $datos_inicio.'</form>';
+            
+            $datos_inicio = $datos_inicio.'Se encontraron '.$total_rows.' registros';//comentario opcional
                    
             //Cargar vista vlimpia
             $datos_vista = array(

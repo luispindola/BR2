@@ -187,5 +187,25 @@ class M_tablas_esp extends CI_Model
             return $row['asignatura'];
         }
     }
+    function dame_ciclo($id_ciclo = null)
+    {
+        $SQL = "SELECT ciclo FROM br_ciclos WHERE id_ciclo = ".$id_ciclo;
+        $query = $this->db->query($SQL);//Ejecuta el query
+        if ($query->num_rows() > 0)
+        {
+            $row = $query->row_array();//Carga el registro en un arreglo
+            return $row['ciclo'];
+        }
+    }
+    function dame_id_ciclo($ciclo = null)
+    {
+        $SQL = "SELECT id_ciclo FROM br_ciclos WHERE ciclo = '".$ciclo."'";
+        $query = $this->db->query($SQL);//Ejecuta el query
+        if ($query->num_rows() > 0)
+        {
+            $row = $query->row_array();//Carga el registro en un arreglo
+            return $row['id_ciclo'];
+        }
+    }
 }
 ?>

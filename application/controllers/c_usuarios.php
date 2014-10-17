@@ -197,9 +197,10 @@ class C_usuarios extends CI_Controller
                         
             $query = $this->db->query($SQL);//Ejecuta la consulta
             $total_rows = $query->num_rows();//Calculado num de registros
-            $per_page = 20;//Registros por pagina
+            $per_page = 15;//Registros por pagina
             //Configuracion del paginador
             $config['base_url'] = site_url('c_usuarios/agregar_usuarios/'.$order.'/');
+            $config['uri_segment'] = 4; //Que segmento del URL tiene el num de pagina
             $config['total_rows'] = $total_rows; //total de registros
             $config['per_page'] = $per_page; //registros por pagina
             $config['first_link'] = '1'; //Ir al inicio

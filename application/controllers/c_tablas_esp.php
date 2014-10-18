@@ -112,10 +112,10 @@ class C_tablas_esp extends CI_Controller
                     
                     $this->load->model('M_tablas_esp');
                     if ($row->id_usuario_editor == $this->session->userdata('id_usuario'))
-                    {$datos_inicio = $datos_inicio.'<input type="button" value="Entrar como Elaborador" onClick="window.location =\''.  site_url('c_tablas_esp/elaborador/'.$row->id_asignatura.'/'.$row->ciclo).'\';"/>';}
+                    {$datos_inicio = $datos_inicio.'<input type="button" value="Entrar como Elaborador" onClick="window.location =\''.  site_url('c_tablas_esp/tabla_esp/elaborador/'.$row->id_asignatura.'/'.$this->M_tablas_esp->dame_id_ciclo($row->ciclo)).'/parcial\';"/>';}  
                     
                     if ($row->id_usuario_revisor == $this->session->userdata('id_usuario'))
-                    {$datos_inicio = $datos_inicio.'<input type="button" value="Entrar como Revisor" onClick="window.location =\''.  site_url('c_tablas_esp/revisor/'.$row->id_asignatura.'/'.$this->M_tablas_esp->dame_id_ciclo($row->ciclo)).'/parcial\';"/>';}                     
+                    {$datos_inicio = $datos_inicio.'<input type="button" value="Entrar como Revisor" onClick="window.location =\''.  site_url('c_tablas_esp/tabla_esp/revisor/'.$row->id_asignatura.'/'.$this->M_tablas_esp->dame_id_ciclo($row->ciclo)).'/parcial\';"/>';}                     
                     
                     $datos_inicio = $datos_inicio.'</td>';
                     
@@ -737,9 +737,13 @@ class C_tablas_esp extends CI_Controller
         }
         else{header('Location: '.site_url('c_main'));}
     }
-    public function revisor($id_asignatura = null, $id_ciclo = null, $order = null, $pag = null)
+    public function tabla_esp($modo = null, $id_asignatura = null, $id_ciclo = null, $order = null, $pag = null)
     {
-        if (($this->session->userdata('nivel_acceso') == 'Administrador') OR ($this->session->userdata('nivel_acceso') == 'Revisor'))//Validar nivel de acceso de session
+        if ($modo == 'elaborador')
+        {$nivel_autorizado = 'Elaborador';}
+        if ($modo == 'revisor')
+        {$nivel_autorizado = 'Revisor';}
+        if (($this->session->userdata('nivel_acceso') == 'Administrador') OR ($this->session->userdata('nivel_acceso') == $nivel_autorizado))//Validar nivel de acceso de session
         {
             $this->load->model('M_tablas_esp');
             $this->load->model('M_fechas');
@@ -785,31 +789,31 @@ class C_tablas_esp extends CI_Controller
             
             $datos_inicio = $datos_inicio.'<tr>';
             $datos_inicio = $datos_inicio.'<td width=25%>';
-            $datos_inicio = $datos_inicio.'<strong><big>Asignatura:</big> '.$this->M_tablas_esp->dame_asignatura($rowEncabezado['id_asignatura']).'</strong>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Asignatura:</span></big> '.$this->M_tablas_esp->dame_asignatura($rowEncabezado['id_asignatura']).'</strong>';
             $datos_inicio = $datos_inicio.'</td>';
             $datos_inicio = $datos_inicio.'<td width=25%>';
-            $datos_inicio = $datos_inicio.'<strong><big>Ciclo:</big> '.str_replace("%20"," ",$ciclo).'</strong>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Ciclo:</span></big> '.str_replace("%20"," ",$ciclo).'</strong>';
             $datos_inicio = $datos_inicio.'</td>';
             $datos_inicio = $datos_inicio.'<td width=25%>';
-            $datos_inicio = $datos_inicio.'<strong><big>Usuario elaborador:</big> '.$this->M_usuarios->dame_usuario($rowEncabezado['id_usuario_editor']).'</strong>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Usuario elaborador:</span></big> '.$this->M_usuarios->dame_usuario($rowEncabezado['id_usuario_editor']).'</strong>';
             $datos_inicio = $datos_inicio.'</td>';
             $datos_inicio = $datos_inicio.'<td width=25%>';
-            $datos_inicio = $datos_inicio.'<strong><big>Fecha &uacuteltima edici&oacuten:</big> '.$rowEncabezado['f_edicion'].'</strong>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Fecha &uacuteltima edici&oacuten:</span></big> '.$rowEncabezado['f_edicion'].'</strong>';
             $datos_inicio = $datos_inicio.'</td>';
             $datos_inicio = $datos_inicio.'</tr>';
             
             $datos_inicio = $datos_inicio.'<tr>';
             $datos_inicio = $datos_inicio.'<td width=25%>';
-            $datos_inicio = $datos_inicio.'<strong><big>Usuario revisor:</big> '.$this->M_usuarios->dame_usuario($rowEncabezado['id_usuario_revisor']).'</strong>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Usuario revisor:</span></big> '.$this->M_usuarios->dame_usuario($rowEncabezado['id_usuario_revisor']).'</strong>';
             $datos_inicio = $datos_inicio.'</td>';
             $datos_inicio = $datos_inicio.'<td width=25%>';
-            $datos_inicio = $datos_inicio.'<strong><big>Fecha &uacuteltima revici&oacuten:</big> '.$rowEncabezado['f_obs'].'</strong>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Fecha &uacuteltima revici&oacuten:</span></big> '.$rowEncabezado['f_obs'].'</strong>';
             $datos_inicio = $datos_inicio.'</td>';
             $datos_inicio = $datos_inicio.'<td width=25%>';
-            $datos_inicio = $datos_inicio.'<strong><big>Reactivos:</big> '.$rowEncabezado['reactivos'].'</strong>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Reactivos:</span></big> '.$rowEncabezado['reactivos'].'</strong>';
             $datos_inicio = $datos_inicio.'</td>';
             $datos_inicio = $datos_inicio.'<td width=25%>';
-            $datos_inicio = $datos_inicio.'<strong><big>Reactivos aprovados:</big> '.$rowEncabezado['reactivos_aprovados'].'</strong>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Reactivos aprovados:</span></big> '.$rowEncabezado['reactivos_aprovados'].'</strong>';
             $datos_inicio = $datos_inicio.'</td>';
             $datos_inicio = $datos_inicio.'</tr>';
             
@@ -842,8 +846,8 @@ class C_tablas_esp extends CI_Controller
             
             //Configuracion del paginador
             $this->load->library('pagination');//Libreria de paginador
-            $config['base_url'] = site_url('c_tablas_esp/revisor/'.$id_asignatura.'/'.$id_ciclo.'/'.$order.'/');
-            $config['uri_segment'] = 6; //Que segmento del URL tiene el num de pagina
+            $config['base_url'] = site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/'.$order.'/');
+            $config['uri_segment'] = 7; //Que segmento del URL tiene el num de pagina
             $config['total_rows'] = $total_rows; //total de registros
             $config['per_page'] = $per_page; //registros por pagina
             $config['first_link'] = '1'; //Ir al inicio
@@ -862,14 +866,14 @@ class C_tablas_esp extends CI_Controller
             $datos_inicio = $datos_inicio.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';  
             //Encabezados:
             $datos_inicio = $datos_inicio.'<tr bgcolor="#517901", style="color: #FFFFFF">';//Define fondo y color de letra
-            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/revisor/'.$id_asignatura.'/'.$id_ciclo.'/parcial/'.$pag).'"><font color="#FFFFFF">Parcial</font></a></th>';
-            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/revisor/'.$id_asignatura.'/'.$id_ciclo.'/bloque/'.$pag).'"><font color="#FFFFFF">Bloque</font></a></th>';
-            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/revisor/'.$id_asignatura.'/'.$id_ciclo.'/secuencia/'.$pag).'"><font color="#FFFFFF">Secuencia</font></a></th>';
-            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/revisor/'.$id_asignatura.'/'.$id_ciclo.'/apr_indi_obj/'.$pag).'"><font color="#FFFFFF">Aprendizaje, Indicadores, Objetivos</font></a></th>';
-            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/revisor/'.$id_asignatura.'/'.$id_ciclo.'/saberes/'.$pag).'"><font color="#FFFFFF">Saberes</font></a></th>';
-            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/revisor/'.$id_asignatura.'/'.$id_ciclo.'/dificultad_docente/'.$pag).'"><font color="#FFFFFF">Dificultad</font></a></th>';
-            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/revisor/'.$id_asignatura.'/'.$id_ciclo.'/f_obs/'.$pag).'"><font color="#FFFFFF">Fecha &uacuteltima observaci&oacuten</font></a></th>';
-            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/revisor/'.$id_asignatura.'/'.$id_ciclo.'/aprovado/'.$pag).'"><font color="#FFFFFF">Aprovado</font></a></th>';
+            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/parcial/'.$pag).'"><font color="#FFFFFF">Parcial</font></a></th>';
+            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/bloque/'.$pag).'"><font color="#FFFFFF">Bloque</font></a></th>';
+            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/secuencia/'.$pag).'"><font color="#FFFFFF">Secuencia</font></a></th>';
+            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/apr_indi_obj/'.$pag).'"><font color="#FFFFFF">Aprendizaje, Indicadores, Objetivos</font></a></th>';
+            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/saberes/'.$pag).'"><font color="#FFFFFF">Saberes</font></a></th>';
+            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/dificultad_docente/'.$pag).'"><font color="#FFFFFF">Dificultad</font></a></th>';
+            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/f_obs/'.$pag).'"><font color="#FFFFFF">Fecha &uacuteltima observaci&oacuten</font></a></th>';
+            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/aprovado/'.$pag).'"><font color="#FFFFFF">Aprovado</font></a></th>';
             $datos_inicio = $datos_inicio.'<th width=10%>Acciones</th>';
             $datos_inicio = $datos_inicio.'</tr>';
             //Fin Encabezados
@@ -898,6 +902,11 @@ class C_tablas_esp extends CI_Controller
                     $datos_inicio = $datos_inicio.'<td>'.$row->f_obs.'</td>';
                     $datos_inicio = $datos_inicio.'<td>'.$row->aprovado.'</td>';
                     $datos_inicio = $datos_inicio.'<td>';
+                    if ($modo == 'revisor')
+                    {$datos_inicio = $datos_inicio.'<input type="button" value="Editar observaciones" onClick="window.location =\''.  site_url('c_tablas_esp/editar_observaciones/'.$row->id_tablas_esp).'\';"/>';}
+                    //elaborador
+                    if ($modo == 'elaborador')
+                    {$datos_inicio = $datos_inicio.'<input type="button" value="Editar propiedades" onClick="window.location =\''.  site_url('c_tablas_esp/editar_propiedades/'.$row->id_tablas_esp).'\';"/>';}
                     
                     $datos_inicio = $datos_inicio.'</td>';
                     
@@ -916,6 +925,18 @@ class C_tablas_esp extends CI_Controller
             $datos_inicio = $datos_inicio.'</table>';
             $datos_inicio = $datos_inicio.'</form>';
             
+            //Cargar vista vlimpia
+            $datos_vista = array(
+            'datos_inicio'   =>  $datos_inicio,
+            'menu'           =>  $menu
+            );
+            $this->load->view('v_limpia',$datos_vista);
+        }
+        else
+        {
+            //header('Location: '.site_url('c_main'));
+            $menu = $this->M_creador->menu();//Creador de menu
+            $datos_inicio = '<p><strong><span style="color: #517901">Su nivel de usuario es: '.$this->session->userdata('nivel_acceso').' su acceso esta restringido.</span></strong></p>';
             //Cargar vista vlimpia
             $datos_vista = array(
             'datos_inicio'   =>  $datos_inicio,

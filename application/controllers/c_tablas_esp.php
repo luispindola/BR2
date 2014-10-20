@@ -903,7 +903,7 @@ class C_tablas_esp extends CI_Controller
                     $datos_inicio = $datos_inicio.'<td>'.$row->aprovado.'</td>';
                     $datos_inicio = $datos_inicio.'<td>';
                     if ($modo == 'revisor')
-                    {$datos_inicio = $datos_inicio.'<input type="button" value="Entrar como revisor" onClick="window.location =\''.  site_url('c_tablas_esp/revisor/'.$row->id_tablas_esp).'\';"/>';}
+                    {$datos_inicio = $datos_inicio.'<input type="button" value="Entrar como revisor" onClick="window.location =\''.  site_url('c_tablas_esp/revisor/'.$row->id_tablas_esp.'/'.$order.'/'.$pag).'\';"/>';}
                     //elaborador
                     if ($modo == 'elaborador')
                     {$datos_inicio = $datos_inicio.'<input type="button" value="Entrar como elaborador" onClick="window.location =\''.  site_url('c_tablas_esp/elaborador/'.$row->id_tablas_esp).'\';"/>';}
@@ -945,11 +945,23 @@ class C_tablas_esp extends CI_Controller
             $this->load->view('v_limpia',$datos_vista);
         }
     }
-    public function revisor($id_tablas_esp = null)
+    public function revisor($id_tablas_esp = null, $order = null, $pag = null)
     {
         if (($this->session->userdata('nivel_acceso') == 'Administrador') OR ($this->session->userdata('nivel_acceso') == 'Revisor'))//Validar nivel de acceso de session
         {
             $this->load->model('M_tablas_esp');
+            
+            if (isset($_POST['guardar']))
+            {
+                date_default_timezone_set('America/Los_Angeles'); //Establece Zona horaria
+                $SQL = "UPDATE br_tablas_esp SET ";
+                $SQL = $SQL."observaciones_revisor = '".$_POST['observaciones']."', ";
+                $SQL = $SQL."aprovado = '".$_POST['aprovado']."', ";
+                $SQL = $SQL."f_obs = '".date("Y-m-d H:i:s")."' ";
+                $SQL = $SQL."WHERE id_tablas_esp = ".$id_tablas_esp;
+                $query = $this->db->query($SQL);//Ejecuta el query
+            }
+            
             $registro = $this->M_tablas_esp->dame_registro_br_tablas_esp($id_tablas_esp);
             $menu = $this->M_creador->menu();//Creador de menu
             $datos_inicio = '<h1>Editando como revisor</h1>';
@@ -1058,13 +1070,50 @@ class C_tablas_esp extends CI_Controller
             
             $datos_inicio = $datos_inicio.'</td><td widht=60%>';
             //Para observaciones
-            
+            $datos_inicio = $datos_inicio.'<form id="form" method="post">';//Se crea una forma post
             $datos_inicio = $datos_inicio.'<h2>Observaciones:</h2>';
+            
             
             $datos_inicio = $datos_inicio.'<textarea cols="100" name="observaciones" rows="10" style="height: 166px; width: 100%">'.$registro['observaciones_revisor'].'</textarea>';
             
+            $conDatos = "no";
+            $datos_inicio = $datos_inicio.'<br><br><h2>Aprovado: </h2>';
+            $datos_inicio = $datos_inicio.'<select id="aprovado" name="aprovado" size="1" style="width: 100px">';
+            if ($registro['aprovado'] == 1)   
+            {
+                $conDatos = "si";
+                $datos_inicio = $datos_inicio.'<option selected="selected" value="1">Si</option>';
+            }
+            else
+            {
+                $datos_inicio = $datos_inicio.'<option value="1">Si</option>';
+            }
+            if ($registro['aprovado'] == 0)   
+            {
+                $conDatos = "si";
+                $datos_inicio = $datos_inicio.'<option selected="selected" value="0">No</option>';
+            }
+            else
+            {
+                $datos_inicio = $datos_inicio.'<option value="0">No</option>';
+            }
+            if ($conDatos == "no")
+            {
+                $datos_inicio = $datos_inicio.'<option selected="selected" value=""> </option>';
+            }
             
+            $datos_inicio = $datos_inicio.'</select><br><br>';
             
+            $datos_inicio = $datos_inicio.'<input id="guardar" name="guardar" size="44" style="height: 33px; width: 179px" type="submit" value="Guardar" />    ';
+            $datos_inicio = $datos_inicio.'<input id="regresar" name="regresar" size="44" style="height: 33px; width: 179px" type="submit" value="Regresar" />';
+            
+            if (isset($_POST['regresar']))
+                {header('Location: '.  site_url('c_tablas_esp/tabla_esp/revisor/'.$rowEncabezado['id_asignatura'].'/'.$this->M_tablas_esp->dame_id_ciclo($rowEncabezado['ciclo']).'/'.$order.'/'.$pag));}
+            if (isset($_POST['guardar']))
+                {$datos_inicio = $datos_inicio.'<br><strong><big><span style="color: #517901">Observaciones Guardadas correctamente</span></big></strong>';}
+            
+            $datos_inicio = $datos_inicio.'</form>';
+                   
             $datos_inicio = $datos_inicio.'</td></tr></table>';
             $datos_inicio = $datos_inicio.'</td></tr>';
             //Fin area de datos
@@ -1078,6 +1127,7 @@ class C_tablas_esp extends CI_Controller
             );
             $this->load->view('v_limpia',$datos_vista);
         }
+        else{header('Location: '.site_url('c_main'));}
     }
 }
 ?>

@@ -949,10 +949,127 @@ class C_tablas_esp extends CI_Controller
     {
         if (($this->session->userdata('nivel_acceso') == 'Administrador') OR ($this->session->userdata('nivel_acceso') == 'Revisor'))//Validar nivel de acceso de session
         {
+            $this->load->model('M_tablas_esp');
+            $registro = $this->M_tablas_esp->dame_registro_br_tablas_esp($id_tablas_esp);
             $menu = $this->M_creador->menu();//Creador de menu
             $datos_inicio = '<h1>Editando como revisor</h1>';
+            $datos_inicio = $datos_inicio.'<form id="form" method="post">';//Se crea una forma post
+            $datos_inicio = $datos_inicio.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
+            
+            $datos_inicio = $datos_inicio.'<tr><td>';
+            //Seccion de encabezados           
+            $SQL = "SELECT br_tablas_esp.id_asignatura, br_tablas_esp.ciclo, ";
+            $SQL = $SQL."br_tablas_esp.id_usuario_editor, Max(br_tablas_esp.f_edicion) AS f_edicion, ";
+            $SQL = $SQL."br_tablas_esp.id_usuario_revisor, Max(br_tablas_esp.f_obs) AS f_obs, ";
+            $SQL = $SQL."Count(br_tablas_esp.id_tablas_esp) AS reactivos, ";
+            $SQL = $SQL."Sum(br_tablas_esp.aprovado) AS reactivos_aprovados ";
+            $SQL = $SQL."FROM br_tablas_esp ";
+            $SQL = $SQL."GROUP BY br_tablas_esp.id_asignatura, br_tablas_esp.ciclo, ";
+            $SQL = $SQL."br_tablas_esp.id_usuario_editor, br_tablas_esp.id_usuario_revisor ";
+            $SQL = $SQL."HAVING (((br_tablas_esp.id_asignatura)=".$registro['id_asignatura'].") ";
+            $SQL = $SQL."AND ((br_tablas_esp.ciclo)='".$registro['ciclo']."'))";
+            
+            $query = $this->db->query($SQL);//Ejecuta el query
+            if ($query->num_rows() > 0)
+            {
+                $rowEncabezado = $query->row_array();//Carga el registro en un arreglo
+            }
+            
+            $datos_inicio = $datos_inicio.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
+            
+            $datos_inicio = $datos_inicio.'<tr>';
+            $datos_inicio = $datos_inicio.'<td width=25%>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Asignatura:</span></big> '.$this->M_tablas_esp->dame_asignatura($rowEncabezado['id_asignatura']).'</strong>';
+            $datos_inicio = $datos_inicio.'</td>';
+            $datos_inicio = $datos_inicio.'<td width=25%>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Ciclo:</span></big> '.$rowEncabezado['ciclo'].'</strong>';
+            $datos_inicio = $datos_inicio.'</td>';
+            $datos_inicio = $datos_inicio.'<td width=25%>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Usuario elaborador:</span></big> '.$this->M_usuarios->dame_usuario($rowEncabezado['id_usuario_editor']).'</strong>';
+            $datos_inicio = $datos_inicio.'</td>';
+            $datos_inicio = $datos_inicio.'<td width=25%>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Fecha &uacuteltima edici&oacuten:</span></big> '.$rowEncabezado['f_edicion'].'</strong>';
+            $datos_inicio = $datos_inicio.'</td>';
+            $datos_inicio = $datos_inicio.'</tr>';
+            
+            $datos_inicio = $datos_inicio.'<tr>';
+            $datos_inicio = $datos_inicio.'<td width=25%>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Usuario revisor:</span></big> '.$this->M_usuarios->dame_usuario($rowEncabezado['id_usuario_revisor']).'</strong>';
+            $datos_inicio = $datos_inicio.'</td>';
+            $datos_inicio = $datos_inicio.'<td width=25%>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Fecha &uacuteltima revici&oacuten:</span></big> '.$rowEncabezado['f_obs'].'</strong>';
+            $datos_inicio = $datos_inicio.'</td>';
+            $datos_inicio = $datos_inicio.'<td width=25%>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Reactivos:</span></big> '.$rowEncabezado['reactivos'].'</strong>';
+            $datos_inicio = $datos_inicio.'</td>';
+            $datos_inicio = $datos_inicio.'<td width=25%>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Reactivos aprovados:</span></big> '.$rowEncabezado['reactivos_aprovados'].'</strong>';
+            $datos_inicio = $datos_inicio.'</td>';
+            $datos_inicio = $datos_inicio.'</tr>';
+            
+            $datos_inicio = $datos_inicio.'</table>';
+            
+            $datos_inicio = $datos_inicio.'</td></tr>';
+            //Fin encabezado
+            //Area de datos
+            $datos_inicio = $datos_inicio.'<tr><td>';
+            
+            $datos_inicio = $datos_inicio.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
+            $datos_inicio = $datos_inicio.'<tr><td widht=40%>';
+            
+            $datos_inicio = $datos_inicio.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
+            $datos_inicio = $datos_inicio.'<tr>';
+            $datos_inicio = $datos_inicio.'<td width=50%><strong><big><span style="color: #517901">';
+            $datos_inicio = $datos_inicio.'Parcial:';
+            $datos_inicio = $datos_inicio.'</span></big></strong></td>';
+            $datos_inicio = $datos_inicio.'<td>'.$registro['parcial'].'</td>';
+            $datos_inicio = $datos_inicio.'</tr>';
+            $datos_inicio = $datos_inicio.'<tr>';
+            $datos_inicio = $datos_inicio.'<td width=50%><strong><big><span style="color: #517901">';
+            $datos_inicio = $datos_inicio.'Bloque:';
+            $datos_inicio = $datos_inicio.'</span></big></strong></td>';
+            $datos_inicio = $datos_inicio.'<td>'.$registro['bloque'].'</td>';
+            $datos_inicio = $datos_inicio.'</tr>';
+            $datos_inicio = $datos_inicio.'<tr>';
+            $datos_inicio = $datos_inicio.'<td width=50%><strong><big><span style="color: #517901">';
+            $datos_inicio = $datos_inicio.'Secuencia:';
+            $datos_inicio = $datos_inicio.'</span></big></strong></td>';
+            $datos_inicio = $datos_inicio.'<td>'.$registro['secuencia'].'</td>';
+            $datos_inicio = $datos_inicio.'</tr>';
+            $datos_inicio = $datos_inicio.'<tr>';
+            $datos_inicio = $datos_inicio.'<td width=50%><strong><big><span style="color: #517901">';
+            $datos_inicio = $datos_inicio.'Aprendizaje, Indicadores, Objetivos:';
+            $datos_inicio = $datos_inicio.'</span></big></strong></td>';
+            $datos_inicio = $datos_inicio.'<td>'.$registro['apr_indi_obj'].'</td>';
+            $datos_inicio = $datos_inicio.'</tr>';
+            $datos_inicio = $datos_inicio.'<tr>';
+            $datos_inicio = $datos_inicio.'<td width=50%><strong><big><span style="color: #517901">';
+            $datos_inicio = $datos_inicio.'Saberes:';
+            $datos_inicio = $datos_inicio.'</span></big></strong></td>';
+            $datos_inicio = $datos_inicio.'<td>'.$registro['saberes'].'</td>';
+            $datos_inicio = $datos_inicio.'</tr>';
+            $datos_inicio = $datos_inicio.'<tr>';
+            $datos_inicio = $datos_inicio.'<td width=50%><strong><big><span style="color: #517901">';
+            $datos_inicio = $datos_inicio.'Dificultad:';
+            $datos_inicio = $datos_inicio.'</span></big></strong></td>';
+            $datos_inicio = $datos_inicio.'<td>'.$registro['dificultad_docente'].'</td>';
+            $datos_inicio = $datos_inicio.'</tr>';
+            $datos_inicio = $datos_inicio.'</table>';
+            
+            $datos_inicio = $datos_inicio.'</td><td widht=60%>';
+            //Para observaciones
+            
+            $datos_inicio = $datos_inicio.'<h2>Observaciones:</h2>';
+            
+            $datos_inicio = $datos_inicio.'<textarea cols="100" name="observaciones" rows="10" style="height: 166px; width: 100%">'.$registro['observaciones_revisor'].'</textarea>';
             
             
+            
+            $datos_inicio = $datos_inicio.'</td></tr></table>';
+            $datos_inicio = $datos_inicio.'</td></tr>';
+            //Fin area de datos
+            
+            $datos_inicio = $datos_inicio.'</table>';
             
             //Cargar vista
             $datos_vista = array(

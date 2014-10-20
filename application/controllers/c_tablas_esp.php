@@ -1215,6 +1215,7 @@ class C_tablas_esp extends CI_Controller
             //Fin encabezado
 
             //Area de datos
+            $datos_inicio = $datos_inicio.'<form id="form" method="post">';//Se crea una forma post
             $datos_inicio = $datos_inicio.'<tr><td>';
             
             $datos_inicio = $datos_inicio.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
@@ -1259,13 +1260,19 @@ class C_tablas_esp extends CI_Controller
             $datos_inicio = $datos_inicio.'</tr>';
             $datos_inicio = $datos_inicio.'</table>';
             
+            $datos_inicio = $datos_inicio.'<input id="guardar" name="guardar" size="44" style="height: 33px; width: 179px" type="submit" value="Guardar" />    ';
+            $datos_inicio = $datos_inicio.'<input id="regresar" name="regresar" size="44" style="height: 33px; width: 179px" type="submit" value="Regresar" />';            
+            
             $datos_inicio = $datos_inicio.'</td><td widht=60%>';
             //Para observaciones
-            $datos_inicio = $datos_inicio.'<form id="form" method="post">';//Se crea una forma post
-            
-            
-            $datos_inicio = $datos_inicio.'<input id="guardar" name="guardar" size="44" style="height: 33px; width: 179px" type="submit" value="Guardar" />    ';
-            $datos_inicio = $datos_inicio.'<input id="regresar" name="regresar" size="44" style="height: 33px; width: 179px" type="submit" value="Regresar" />';
+                        
+            $datos_inicio = $datos_inicio.'<h2>Observaciones de revisor:</h2><br>'.str_replace("\n", "<br>", $registro['observaciones_revisor']).'<br><br>';
+            $datos_inicio = $datos_inicio.'<h2>Aprovado:</h2>';
+            if ($registro['aprovado'] == 1)
+            {$datos_inicio = $datos_inicio.'Si<br><br>';}
+            else
+            {$datos_inicio = $datos_inicio.'No<br><br>';}
+            $datos_inicio = $datos_inicio.'<h2>Fecha de observaci&oacuten: </h2>'.$registro['f_obs'].'<br><br>';
             
             if (isset($_POST['regresar']))
                 {header('Location: '.  site_url('c_tablas_esp/tabla_esp/elaborador/'.$rowEncabezado['id_asignatura'].'/'.$this->M_tablas_esp->dame_id_ciclo($rowEncabezado['ciclo']).'/'.$order.'/'.$pag));}

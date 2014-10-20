@@ -1284,6 +1284,7 @@ class C_tablas_esp extends CI_Controller
             $datos_inicio = $datos_inicio.'</td></tr></table>';
             $datos_inicio = $datos_inicio.'</td></tr>';
             //Fin area de datos
+             
             
             $datos_inicio = $datos_inicio.'</table>';
             //Cargar vista

@@ -906,7 +906,7 @@ class C_tablas_esp extends CI_Controller
                     {$datos_inicio = $datos_inicio.'<input type="button" value="Entrar como revisor" onClick="window.location =\''.  site_url('c_tablas_esp/revisor/'.$row->id_tablas_esp.'/'.$order.'/'.$pag).'\';"/>';}
                     //elaborador
                     if ($modo == 'elaborador')
-                    {$datos_inicio = $datos_inicio.'<input type="button" value="Entrar como elaborador" onClick="window.location =\''.  site_url('c_tablas_esp/elaborador/'.$row->id_tablas_esp).'\';"/>';}
+                    {$datos_inicio = $datos_inicio.'<input type="button" value="Entrar como elaborador" onClick="window.location =\''.  site_url('c_tablas_esp/elaborador/'.$row->id_tablas_esp.'/'.$order.'/'.$pag).'\';"/>';}
                     
                     $datos_inicio = $datos_inicio.'</td>';
                     
@@ -960,6 +960,7 @@ class C_tablas_esp extends CI_Controller
                 $SQL = $SQL."f_obs = '".date("Y-m-d H:i:s")."' ";
                 $SQL = $SQL."WHERE id_tablas_esp = ".$id_tablas_esp;
                 $query = $this->db->query($SQL);//Ejecuta el query
+                $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Observacion a T de E","id_tabla_esp: ".$id_tablas_esp); //Crea registro de visita                           
             }
             
             $registro = $this->M_tablas_esp->dame_registro_br_tablas_esp($id_tablas_esp);
@@ -1120,6 +1121,164 @@ class C_tablas_esp extends CI_Controller
             
             $datos_inicio = $datos_inicio.'</table>';
             
+            //Cargar vista
+            $datos_vista = array(
+            'datos_inicio'   =>  $datos_inicio,
+            'menu'           =>  $menu
+            );
+            $this->load->view('v_limpia',$datos_vista);
+        }
+        else{header('Location: '.site_url('c_main'));}
+    }
+    public function elaborador($id_tablas_esp = null, $order = null, $pag = null)
+    {
+        if (($this->session->userdata('nivel_acceso') == 'Administrador') OR ($this->session->userdata('nivel_acceso') == 'Elaborador'))//Validar nivel de acceso de session
+        {
+            $this->load->model('M_tablas_esp');
+            
+            if (isset($_POST['guardar']))
+            {
+                date_default_timezone_set('America/Los_Angeles'); //Establece Zona horaria
+                $SQL = "UPDATE br_tablas_esp SET ";
+                $SQL = $SQL."parcial = '".$_POST['parcial']."', ";
+                $SQL = $SQL."bloque = '".$_POST['bloque']."', ";
+                $SQL = $SQL."secuencia = '".$_POST['secuencia']."', ";
+                $SQL = $SQL."apr_indi_obj = '".$_POST['apr_indi_obj']."', ";
+                $SQL = $SQL."saberes = '".$_POST['saberes']."', ";
+                $SQL = $SQL."dificultad_docente = '".$_POST['dificultad_docente']."', ";
+                $SQL = $SQL."f_edicion = '".date("Y-m-d H:i:s")."' ";
+                $SQL = $SQL."WHERE id_tablas_esp = ".$id_tablas_esp;
+                $query = $this->db->query($SQL);//Ejecuta el query
+                $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Elaborador a T de E","id_tabla_esp: ".$id_tablas_esp); //Crea registro de visita                           
+            }
+            
+            $registro = $this->M_tablas_esp->dame_registro_br_tablas_esp($id_tablas_esp);
+            $menu = $this->M_creador->menu();//Creador de menu
+            $datos_inicio = '<h1>Editando como elavorador</h1>';
+            $datos_inicio = $datos_inicio.'<form id="form" method="post">';//Se crea una forma post
+            $datos_inicio = $datos_inicio.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
+            
+            $datos_inicio = $datos_inicio.'<tr><td>';
+            //Seccion de encabezados           
+            $SQL = "SELECT br_tablas_esp.id_asignatura, br_tablas_esp.ciclo, ";
+            $SQL = $SQL."br_tablas_esp.id_usuario_editor, Max(br_tablas_esp.f_edicion) AS f_edicion, ";
+            $SQL = $SQL."br_tablas_esp.id_usuario_revisor, Max(br_tablas_esp.f_obs) AS f_obs, ";
+            $SQL = $SQL."Count(br_tablas_esp.id_tablas_esp) AS reactivos, ";
+            $SQL = $SQL."Sum(br_tablas_esp.aprovado) AS reactivos_aprovados ";
+            $SQL = $SQL."FROM br_tablas_esp ";
+            $SQL = $SQL."GROUP BY br_tablas_esp.id_asignatura, br_tablas_esp.ciclo, ";
+            $SQL = $SQL."br_tablas_esp.id_usuario_editor, br_tablas_esp.id_usuario_revisor ";
+            $SQL = $SQL."HAVING (((br_tablas_esp.id_asignatura)=".$registro['id_asignatura'].") ";
+            $SQL = $SQL."AND ((br_tablas_esp.ciclo)='".$registro['ciclo']."'))";
+            
+            $query = $this->db->query($SQL);//Ejecuta el query
+            if ($query->num_rows() > 0)
+            {
+                $rowEncabezado = $query->row_array();//Carga el registro en un arreglo
+            }
+            
+            $datos_inicio = $datos_inicio.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
+            
+            $datos_inicio = $datos_inicio.'<tr>';
+            $datos_inicio = $datos_inicio.'<td width=25%>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Asignatura:</span></big> '.$this->M_tablas_esp->dame_asignatura($rowEncabezado['id_asignatura']).'</strong>';
+            $datos_inicio = $datos_inicio.'</td>';
+            $datos_inicio = $datos_inicio.'<td width=25%>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Ciclo:</span></big> '.$rowEncabezado['ciclo'].'</strong>';
+            $datos_inicio = $datos_inicio.'</td>';
+            $datos_inicio = $datos_inicio.'<td width=25%>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Usuario elaborador:</span></big> '.$this->M_usuarios->dame_usuario($rowEncabezado['id_usuario_editor']).'</strong>';
+            $datos_inicio = $datos_inicio.'</td>';
+            $datos_inicio = $datos_inicio.'<td width=25%>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Fecha &uacuteltima edici&oacuten:</span></big> '.$rowEncabezado['f_edicion'].'</strong>';
+            $datos_inicio = $datos_inicio.'</td>';
+            $datos_inicio = $datos_inicio.'</tr>';
+            
+            $datos_inicio = $datos_inicio.'<tr>';
+            $datos_inicio = $datos_inicio.'<td width=25%>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Usuario revisor:</span></big> '.$this->M_usuarios->dame_usuario($rowEncabezado['id_usuario_revisor']).'</strong>';
+            $datos_inicio = $datos_inicio.'</td>';
+            $datos_inicio = $datos_inicio.'<td width=25%>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Fecha &uacuteltima revici&oacuten:</span></big> '.$rowEncabezado['f_obs'].'</strong>';
+            $datos_inicio = $datos_inicio.'</td>';
+            $datos_inicio = $datos_inicio.'<td width=25%>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Reactivos:</span></big> '.$rowEncabezado['reactivos'].'</strong>';
+            $datos_inicio = $datos_inicio.'</td>';
+            $datos_inicio = $datos_inicio.'<td width=25%>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Reactivos aprovados:</span></big> '.$rowEncabezado['reactivos_aprovados'].'</strong>';
+            $datos_inicio = $datos_inicio.'</td>';
+            $datos_inicio = $datos_inicio.'</tr>';
+            
+            $datos_inicio = $datos_inicio.'</table>';
+            
+            $datos_inicio = $datos_inicio.'</td></tr>';
+            //Fin encabezado
+
+            //Area de datos
+            $datos_inicio = $datos_inicio.'<tr><td>';
+            
+            $datos_inicio = $datos_inicio.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
+            $datos_inicio = $datos_inicio.'<tr><td widht=40%>';
+            
+            $datos_inicio = $datos_inicio.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
+            $datos_inicio = $datos_inicio.'<tr>';
+            $datos_inicio = $datos_inicio.'<td width=50%><strong><big><span style="color: #517901">';
+            $datos_inicio = $datos_inicio.'Parcial:';
+            $datos_inicio = $datos_inicio.'</span></big></strong></td>';
+            $datos_inicio = $datos_inicio.'<td><input maxlength="2" name="parcial" id="parcial" size="2" type="text" value="'.$registro['parcial'].'" /></td>';
+            $datos_inicio = $datos_inicio.'</tr>';
+            $datos_inicio = $datos_inicio.'<tr>';
+            $datos_inicio = $datos_inicio.'<td width=50%><strong><big><span style="color: #517901">';
+            $datos_inicio = $datos_inicio.'Bloque:';
+            $datos_inicio = $datos_inicio.'</span></big></strong></td>';
+            $datos_inicio = $datos_inicio.'<td><input maxlength="2" name="bloque" id="bloque" size="2" type="text" value="'.$registro['bloque'].'" /></td>';
+            $datos_inicio = $datos_inicio.'</tr>';
+            $datos_inicio = $datos_inicio.'<tr>';
+            $datos_inicio = $datos_inicio.'<td width=50%><strong><big><span style="color: #517901">';
+            $datos_inicio = $datos_inicio.'Secuencia:';
+            $datos_inicio = $datos_inicio.'</span></big></strong></td>';
+            $datos_inicio = $datos_inicio.'<td><input maxlength="2" name="secuencia" id="secuencia" size="2" type="text" value="'.$registro['secuencia'].'" /></td>';
+            $datos_inicio = $datos_inicio.'</tr>';
+            $datos_inicio = $datos_inicio.'<tr>';
+            $datos_inicio = $datos_inicio.'<td width=50%><strong><big><span style="color: #517901">';
+            $datos_inicio = $datos_inicio.'Aprendizaje, Indicadores, Objetivos:';
+            $datos_inicio = $datos_inicio.'</span></big></strong></td>';
+            $datos_inicio = $datos_inicio.'<td><textarea cols="21" id="apr_indi_obj" name="apr_indi_obj" rows="3" style="height: 54px; width: 274px">'.$registro['apr_indi_obj'].'</textarea></td>';
+            $datos_inicio = $datos_inicio.'</tr>';
+            $datos_inicio = $datos_inicio.'<tr>';
+            $datos_inicio = $datos_inicio.'<td width=50%><strong><big><span style="color: #517901">';
+            $datos_inicio = $datos_inicio.'Saberes:';
+            $datos_inicio = $datos_inicio.'</span></big></strong></td>';
+            $datos_inicio = $datos_inicio.'<td><input maxlength="20" name="saberes" id="saberes" size="12" type="text" value="'.$registro['saberes'].'" /></td>';
+            $datos_inicio = $datos_inicio.'</tr>';
+            $datos_inicio = $datos_inicio.'<tr>';
+            $datos_inicio = $datos_inicio.'<td width=50%><strong><big><span style="color: #517901">';
+            $datos_inicio = $datos_inicio.'Dificultad:';
+            $datos_inicio = $datos_inicio.'</span></big></strong></td>';
+            $datos_inicio = $datos_inicio.'<td><input maxlength="10" name="dificultad_docente" id="dificultad_docente" size="4" type="text" value="'.$registro['dificultad_docente'].'" /></td>';
+            $datos_inicio = $datos_inicio.'</tr>';
+            $datos_inicio = $datos_inicio.'</table>';
+            
+            $datos_inicio = $datos_inicio.'</td><td widht=60%>';
+            //Para observaciones
+            $datos_inicio = $datos_inicio.'<form id="form" method="post">';//Se crea una forma post
+            
+            
+            $datos_inicio = $datos_inicio.'<input id="guardar" name="guardar" size="44" style="height: 33px; width: 179px" type="submit" value="Guardar" />    ';
+            $datos_inicio = $datos_inicio.'<input id="regresar" name="regresar" size="44" style="height: 33px; width: 179px" type="submit" value="Regresar" />';
+            
+            if (isset($_POST['regresar']))
+                {header('Location: '.  site_url('c_tablas_esp/tabla_esp/elaborador/'.$rowEncabezado['id_asignatura'].'/'.$this->M_tablas_esp->dame_id_ciclo($rowEncabezado['ciclo']).'/'.$order.'/'.$pag));}
+            if (isset($_POST['guardar']))
+                {$datos_inicio = $datos_inicio.'<br><strong><big><span style="color: #517901">Observaciones Guardadas correctamente</span></big></strong>';}
+            
+            $datos_inicio = $datos_inicio.'</form>';
+                   
+            $datos_inicio = $datos_inicio.'</td></tr></table>';
+            $datos_inicio = $datos_inicio.'</td></tr>';
+            //Fin area de datos
+            
+            $datos_inicio = $datos_inicio.'</table>';
             //Cargar vista
             $datos_vista = array(
             'datos_inicio'   =>  $datos_inicio,

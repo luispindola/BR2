@@ -903,10 +903,10 @@ class C_tablas_esp extends CI_Controller
                     $datos_inicio = $datos_inicio.'<td>'.$row->aprovado.'</td>';
                     $datos_inicio = $datos_inicio.'<td>';
                     if ($modo == 'revisor')
-                    {$datos_inicio = $datos_inicio.'<input type="button" value="Editar observaciones" onClick="window.location =\''.  site_url('c_tablas_esp/editar_observaciones/'.$row->id_tablas_esp).'\';"/>';}
+                    {$datos_inicio = $datos_inicio.'<input type="button" value="Entrar como revisor" onClick="window.location =\''.  site_url('c_tablas_esp/revisor/'.$row->id_tablas_esp).'\';"/>';}
                     //elaborador
                     if ($modo == 'elaborador')
-                    {$datos_inicio = $datos_inicio.'<input type="button" value="Editar propiedades" onClick="window.location =\''.  site_url('c_tablas_esp/editar_propiedades/'.$row->id_tablas_esp).'\';"/>';}
+                    {$datos_inicio = $datos_inicio.'<input type="button" value="Entrar como elaborador" onClick="window.location =\''.  site_url('c_tablas_esp/elaborador/'.$row->id_tablas_esp).'\';"/>';}
                     
                     $datos_inicio = $datos_inicio.'</td>';
                     
@@ -938,6 +938,23 @@ class C_tablas_esp extends CI_Controller
             $menu = $this->M_creador->menu();//Creador de menu
             $datos_inicio = '<p><strong><span style="color: #517901">Su nivel de usuario es: '.$this->session->userdata('nivel_acceso').' su acceso esta restringido.</span></strong></p>';
             //Cargar vista vlimpia
+            $datos_vista = array(
+            'datos_inicio'   =>  $datos_inicio,
+            'menu'           =>  $menu
+            );
+            $this->load->view('v_limpia',$datos_vista);
+        }
+    }
+    public function revisor($id_tablas_esp = null)
+    {
+        if (($this->session->userdata('nivel_acceso') == 'Administrador') OR ($this->session->userdata('nivel_acceso') == 'Revisor'))//Validar nivel de acceso de session
+        {
+            $menu = $this->M_creador->menu();//Creador de menu
+            $datos_inicio = '<h1>Editando como revisor</h1>';
+            
+            
+            
+            //Cargar vista
             $datos_vista = array(
             'datos_inicio'   =>  $datos_inicio,
             'menu'           =>  $menu

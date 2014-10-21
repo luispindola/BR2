@@ -12,13 +12,29 @@ class C_reactivos extends CI_Controller
         );
         $this->load->view('v_limpia',$datos_vista);
     }
+    public function listado($asignatura = null)
+    {
+        if ($this->session->userdata('id_usuario'))
+        {
+            //Si tiene sesion iniciada
+            $menu = $this->M_creador->menu();//Crear menu
+            $v = '<h1>Listados de tablas de reactivos</h1>';
+            
+            //Cargar vista
+            $datos_vista = array(
+            'datos_inicio'   =>  $v,
+            'menu'           =>  $menu
+            );
+            $this->load->view('v_limpia',$datos_vista);
+        }
+    }
     public function agregar($order = null, $pag = null)
     {
         if ($this->session->userdata('nivel_acceso') == 'Administrador')//Validar nivel de acceso de session
         {
             $this->load->model('M_tablas_esp');
             $menu = $this->M_creador->menu();//Creador de menu
-            $v = '<h1>Agregar reactivos</h1>';            
+            $v = '<h1>Agregar tablas de reactivos</h1>';            
             /*
             SELECT br_tablas_esp.id_asignatura, br_asignaturas.asignatura,
             br_tablas_esp.ciclo, Count(br_tablas_esp.id_tablas_esp) AS reactivos, 

@@ -57,7 +57,7 @@ class M_creador extends CI_Model
                 $menu = $menu.'<li><a href="'.site_url('c_reactivos/listado/asignatura').'">Listado</a></li>';                
                 
                 if ($this->session->userdata('nivel_acceso') == 'Administrador')
-                {$menu = $menu.'<li><a href="'.site_url('c_reactivos/agregar/asignatura').'">Agregar Reactivos de TdeE</a></li>';}
+                {$menu = $menu.'<li><a href="'.site_url('c_reactivos/agregar/asignatura').'">Agregar tabla de reactivos</a></li>';}
                 /*
                 if ($this->session->userdata('nivel_acceso') == 'Administrador')
                 {$menu = $menu.'<li><a href="'.site_url('c_tablas_esp/usuarios_elaboradores/id_usuario').'">Usuarios elaboradores</a></li>';}

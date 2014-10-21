@@ -136,6 +136,101 @@ class C_reactivos extends CI_Controller
             );
             $this->load->view('v_limpia',$datos_vista);
         }
-    }        
+        else{header('Location: '.site_url('c_main'));}
+    } 
+    public function agregar_reactivos($id_asignatura = null, $id_ciclo = null)
+    {
+        if ($this->session->userdata('nivel_acceso') == 'Administrador')//Validar nivel de acceso de session
+        {
+            $this->load->model('M_tablas_esp');
+            $menu = $this->M_creador->menu();//Creador de menu
+            $v = '<h1>Agregar reactivos</h1>';                      
+            /*
+            SELECT br_tablas_esp.id_asignatura, br_tablas_esp.ciclo, 
+            Max(br_tablas_esp.f_creacion) AS f_creacion, 
+            br_tablas_esp.id_usuario_editor, Max(br_tablas_esp.f_edicion) AS f_edicion, 
+            br_tablas_esp.id_usuario_revisor, Max(br_tablas_esp.f_obs) AS f_obs, 
+            Sum(br_tablas_esp.aprovado) AS aprovado
+            FROM br_tablas_esp 
+            GROUP BY br_tablas_esp.id_asignatura, br_tablas_esp.ciclo, 
+            br_tablas_esp.id_usuario_editor, br_tablas_esp.id_usuario_revisor
+            HAVING (((br_tablas_esp.id_asignatura)="1") AND ((br_tablas_esp.ciclo)="2012-2013 NON"));
+             */
+            $SQL = "SELECT br_tablas_esp.id_asignatura, br_tablas_esp.ciclo, ";
+            $SQL = $SQL."Max(br_tablas_esp.f_creacion) AS f_creacion, ";
+            $SQL = $SQL."br_tablas_esp.id_usuario_editor, Max(br_tablas_esp.f_edicion) AS f_edicion, ";
+            $SQL = $SQL."br_tablas_esp.id_usuario_revisor, Max(br_tablas_esp.f_obs) AS f_obs, ";
+            $SQL = $SQL."Count(br_tablas_esp.id_asignatura) as reactivos, ";
+            $SQL = $SQL."Sum(br_tablas_esp.aprovado) AS aprovado ";
+            $SQL = $SQL."FROM br_tablas_esp ";
+            $SQL = $SQL."GROUP BY br_tablas_esp.id_asignatura, br_tablas_esp.ciclo, ";
+            $SQL = $SQL."br_tablas_esp.id_usuario_editor, br_tablas_esp.id_usuario_revisor ";
+            $SQL = $SQL."HAVING (((br_tablas_esp.id_asignatura)='".$id_asignatura."') AND ((br_tablas_esp.ciclo)='".$this->M_tablas_esp->dame_ciclo($id_ciclo)."'));";                        
+            
+            $v=$v.'<form id="form" method="post">';//Se crea una forma post
+            $v=$v.'<table width=50% BORDER CELLPADDING=10 CELLSPACING=0>';
+            
+            $query = $this->db->query($SQL);//Ejecuta la consulta
+            if ($query->num_rows() > 0)
+            {
+                $rowEncabezado = $query->row_array();//Carga el registro en un arreglo
+            }
+            $v=$v.'<tr>';
+            $v=$v.'<td><strong><big><span style="color: #517901">Asignatura:</span></big></strong></td>';
+            $v=$v.'<td>'.$this->M_tablas_esp->dame_asignatura($rowEncabezado['id_asignatura']).'</td>';                    
+            $v=$v.'</tr>';
+            
+            $v=$v.'<tr>';
+            $v=$v.'<td><strong><big><span style="color: #517901">Ciclo:</span></big></strong></td>';
+            $v=$v.'<td>'.$rowEncabezado['ciclo'].'</td>';                    
+            $v=$v.'</tr>';
+            
+            $v=$v.'<tr>';
+            $v=$v.'<td><strong><big><span style="color: #517901">Fecha de creaci&oacuten:</span></big></strong></td>';
+            $v=$v.'<td>'.$rowEncabezado['f_creacion'].'</td>';                    
+            $v=$v.'</tr>';
+            
+            $v=$v.'<tr>';
+            $v=$v.'<td><strong><big><span style="color: #517901">Usuario elaborador de la Tabla de Especificaciones:</span></big></strong></td>';
+            $v=$v.'<td>'.$this->M_usuarios->dame_usuario($rowEncabezado['id_usuario_editor']).'</td>';                    
+            $v=$v.'</tr>';
+            
+            $v=$v.'<tr>';
+            $v=$v.'<td><strong><big><span style="color: #517901">Fecha de &uacuteltima edici&oacuten:</span></big></strong></td>';
+            $v=$v.'<td>'.$rowEncabezado['f_edicion'].'</td>';                    
+            $v=$v.'</tr>';
+            
+            $v=$v.'<tr>';
+            $v=$v.'<td><strong><big><span style="color: #517901">Usuario revisor de la Tabla de Especificaciones:</span></big></strong></td>';
+            $v=$v.'<td>'.$this->M_usuarios->dame_usuario($rowEncabezado['id_usuario_revisor']).'</td>';                    
+            $v=$v.'</tr>';
+            
+            $v=$v.'<tr>';
+            $v=$v.'<td><strong><big><span style="color: #517901">Fecha de &uacuteltima observaci&oacuten:</span></big></strong></td>';
+            $v=$v.'<td>'.$rowEncabezado['f_obs'].'</td>';                    
+            $v=$v.'</tr>';
+            
+            $v=$v.'<tr>';
+            $v=$v.'<td><strong><big><span style="color: #517901">Reactivos en Tabla de Especificaciones:</span></big></strong></td>';
+            $v=$v.'<td>'.$rowEncabezado['reactivos'].'</td>';                    
+            $v=$v.'</tr>';
+            
+            $v=$v.'<tr>';
+            $v=$v.'<td><strong><big><span style="color: #517901">Reactivos aprovados en Tabla de Especificaciones:</span></big></strong></td>';
+            $v=$v.'<td>'.$rowEncabezado['aprovado'].'</td>';                    
+            $v=$v.'</tr>';
+            
+            $v=$v.'</table>';
+            $v=$v.'</form>';
+            
+            //Cargar vista
+            $datos_vista = array(
+            'datos_inicio'   =>  $v,
+            'menu'           =>  $menu
+            );
+            $this->load->view('v_limpia',$datos_vista);
+        }
+        else{header('Location: '.site_url('c_main'));}
+    }
 }
 ?>

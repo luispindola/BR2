@@ -49,6 +49,27 @@ class M_creador extends CI_Model
             $menu = $menu.'</li>';
         }
         
+        if ($this->session->userdata('id_usuario')) //MENU Reactivos
+        {//Muestra el resto del menu si hay variables de session
+            $menu = $menu.'<li><a href="'.site_url('c_reactivos').'">Reactivos</a>';
+                $menu = $menu.'<ul>';
+                
+                $menu = $menu.'<li><a href="'.site_url('c_reactivos/listado/asignatura').'">Listado</a></li>';
+                
+                /*
+                if ($this->session->userdata('nivel_acceso') == 'Administrador')
+                {$menu = $menu.'<li><a href="'.site_url('c_tablas_esp/agregar').'">Agregar Tabla de Esp</a></li>';}
+                
+                if ($this->session->userdata('nivel_acceso') == 'Administrador')
+                {$menu = $menu.'<li><a href="'.site_url('c_tablas_esp/usuarios_elaboradores/id_usuario').'">Usuarios elaboradores</a></li>';}
+                
+                if ($this->session->userdata('nivel_acceso') == 'Administrador')
+                {$menu = $menu.'<li><a href="'.site_url('c_tablas_esp/usuarios_revisores/id_usuario').'">Usuarios revisores</a></li>';}
+                */
+                $menu = $menu.'</ul>';
+            $menu = $menu.'</li>';
+        }
+        
         $menu = $menu.'</ul>';
         return $menu;
     }

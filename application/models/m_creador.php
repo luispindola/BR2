@@ -54,12 +54,11 @@ class M_creador extends CI_Model
             $menu = $menu.'<li><a href="'.site_url('c_reactivos').'">Reactivos</a>';
                 $menu = $menu.'<ul>';
                 
-                $menu = $menu.'<li><a href="'.site_url('c_reactivos/listado/asignatura').'">Listado</a></li>';
+                $menu = $menu.'<li><a href="'.site_url('c_reactivos/listado/asignatura').'">Listado</a></li>';                
                 
-                /*
                 if ($this->session->userdata('nivel_acceso') == 'Administrador')
-                {$menu = $menu.'<li><a href="'.site_url('c_tablas_esp/agregar').'">Agregar Tabla de Esp</a></li>';}
-                
+                {$menu = $menu.'<li><a href="'.site_url('c_reactivos/agregar').'">Agregar Reactivos de TdeE</a></li>';}
+                /*
                 if ($this->session->userdata('nivel_acceso') == 'Administrador')
                 {$menu = $menu.'<li><a href="'.site_url('c_tablas_esp/usuarios_elaboradores/id_usuario').'">Usuarios elaboradores</a></li>';}
                 

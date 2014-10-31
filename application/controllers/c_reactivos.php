@@ -113,11 +113,11 @@ class C_reactivos extends CI_Controller
                     $v=$v.'<td>';
                     if ($row->reactivos_agregados > 0)
                     {//Tabla de esp ya fue agregada
-                        $v=$v.'<input type="button" value="Borrar reactivos" onClick="window.location =\''.  site_url('c_reactivos/borrar_reactivos/'.$row->id_asignatura.'/'.$this->M_tablas_esp->dame_id_ciclo($row->ciclo)).'\';"/>';
+                        $v=$v.'<input type="button" value="Borrar reactivos" onClick="window.location =\''.  site_url('c_reactivos/borrar_reactivos/'.$row->id_asignatura.'/'.$this->M_tablas_esp->dame_id_ciclo($row->ciclo)).'/'.$order.'/'.$pag.'\';"/>';
                     }
                     else
                     {//Tabla de esp no agregada
-                        $v=$v.'<input type="button" value="Agregar reactivos" onClick="window.location =\''.  site_url('c_reactivos/agregar_reactivos/'.$row->id_asignatura.'/'.$this->M_tablas_esp->dame_id_ciclo($row->ciclo)).'\';"/>';
+                        $v=$v.'<input type="button" value="Agregar reactivos" onClick="window.location =\''.  site_url('c_reactivos/agregar_reactivos/'.$row->id_asignatura.'/'.$this->M_tablas_esp->dame_id_ciclo($row->ciclo)).'/'.$order.'/'.$pag.'\';"/>';
                     }
                     $v=$v.'</td>';
                     $v=$v.'</tr>';
@@ -138,11 +138,30 @@ class C_reactivos extends CI_Controller
         }
         else{header('Location: '.site_url('c_main'));}
     } 
-    public function agregar_reactivos($id_asignatura = null, $id_ciclo = null)
+    public function agregar_reactivos($id_asignatura = null, $id_ciclo = null, $order = null, $pag = null)
     {
         if ($this->session->userdata('nivel_acceso') == 'Administrador')//Validar nivel de acceso de session
         {
             $this->load->model('M_tablas_esp');
+            $this->load->model('M_reactivos');
+            if (isset($_POST['regresar']))
+                {header('Location: '.site_url('c_reactivos/agregar/'.$order.'/'.$pag));}
+            if (isset($_POST['agregar']))
+            {
+                $SQL = "SELECT id_tablas_esp FROM br_tablas_esp WHERE ((id_asignatura = ".$id_asignatura.") AND (ciclo = '".$this->M_tablas_esp->dame_ciclo($id_ciclo)."'))";
+                $query1 = $this->db->query($SQL);//Ejecuta la consulta
+                if ($query1->num_rows() > 0)
+                {
+                    foreach ($query1->result() as $row)//Recorre la tabla
+                    { 
+                        $id_reactivo = $this->M_reactivos->obtener_ultimo_id_reactivos() + 1;
+                        $SQL = "INSERT INTO br_reactivos (id_reactivo, id_tablas_esp) VALUES ";
+                        $SQL = $SQL."(".$id_reactivo.",".$row->id_tablas_esp.")";
+                        $this->db->query($SQL);//Ejecuta la consulta
+                    }
+                }
+                header('Location: '.site_url('c_reactivos/agregar/'.$order.'/'.$pag));
+            }            
             $menu = $this->M_creador->menu();//Creador de menu
             $v = '<h1>Agregar reactivos</h1>';                      
             /*
@@ -218,6 +237,12 @@ class C_reactivos extends CI_Controller
             $v=$v.'<tr>';
             $v=$v.'<td><strong><big><span style="color: #517901">Reactivos aprovados en Tabla de Especificaciones:</span></big></strong></td>';
             $v=$v.'<td>'.$rowEncabezado['aprovado'].'</td>';                    
+            $v=$v.'</tr>';
+            
+            $v=$v.'<tr>';
+            $v=$v.'<td><input id="agregar" name="agregar" size="44" style="height: 33px; width: 179px" type="submit" value="Agregar Reactivos" />';
+            $v=$v.'<input id="regresar" name="regresar" size="44" style="height: 33px; width: 179px" type="submit" value="Regresar" /></td>';
+            $v=$v.'<td></td>';                    
             $v=$v.'</tr>';
             
             $v=$v.'</table>';

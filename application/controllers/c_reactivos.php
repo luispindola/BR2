@@ -380,24 +380,21 @@ class C_reactivos extends CI_Controller
             br_tablas_esp.ciclo, Count(br_tablas_esp.id_tablas_esp) AS reactivos
             FROM ((br_usuarios LEFT JOIN bancodereact_users ON br_usuarios.id_usuario = bancodereact_users.id) 
             RIGHT JOIN br_reactivos ON br_usuarios.id_usuario = br_reactivos.id_usuario_editor) 
-            INNER JOIN (br_tablas_esp LEFT JOIN br_asignaturas ON Br_tablas_esp.id_asignatura = Br_asignaturas.id_asignatura) 
-            ON Br_reactivos.id_tablas_esp = Br_tablas_esp.id_tablas_esp
-            GROUP BY Br_usuarios.id_usuario, Br_usuarios.nivel_acceso, Bancodereact_users.username, 
-            Bancodereact_users.email, Br_asignaturas.asignatura, Br_asignaturas.semestre, Br_tablas_esp.ciclo;
-
+            INNER JOIN (br_tablas_esp LEFT JOIN br_asignaturas ON br_tablas_esp.id_asignatura = br_asignaturas.id_asignatura) 
+            ON br_reactivos.id_tablas_esp = br_tablas_esp.id_tablas_esp
+            GROUP BY br_usuarios.id_usuario, br_usuarios.nivel_acceso, bancodereact_users.username, 
+            bancodereact_users.email, br_asignaturas.asignatura, br_asignaturas.semestre, br_tablas_esp.ciclo;
             **/
-            $SQL = "SELECT br_usuarios.id_usuario, br_usuarios.nivel_acceso, ";
-            $SQL = $SQL."bancodereact_users.username, bancodereact_users.email, ";
-            $SQL = $SQL."br_asignaturas.asignatura, br_asignaturas.semestre, br_asignaturas.id_asignatura, ";
-            $SQL = $SQL."br_tablas_esp.ciclo, Count(br_tablas_esp.id_tablas_esp) AS reactivos ";
-            $SQL = $SQL."FROM (br_usuarios LEFT JOIN bancodereact_users ";
-            $SQL = $SQL."ON br_usuarios.id_usuario = bancodereact_users.id) RIGHT JOIN ";
-            $SQL = $SQL."(br_tablas_esp LEFT JOIN br_asignaturas ";
-            $SQL = $SQL."ON br_tablas_esp.id_asignatura = br_asignaturas.id_asignatura) ";
-            $SQL = $SQL."ON br_usuarios.id_usuario = br_tablas_esp.id_usuario_editor ";
-            $SQL = $SQL."GROUP BY br_usuarios.id_usuario, br_usuarios.nivel_acceso, ";
-            $SQL = $SQL."bancodereact_users.username, bancodereact_users.email, ";
-            $SQL = $SQL."br_asignaturas.asignatura, br_asignaturas.semestre, br_tablas_esp.ciclo ";
+            
+            $SQL = "SELECT br_usuarios.id_usuario, br_usuarios.nivel_acceso, bancodereact_users.username, ";            
+            $SQL = $SQL."bancodereact_users.email, br_asignaturas.asignatura, br_asignaturas.id_asignatura, br_asignaturas.semestre, ";
+            $SQL = $SQL."br_tablas_esp.ciclo, Count(br_tablas_esp.id_tablas_esp) AS reactivos ";            
+            $SQL = $SQL."FROM ((br_usuarios LEFT JOIN bancodereact_users ON br_usuarios.id_usuario = bancodereact_users.id) ";            
+            $SQL = $SQL."RIGHT JOIN br_reactivos ON br_usuarios.id_usuario = br_reactivos.id_usuario_editor) ";            
+            $SQL = $SQL."INNER JOIN (br_tablas_esp LEFT JOIN br_asignaturas ON br_tablas_esp.id_asignatura = br_asignaturas.id_asignatura) ";            
+            $SQL = $SQL."ON br_reactivos.id_tablas_esp = br_tablas_esp.id_tablas_esp ";            
+            $SQL = $SQL."GROUP BY br_usuarios.id_usuario, br_usuarios.nivel_acceso, bancodereact_users.username, br_asignaturas.id_asignatura, ";            
+            $SQL = $SQL."bancodereact_users.email, br_asignaturas.asignatura, br_asignaturas.semestre, br_tablas_esp.ciclo ";
             $SQL = $SQL."ORDER BY ".$order;
             
             $query = $this->db->query($SQL);//Ejecuta la consulta
@@ -417,27 +414,27 @@ class C_reactivos extends CI_Controller
             $this->pagination->initialize($config); 
             //Termina Configuracion del paginador   
             
-            $datos_inicio = $datos_inicio.'<form id="form" method="post">';//Se crea una forma post
-            $datos_inicio = $datos_inicio.'<table width=70% BORDER CELLPADDING=10 CELLSPACING=0>';
+            $v = $v.'<form id="form" method="post">';//Se crea una forma post
+            $v = $v.'<table width=70% BORDER CELLPADDING=10 CELLSPACING=0>';
             
-            $datos_inicio = $datos_inicio.'<tr><td align="center">';            
-            $datos_inicio = $datos_inicio. $this->pagination->create_links();//Se crean los links del paginador
-            $datos_inicio = $datos_inicio.'</td></tr>';   
-            $datos_inicio = $datos_inicio.'<tr><td>';
+            $v = $v.'<tr><td align="center">';            
+            $v = $v. $this->pagination->create_links();//Se crean los links del paginador
+            $v = $v.'</td></tr>';   
+            $v = $v.'<tr><td>';
             
             //Inicia tabla de datos
-            $datos_inicio = $datos_inicio.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';  
+            $v = $v.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';  
             //Encabezados:
-            $datos_inicio = $datos_inicio.'<tr bgcolor="#517901", style="color: #FFFFFF">';//Define fondo y color de letra
-            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/usuarios_elaboradores/id_usuario/'.$pag).'"><font color="#FFFFFF">Id</font></a></th>';
-            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/usuarios_elaboradores/username/'.$pag).'"><font color="#FFFFFF">Nombre</font></a></th>';
-            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/usuarios_elaboradores/email/'.$pag).'"><font color="#FFFFFF">Correo electr&oacutenico</font></a></th>';
-            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/usuarios_elaboradores/asignatura/'.$pag).'"><font color="#FFFFFF">Asignatura</font></a></th>';
-            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/usuarios_elaboradores/semestre/'.$pag).'"><font color="#FFFFFF">Semestre</font></a></th>';
-            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/usuarios_elaboradores/ciclo/'.$pag).'"><font color="#FFFFFF">Ciclo</font></a></th>';
-            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/usuarios_elaboradores/reactivos/'.$pag).'"><font color="#FFFFFF">Reactivos</font></a></th>';
-            $datos_inicio = $datos_inicio.'<th width=10%>Acciones</th>';
-            $datos_inicio = $datos_inicio.'</tr>';
+            $v = $v.'<tr bgcolor="#517901", style="color: #FFFFFF">';//Define fondo y color de letra
+            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_elaboradores/id_usuario/'.$pag).'"><font color="#FFFFFF">Id</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_elaboradores/username/'.$pag).'"><font color="#FFFFFF">Nombre</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_elaboradores/email/'.$pag).'"><font color="#FFFFFF">Correo electr&oacutenico</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_elaboradores/asignatura/'.$pag).'"><font color="#FFFFFF">Asignatura</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_elaboradores/semestre/'.$pag).'"><font color="#FFFFFF">Semestre</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_elaboradores/ciclo/'.$pag).'"><font color="#FFFFFF">Ciclo</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_elaboradores/reactivos/'.$pag).'"><font color="#FFFFFF">Reactivos</font></a></th>';
+            $v = $v.'<th width=10%>Acciones</th>';
+            $v = $v.'</tr>';
             //Fin Encabezados
             
             if (isset($pag))//Se agrega LIMIT a la consulta para seleccionar la pagina
@@ -450,43 +447,43 @@ class C_reactivos extends CI_Controller
             {
                 foreach ($query->result() as $row)//Recorre la tabla
                 {  
-                    $datos_inicio = $datos_inicio.'<tr bgcolor="#FAFAFA",';//Color de fondo
-                    $datos_inicio = $datos_inicio.' onmouseover="this.style.backgroundColor=\'#F2F2F2\';"';//Color con mause sobre
-                    $datos_inicio = $datos_inicio.' onmouseout="this.style.backgroundColor=\'#FAFAFA\';">';//Regresar al mismo color
+                    $v = $v.'<tr bgcolor="#FAFAFA",';//Color de fondo
+                    $v = $v.' onmouseover="this.style.backgroundColor=\'#F2F2F2\';"';//Color con mause sobre
+                    $v = $v.' onmouseout="this.style.backgroundColor=\'#FAFAFA\';">';//Regresar al mismo color
                     
-                    $datos_inicio = $datos_inicio.'<td>'.$row->id_usuario.'</td>';
-                    $datos_inicio = $datos_inicio.'<td>'.$row->username.'</td>';
-                    $datos_inicio = $datos_inicio.'<td>'.$row->email.'</td>';
-                    $datos_inicio = $datos_inicio.'<td>'.$row->asignatura.'</td>';
-                    $datos_inicio = $datos_inicio.'<td>'.$row->semestre.'</td>';
-                    $datos_inicio = $datos_inicio.'<td>'.$row->ciclo.'</td>';
-                    $datos_inicio = $datos_inicio.'<td>'.$row->reactivos.'</td>';
-                    $datos_inicio = $datos_inicio.'<td>';
+                    $v = $v.'<td>'.$row->id_usuario.'</td>';
+                    $v = $v.'<td>'.$row->username.'</td>';
+                    $v = $v.'<td>'.$row->email.'</td>';
+                    $v = $v.'<td>'.$row->asignatura.'</td>';
+                    $v = $v.'<td>'.$row->semestre.'</td>';
+                    $v = $v.'<td>'.$row->ciclo.'</td>';
+                    $v = $v.'<td>'.$row->reactivos.'</td>';
+                    $v = $v.'<td>';
                     if (isset($row->id_usuario))
                     {
-                        $datos_inicio = $datos_inicio.'<input type="button" value="Desasignar elaborador" onClick="window.location =\''.  site_url('c_tablas_esp/desasignar_elaborador/'.$row->id_asignatura.'/'.$row->ciclo).'\';"/>';
+                        $v = $v.'<input type="button" value="Desasignar elaborador" onClick="window.location =\''.  site_url('c_reactivos/desasignar_elaborador/'.$row->id_asignatura.'/'.$row->ciclo).'\';"/>';
                     }
                     else
                     {
-                        $datos_inicio = $datos_inicio.'<input type="button" value="Asignar elaborador" onClick="window.location =\''.  site_url('c_tablas_esp/asignar_elaborador/'.$row->id_asignatura.'/'.$row->ciclo).'\';"/>';
+                        $v = $v.'<input type="button" value="Asignar elaborador" onClick="window.location =\''.  site_url('c_reactivos/asignar_elaborador/'.$row->id_asignatura.'/'.$row->ciclo).'\';"/>';
                     }
-                    $datos_inicio = $datos_inicio.'</td>';
+                    $v = $v.'</td>';
                     
-                    $datos_inicio = $datos_inicio.'</tr>';
+                    $v = $v.'</tr>';
                 }
             }
             
-            $datos_inicio = $datos_inicio.'</table>';
+            $v = $v.'</table>';
             //Fin tabla de datos
-            $datos_inicio = $datos_inicio.'</td></tr>';
+            $v = $v.'</td></tr>';
                         
-            $datos_inicio = $datos_inicio.'</table>';
-            $datos_inicio = $datos_inicio.'</form>';
-            $datos_inicio = $datos_inicio.'Se encontraron '.$total_rows.' registros';//comentario opcional
+            $v = $v.'</table>';
+            $v = $v.'</form>';
+            $v = $v.'Se encontraron '.$total_rows.' registros';//comentario opcional
             
             //Cargar vista vlimpia
             $datos_vista = array(
-            'datos_inicio'   =>  $datos_inicio,
+            'datos_inicio'   =>  $v,
             'menu'           =>  $menu
             );
             $this->load->view('v_limpia',$datos_vista);

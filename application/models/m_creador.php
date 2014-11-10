@@ -58,10 +58,10 @@ class M_creador extends CI_Model
                 
                 if ($this->session->userdata('nivel_acceso') == 'Administrador')
                 {$menu = $menu.'<li><a href="'.site_url('c_reactivos/agregar/asignatura').'">Agregar tabla de reactivos</a></li>';}
-                /*
-                if ($this->session->userdata('nivel_acceso') == 'Administrador')
-                {$menu = $menu.'<li><a href="'.site_url('c_tablas_esp/usuarios_elaboradores/id_usuario').'">Usuarios elaboradores</a></li>';}
                 
+                if ($this->session->userdata('nivel_acceso') == 'Administrador')
+                {$menu = $menu.'<li><a href="'.site_url('c_reactivos/usuarios_elaboradores/id_usuario').'">Usuarios elaboradores</a></li>';}
+                /*
                 if ($this->session->userdata('nivel_acceso') == 'Administrador')
                 {$menu = $menu.'<li><a href="'.site_url('c_tablas_esp/usuarios_revisores/id_usuario').'">Usuarios revisores</a></li>';}
                 */

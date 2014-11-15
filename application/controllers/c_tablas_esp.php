@@ -196,7 +196,7 @@ class C_tablas_esp extends CI_Controller
             $this->load->library('pagination');//Libreria de paginador
             $menu = $this->M_creador->menu();//Creador de menu
             
-            $datos_inicio = '<h1>Usuarios Elaboradores</h1>';
+            $datos_inicio = '<h1>Usuarios Elaboradores de Tablas de Especificaciones</h1>';
             
             //Inicia consulta
             /**
@@ -325,7 +325,7 @@ class C_tablas_esp extends CI_Controller
         {
             $menu = $this->M_creador->menu();//Creador de menu
             
-            $datos_inicio = '<h1>Asignar Elaborador</h1>';
+            $datos_inicio = '<h1>Asignar Elaborador de Tablas de Especificaciones</h1>';
             
             if (isset($_POST['guardar']))//Si se presionó el boton guardar
             {
@@ -397,7 +397,7 @@ class C_tablas_esp extends CI_Controller
         {
             $menu = $this->M_creador->menu();//Creador de menu
             
-            $datos_inicio = '<h1>Desasignar Elaborador</h1>';
+            $datos_inicio = '<h1>Desasignar Elaborador de Tablas de Especificaciones</h1>';
             
             if (isset($_POST['guardar']))//Si se presionó el boton guardar
             {
@@ -470,7 +470,7 @@ class C_tablas_esp extends CI_Controller
             $this->load->library('pagination');//Libreria de paginador
             $menu = $this->M_creador->menu();//Creador de menu
             
-            $datos_inicio = '<h1>Usuarios Revisores</h1>';
+            $datos_inicio = '<h1>Usuarios Revisores de Tablas de Especificaciones</h1>';
             
             //Inicia consulta
             /**
@@ -599,7 +599,7 @@ class C_tablas_esp extends CI_Controller
         {
             $menu = $this->M_creador->menu();//Creador de menu
             
-            $datos_inicio = '<h1>Asignar Revisor</h1>';
+            $datos_inicio = '<h1>Asignar Revisor de Tablas de Especificaciones</h1>';
             
             if (isset($_POST['guardar']))//Si se presionó el boton guardar
             {
@@ -671,7 +671,7 @@ class C_tablas_esp extends CI_Controller
         {
             $menu = $this->M_creador->menu();//Creador de menu
             
-            $datos_inicio = '<h1>Desasignar Revisor</h1>';
+            $datos_inicio = '<h1>Desasignar Revisor de Tablas de Especificaciones</h1>';
             
             if (isset($_POST['guardar']))//Si se presionó el boton guardar
             {
@@ -750,7 +750,7 @@ class C_tablas_esp extends CI_Controller
             $menu = $this->M_creador->menu();//Creador de menu
             $ciclo = $this->M_tablas_esp->dame_ciclo($id_ciclo);
             
-            $datos_inicio = '<h1>Revisor</h1>';
+            $datos_inicio = '<h1>Tabla de Especificaciones modo:'.$modo.'</h1>';
             
             $datos_inicio = $datos_inicio.'<form id="form" method="post">';//Se crea una forma post
             $datos_inicio = $datos_inicio.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
@@ -965,7 +965,7 @@ class C_tablas_esp extends CI_Controller
             
             $registro = $this->M_tablas_esp->dame_registro_br_tablas_esp($id_tablas_esp);
             $menu = $this->M_creador->menu();//Creador de menu
-            $datos_inicio = '<h1>Editando como revisor</h1>';
+            $datos_inicio = '<h1>Editando Tablas de Especificacionescomo revisor</h1>';
             $datos_inicio = $datos_inicio.'<form id="form" method="post">';//Se crea una forma post
             $datos_inicio = $datos_inicio.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
             
@@ -1154,7 +1154,7 @@ class C_tablas_esp extends CI_Controller
             
             $registro = $this->M_tablas_esp->dame_registro_br_tablas_esp($id_tablas_esp);
             $menu = $this->M_creador->menu();//Creador de menu
-            $datos_inicio = '<h1>Editando como elavorador</h1>';
+            $datos_inicio = '<h1>Editando Tablas de Especificaciones como elavorador</h1>';
             $datos_inicio = $datos_inicio.'<form id="form" method="post">';//Se crea una forma post
             $datos_inicio = $datos_inicio.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
             

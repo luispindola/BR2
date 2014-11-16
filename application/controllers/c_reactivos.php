@@ -656,5 +656,206 @@ class C_reactivos extends CI_Controller
         }
         else{header('Location: '.site_url('c_main'));}
     }
+    public function usuarios_revisores($order = null, $pag = null)
+    {
+        if ($this->session->userdata('nivel_acceso') == 'Administrador')//Validar nivel de acceso de session
+        {
+            $this->load->library('pagination');//Libreria de paginador
+            $menu = $this->M_creador->menu();//Creador de menu
+            
+            $v = '<h1>Usuarios Revisores de Reactivos</h1>';
+            
+            //Inicia consulta
+            /**
+            SELECT br_usuarios.id_usuario, br_usuarios.nivel_acceso, bancodereact_users.username, 
+            bancodereact_users.email, br_asignaturas.asignatura, br_asignaturas.semestre, 
+            br_tablas_esp.ciclo, Count(br_tablas_esp.id_tablas_esp) AS reactivos
+            FROM ((br_usuarios LEFT JOIN bancodereact_users ON br_usuarios.id_usuario = bancodereact_users.id) 
+            RIGHT JOIN br_reactivos ON br_usuarios.id_usuario = br_reactivos.id_usuario_editor) 
+            INNER JOIN (br_tablas_esp LEFT JOIN br_asignaturas ON br_tablas_esp.id_asignatura = br_asignaturas.id_asignatura) 
+            ON br_reactivos.id_tablas_esp = br_tablas_esp.id_tablas_esp
+            GROUP BY br_usuarios.id_usuario, br_usuarios.nivel_acceso, bancodereact_users.username, 
+            bancodereact_users.email, br_asignaturas.asignatura, br_asignaturas.semestre, br_tablas_esp.ciclo;
+            **/
+            
+            $SQL = "SELECT br_usuarios.id_usuario, br_usuarios.nivel_acceso, bancodereact_users.username, ";            
+            $SQL = $SQL."bancodereact_users.email, br_asignaturas.asignatura, br_asignaturas.id_asignatura, br_asignaturas.semestre, ";
+            $SQL = $SQL."br_tablas_esp.ciclo, Count(br_tablas_esp.id_tablas_esp) AS reactivos ";            
+            $SQL = $SQL."FROM ((br_usuarios LEFT JOIN bancodereact_users ON br_usuarios.id_usuario = bancodereact_users.id) ";            
+            $SQL = $SQL."RIGHT JOIN br_reactivos ON br_usuarios.id_usuario = br_reactivos.id_usuario_revisor) ";            
+            $SQL = $SQL."INNER JOIN (br_tablas_esp LEFT JOIN br_asignaturas ON br_tablas_esp.id_asignatura = br_asignaturas.id_asignatura) ";            
+            $SQL = $SQL."ON br_reactivos.id_tablas_esp = br_tablas_esp.id_tablas_esp ";            
+            $SQL = $SQL."GROUP BY br_usuarios.id_usuario, br_usuarios.nivel_acceso, bancodereact_users.username, br_asignaturas.id_asignatura, ";            
+            $SQL = $SQL."bancodereact_users.email, br_asignaturas.asignatura, br_asignaturas.semestre, br_tablas_esp.ciclo ";
+            $SQL = $SQL."ORDER BY ".$order;
+            
+            $query = $this->db->query($SQL);//Ejecuta la consulta
+            
+            $total_rows = $query->num_rows();//Calculado num de registros
+            $per_page = 10;//Registros por pagina
+            
+            //Configuracion del paginador
+            $config['base_url'] = site_url('c_tablas_esp/usuarios_elaboradores/'.$order.'/');
+            $config['uri_segment'] = 4; //Que segmento del URL tiene el num de pagina
+            $config['total_rows'] = $total_rows; //total de registros
+            $config['per_page'] = $per_page; //registros por pagina
+            $config['first_link'] = '1'; //Ir al inicio
+            $config['next_link'] = '>>'; //Siguiente pag
+            $config['prev_link'] = '<<'; //Pag Anterior
+            $config['last_link'] = ceil($total_rows/$per_page);//Ultima pagina (ceil: Redondea hacia arriba)
+            $this->pagination->initialize($config); 
+            //Termina Configuracion del paginador   
+            
+            $v = $v.'<form id="form" method="post">';//Se crea una forma post
+            $v = $v.'<table width=70% BORDER CELLPADDING=10 CELLSPACING=0>';
+            
+            $v = $v.'<tr><td align="center">';            
+            $v = $v. $this->pagination->create_links();//Se crean los links del paginador
+            $v = $v.'</td></tr>';   
+            $v = $v.'<tr><td>';
+            
+            //Inicia tabla de datos
+            $v = $v.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';  
+            //Encabezados:
+            $v = $v.'<tr bgcolor="#517901", style="color: #FFFFFF">';//Define fondo y color de letra
+            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_elaboradores/id_usuario/'.$pag).'"><font color="#FFFFFF">Id</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_elaboradores/username/'.$pag).'"><font color="#FFFFFF">Nombre</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_elaboradores/email/'.$pag).'"><font color="#FFFFFF">Correo electr&oacutenico</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_elaboradores/asignatura/'.$pag).'"><font color="#FFFFFF">Asignatura</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_elaboradores/semestre/'.$pag).'"><font color="#FFFFFF">Semestre</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_elaboradores/ciclo/'.$pag).'"><font color="#FFFFFF">Ciclo</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_elaboradores/reactivos/'.$pag).'"><font color="#FFFFFF">Reactivos</font></a></th>';
+            $v = $v.'<th width=10%>Acciones</th>';
+            $v = $v.'</tr>';
+            //Fin Encabezados
+            
+            if (isset($pag))//Se agrega LIMIT a la consulta para seleccionar la pagina
+            {$SQL = $SQL.' LIMIT '.$pag.', '.$per_page;}//Si se ha seleccionado una pagina
+            else
+            {$SQL = $SQL.' LIMIT 0, '.$per_page;}//Si es la primera pagina
+            
+            $query = $this->db->query($SQL);//Ejecuta la consulta
+            if ($query->num_rows() > 0)
+            {
+                foreach ($query->result() as $row)//Recorre la tabla
+                {  
+                    $v = $v.'<tr bgcolor="#FAFAFA",';//Color de fondo
+                    $v = $v.' onmouseover="this.style.backgroundColor=\'#F2F2F2\';"';//Color con mause sobre
+                    $v = $v.' onmouseout="this.style.backgroundColor=\'#FAFAFA\';">';//Regresar al mismo color
+                    
+                    $v = $v.'<td>'.$row->id_usuario.'</td>';
+                    $v = $v.'<td>'.$row->username.'</td>';
+                    $v = $v.'<td>'.$row->email.'</td>';
+                    $v = $v.'<td>'.$row->asignatura.'</td>';
+                    $v = $v.'<td>'.$row->semestre.'</td>';
+                    $v = $v.'<td>'.$row->ciclo.'</td>';
+                    $v = $v.'<td>'.$row->reactivos.'</td>';
+                    $v = $v.'<td>';
+                    if (isset($row->id_usuario))
+                    {
+                        $v = $v.'<input type="button" value="Desasignar revisor" onClick="window.location =\''.  site_url('c_reactivos/desasignar_revisor/'.$row->id_asignatura.'/'.$row->ciclo).'\';"/>';
+                    }
+                    else
+                    {
+                        $v = $v.'<input type="button" value="Asignar revisor" onClick="window.location =\''.  site_url('c_reactivos/asignar_revisor/'.$row->id_asignatura.'/'.$row->ciclo).'\';"/>';
+                    }
+                    $v = $v.'</td>';
+                    
+                    $v = $v.'</tr>';
+                }
+            }
+            
+            $v = $v.'</table>';
+            //Fin tabla de datos
+            $v = $v.'</td></tr>';
+                        
+            $v = $v.'</table>';
+            $v = $v.'</form>';
+            $v = $v.'Se encontraron '.$total_rows.' registros';//comentario opcional
+            
+            //Cargar vista vlimpia
+            $datos_vista = array(
+            'datos_inicio'   =>  $v,
+            'menu'           =>  $menu
+            );
+            $this->load->view('v_limpia',$datos_vista);
+        }
+        else{header('Location: '.site_url('c_main'));}//Si no es administrador manda al inicio
+    }
+    public function asignar_revisor($id_asignatura = null, $ciclo = null)
+    {
+        if ($this->session->userdata('nivel_acceso') == 'Administrador')//Validar nivel de acceso de session
+        {
+            $menu = $this->M_creador->menu();//Creador de menu
+            
+            $v = '<h1>Asignar Revisor de Reactivos</h1>';
+            
+            if (isset($_POST['guardar']))//Si se presionó el boton guardar
+            {
+                /*
+                UPDATE Br_tablas_esp SET Br_tablas_esp.id_usuario_editor = "892"
+                WHERE (((Br_tablas_esp.id_asignatura)="1") AND ((Br_tablas_esp.ciclo)="2012-2013 NON"));
+                */
+                $SQL = "UPDATE br_reactivos SET br_reactivos.id_usuario_revisor = '".$_POST['id_usuario']."' ";
+                $SQL = $SQL."WHERE br_reactivos.id_tablas_esp IN (";
+                $SQL = $SQL."SELECT id_tablas_esp FROM br_tablas_esp WHERE(";
+                $SQL = $SQL."(id_asignatura = ".$id_asignatura.") AND (ciclo = '".str_replace("%20"," ",$ciclo)."')";
+                $SQL = $SQL.")";
+                $SQL = $SQL.")";       
+                $query = $this->db->query($SQL);//Ejecuta la consulta
+                $this->load->model('M_tablas_esp');
+                $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Asignar revisor reactivos","Asignatura: ".$this->M_tablas_esp->dame_asignatura($id_asignatura)." Ciclo: ".str_replace("%20"," ",$ciclo)." Usuario Asignado: ".$_POST['id_usuario']); //Crea registro de visita                           
+                $v = $v.'<p><strong><span style="color: #517901">Revisor asignado correctamente.</span></strong></p>';
+            }
+            
+            $v = $v.'<form id="form" method="post">';//Se crea una forma post
+            $v = $v.'<table width=50% BORDER CELLPADDING=10 CELLSPACING=0>';
+            
+            /**
+            SELECT Br_tablas_esp.id_asignatura, Br_asignaturas.semestre, 
+            Br_tablas_esp.ciclo, Br_asignaturas.componente, Br_asignaturas.asignatura, 
+            Count(Br_tablas_esp.id_tablas_esp) AS CuentaDeid_tablas_esp
+            FROM Br_tablas_esp INNER JOIN Br_asignaturas 
+            ON Br_tablas_esp.id_asignatura = Br_asignaturas.id_asignatura
+            GROUP BY Br_tablas_esp.id_asignatura, Br_asignaturas.semestre, 
+            Br_tablas_esp.ciclo, Br_asignaturas.componente, Br_asignaturas.asignatura; 
+            **/
+            $SQL = "SELECT br_tablas_esp.id_asignatura, br_asignaturas.semestre, br_tablas_esp.id_usuario_revisor, ";
+            $SQL = $SQL."br_tablas_esp.ciclo, br_asignaturas.componente, br_asignaturas.asignatura, ";
+            $SQL = $SQL."Count(br_tablas_esp.id_tablas_esp) AS reactivos ";
+            $SQL = $SQL."FROM br_tablas_esp INNER JOIN br_asignaturas ";
+            $SQL = $SQL."ON br_tablas_esp.id_asignatura = br_asignaturas.id_asignatura ";
+            $SQL = $SQL."GROUP BY br_tablas_esp.id_asignatura, br_asignaturas.semestre, br_tablas_esp.id_usuario_revisor, ";
+            $SQL = $SQL."br_tablas_esp.ciclo, br_asignaturas.componente, br_asignaturas.asignatura ";
+            $SQL = $SQL."HAVING ((br_tablas_esp.id_asignatura = '".$id_asignatura."') ";
+            $SQL = $SQL."AND (br_tablas_esp.ciclo = '".str_replace("%20"," ",$ciclo)."'))";
+            //DEBUG $datos_inicio = $datos_inicio.$SQL;
+            $query = $this->db->query($SQL);//Ejecuta la consulta
+            if ($query->num_rows() > 0)
+            {
+                foreach ($query->result() as $row)
+                {   
+                    $v = $v.'<tr><td><h2>Asignatura: </h2></td><td>'.$row->asignatura.'</td></tr>'; 
+                    $v = $v.'<tr><td><h2>Ciclo: </h2></td><td>'.$row->ciclo.'</td></tr>';
+                    $v = $v.'<tr><td><h2>Semestre: </h2></td><td>'.$row->semestre.'</td></tr>';
+                    $v = $v.'<tr><td><h2>Componente: </h2></td><td>'.$row->componente.'</td></tr>';
+                    $v = $v.'<tr><td><h2>Reactivos: </h2></td><td>'.$row->reactivos.'</td></tr>';
+                    $v = $v.'<tr><td><h2>Asignar usuario: </h2></td><td>'.$this->M_creador->desplegable_usuarios($row->id_usuario_revisor).'</td></tr>';
+                    $v = $v.'<tr><td><h2> </h2></td><td><input id="guardar" name="guardar" size="44" style="height: 33px; width: 179px" type="submit" value="Guardar" /></td></tr>';
+                }
+            }
+            
+            $v = $v.'</table>';
+            $v = $v.'</form>';
+            
+            //Cargar vista vlimpia
+            $datos_vista = array(
+            'datos_inicio'   =>  $v,
+            'menu'           =>  $menu
+            );
+            $this->load->view('v_limpia',$datos_vista);
+        }
+        else{header('Location: '.site_url('c_main'));}
+    }
 }
 ?>

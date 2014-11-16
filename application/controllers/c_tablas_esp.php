@@ -338,7 +338,7 @@ class C_tablas_esp extends CI_Controller
                 $SQL = $SQL."AND (br_tablas_esp.ciclo = '".str_replace("%20"," ",$ciclo)."'))";        
                 $query = $this->db->query($SQL);//Ejecuta la consulta
                 $this->load->model('M_tablas_esp');
-                $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Asignar elaborador","Asignatura: ".$this->M_tablas_esp->dame_asignatura($id_asignatura)." Ciclo: ".str_replace("%20"," ",$ciclo)." Usuario Asignado: ".$_POST['id_usuario']); //Crea registro de visita                           
+                $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Asignar elaborador Tabla de especificaciones","Asignatura: ".$this->M_tablas_esp->dame_asignatura($id_asignatura)." Ciclo: ".str_replace("%20"," ",$ciclo)." Usuario Asignado: ".$_POST['id_usuario']); //Crea registro de visita                           
                 $datos_inicio = $datos_inicio.'<p><strong><span style="color: #517901">Elaborador asignado correctamente.</span></strong></p>';
             }
             
@@ -410,7 +410,7 @@ class C_tablas_esp extends CI_Controller
                 $SQL = $SQL."AND (br_tablas_esp.ciclo = '".str_replace("%20"," ",$ciclo)."'))";        
                 $query = $this->db->query($SQL);//Ejecuta la consulta
                 $this->load->model('M_tablas_esp');
-                $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Desasignar elaborador","Asignatura: ".$this->M_tablas_esp->dame_asignatura($id_asignatura)." Ciclo: ".str_replace("%20"," ",$ciclo)." Usuario DesAsignado"); //Crea registro de visita                           
+                $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Desasignar elaborador Tabla de especificaciones","Asignatura: ".$this->M_tablas_esp->dame_asignatura($id_asignatura)." Ciclo: ".str_replace("%20"," ",$ciclo)." Usuario DesAsignado"); //Crea registro de visita                           
                 $datos_inicio = $datos_inicio.'<p><strong><span style="color: #517901">Elaborador Desasignado correctamente.</span></strong></p>';
             }
             
@@ -612,7 +612,7 @@ class C_tablas_esp extends CI_Controller
                 $SQL = $SQL."AND (br_tablas_esp.ciclo = '".str_replace("%20"," ",$ciclo)."'))";        
                 $query = $this->db->query($SQL);//Ejecuta la consulta
                 $this->load->model('M_tablas_esp');
-                $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Asignar revisor","Asignatura: ".$this->M_tablas_esp->dame_asignatura($id_asignatura)." Ciclo: ".str_replace("%20"," ",$ciclo)." Usuario Asignado: ".$_POST['id_usuario']); //Crea registro de visita                           
+                $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Asignar revisor Tabla de especificaciones","Asignatura: ".$this->M_tablas_esp->dame_asignatura($id_asignatura)." Ciclo: ".str_replace("%20"," ",$ciclo)." Usuario Asignado: ".$_POST['id_usuario']); //Crea registro de visita                           
                 $datos_inicio = $datos_inicio.'<p><strong><span style="color: #517901">Revisor asignado correctamente.</span></strong></p>';
             }
             
@@ -684,7 +684,7 @@ class C_tablas_esp extends CI_Controller
                 $SQL = $SQL."AND (br_tablas_esp.ciclo = '".str_replace("%20"," ",$ciclo)."'))";        
                 $query = $this->db->query($SQL);//Ejecuta la consulta
                 $this->load->model('M_tablas_esp');
-                $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Desasignar revisor","Asignatura: ".$this->M_tablas_esp->dame_asignatura($id_asignatura)." Ciclo: ".str_replace("%20"," ",$ciclo)." Usuario DesAsignado"); //Crea registro de visita                           
+                $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Desasignar revisor Tabla de Especificaciones","Asignatura: ".$this->M_tablas_esp->dame_asignatura($id_asignatura)." Ciclo: ".str_replace("%20"," ",$ciclo)." Usuario DesAsignado"); //Crea registro de visita                           
                 $datos_inicio = $datos_inicio.'<p><strong><span style="color: #517901">Revisor Desasignado correctamente.</span></strong></p>';
             }
             

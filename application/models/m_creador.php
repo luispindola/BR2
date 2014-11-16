@@ -61,10 +61,10 @@ class M_creador extends CI_Model
                 
                 if ($this->session->userdata('nivel_acceso') == 'Administrador')
                 {$menu = $menu.'<li><a href="'.site_url('c_reactivos/usuarios_elaboradores/id_usuario').'">Usuarios elaboradores</a></li>';}
-                /*
+                
                 if ($this->session->userdata('nivel_acceso') == 'Administrador')
-                {$menu = $menu.'<li><a href="'.site_url('c_tablas_esp/usuarios_revisores/id_usuario').'">Usuarios revisores</a></li>';}
-                */
+                {$menu = $menu.'<li><a href="'.site_url('c_reactivos/usuarios_revisores/id_usuario').'">Usuarios revisores</a></li>';}
+                
                 $menu = $menu.'</ul>';
             $menu = $menu.'</li>';
         }
@@ -78,6 +78,7 @@ class M_creador extends CI_Model
         $SQL = 'SELECT br_usuarios.id_usuario, bancodereact_users.name ';
         $SQL = $SQL.'FROM br_usuarios LEFT JOIN bancodereact_users ';
         $SQL = $SQL.'ON br_usuarios.id_usuario = bancodereact_users.id';
+        //$SQL = $SQL.'WHERE id_usuario = '.$id_usuario;
         $query = $this->db->query($SQL);//Ejecuta la consulta
         if ($query->num_rows() > 0)
         {

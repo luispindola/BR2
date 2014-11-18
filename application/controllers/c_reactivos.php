@@ -524,7 +524,7 @@ class C_reactivos extends CI_Controller
             $per_page = 10;//Registros por pagina
             
             //Configuracion del paginador
-            $config['base_url'] = site_url('c_tablas_esp/usuarios_elaboradores/'.$order.'/');
+            $config['base_url'] = site_url('c_reactivos/usuarios_elaboradores/'.$order.'/');
             $config['uri_segment'] = 4; //Que segmento del URL tiene el num de pagina
             $config['total_rows'] = $total_rows; //total de registros
             $config['per_page'] = $per_page; //registros por pagina
@@ -826,7 +826,7 @@ class C_reactivos extends CI_Controller
             $per_page = 10;//Registros por pagina
             
             //Configuracion del paginador
-            $config['base_url'] = site_url('c_tablas_esp/usuarios_elaboradores/'.$order.'/');
+            $config['base_url'] = site_url('c_reactivos/usuarios_elaboradores/'.$order.'/');
             $config['uri_segment'] = 4; //Que segmento del URL tiene el num de pagina
             $config['total_rows'] = $total_rows; //total de registros
             $config['per_page'] = $per_page; //registros por pagina
@@ -1201,7 +1201,7 @@ class C_reactivos extends CI_Controller
             
             //Configuracion del paginador
             $this->load->library('pagination');//Libreria de paginador
-            $config['base_url'] = site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/'.$order.'/');
+            $config['base_url'] = site_url('c_reactivos/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/'.$order.'/');
             $config['uri_segment'] = 7; //Que segmento del URL tiene el num de pagina
             $config['total_rows'] = $total_rows; //total de registros
             $config['per_page'] = $per_page; //registros por pagina
@@ -1299,6 +1299,176 @@ class C_reactivos extends CI_Controller
             );
             $this->load->view('v_limpia',$datos_vista);
         }
+    }
+    public function elaborador($id_tablas_esp = null, $order = null, $pag = null)
+    {
+        if (($this->session->userdata('nivel_acceso') == 'Administrador') OR ($this->session->userdata('nivel_acceso') == 'Elaborador'))//Validar nivel de acceso de session
+        {
+            $this->load->model('M_tablas_esp');
+            
+            if (isset($_POST['guardar']))
+            {
+                date_default_timezone_set('America/Los_Angeles'); //Establece Zona horaria
+                $SQL = "UPDATE br_tablas_esp SET ";
+                $SQL = $SQL."parcial = '".$_POST['parcial']."', ";
+                $SQL = $SQL."bloque = '".$_POST['bloque']."', ";
+                $SQL = $SQL."secuencia = '".$_POST['secuencia']."', ";
+                $SQL = $SQL."apr_indi_obj = '".$_POST['apr_indi_obj']."', ";
+                $SQL = $SQL."saberes = '".$_POST['saberes']."', ";
+                $SQL = $SQL."dificultad_docente = '".$_POST['dificultad_docente']."', ";
+                $SQL = $SQL."f_edicion = '".date("Y-m-d H:i:s")."' ";
+                $SQL = $SQL."WHERE id_tablas_esp = ".$id_tablas_esp;
+                $query = $this->db->query($SQL);//Ejecuta el query
+                $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Elaborador a T de E","id_tabla_esp: ".$id_tablas_esp); //Crea registro de visita                           
+            }
+            
+            $registro = $this->M_tablas_esp->dame_registro_br_tablas_esp($id_tablas_esp);
+            $menu = $this->M_creador->menu();//Creador de menu
+            $v = '<h1>Editando Reactivo como elavorador</h1>';
+            $v = $v.'<form id="form" method="post">';//Se crea una forma post
+            $v = $v.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
+            
+            $v = $v.'<tr><td>';
+            //Seccion de encabezados           
+            $SQL = "SELECT br_tablas_esp.id_asignatura, br_tablas_esp.ciclo, br_reactivos.id_usuario_editor, ";
+            $SQL = $SQL."Max(br_reactivos.f_edicion) AS f_edicion, br_reactivos.id_usuario_revisor, ";
+            $SQL = $SQL."Max(br_reactivos.f_obs) AS f_obs, Count(br_reactivos.id_tablas_esp) AS reactivos, ";
+            $SQL = $SQL."Sum(br_reactivos.aprovado) AS reactivos_aprovados ";
+            $SQL = $SQL."FROM br_tablas_esp INNER JOIN br_reactivos ON br_tablas_esp.id_tablas_esp = br_reactivos.id_tablas_esp ";
+            $SQL = $SQL."GROUP BY br_tablas_esp.id_asignatura, br_tablas_esp.ciclo, br_reactivos.id_usuario_editor, ";
+            $SQL = $SQL."br_reactivos.id_usuario_revisor ";         
+            $SQL = $SQL."HAVING (((br_tablas_esp.id_asignatura)=".$registro['id_asignatura'].") ";
+            $SQL = $SQL."AND ((br_tablas_esp.ciclo)='".$registro['ciclo']."'))";
+            
+            $query = $this->db->query($SQL);//Ejecuta el query
+            if ($query->num_rows() > 0)
+            {
+                $rowEncabezado = $query->row_array();//Carga el registro en un arreglo
+            }
+            
+            $v = $v.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
+            
+            $v = $v.'<tr>';
+            $v = $v.'<td width=25%>';
+            $v = $v.'<strong><big><span style="color: #517901">Asignatura:</span></big> '.$this->M_tablas_esp->dame_asignatura($rowEncabezado['id_asignatura']).'</strong>';
+            $v = $v.'</td>';
+            $v = $v.'<td width=25%>';
+            $v = $v.'<strong><big><span style="color: #517901">Ciclo:</span></big> '.$rowEncabezado['ciclo'].'</strong>';
+            $v = $v.'</td>';
+            $v = $v.'<td width=25%>';
+            $v = $v.'<strong><big><span style="color: #517901">Usuario elaborador:</span></big> '.$this->M_usuarios->dame_usuario($rowEncabezado['id_usuario_editor']).'</strong>';
+            $v = $v.'</td>';
+            $v = $v.'<td width=25%>';
+            $v = $v.'<strong><big><span style="color: #517901">Fecha &uacuteltima edici&oacuten:</span></big> '.$rowEncabezado['f_edicion'].'</strong>';
+            $v = $v.'</td>';
+            $v = $v.'</tr>';
+            
+            $v = $v.'<tr>';
+            $v = $v.'<td width=25%>';
+            $v = $v.'<strong><big><span style="color: #517901">Usuario revisor:</span></big> '.$this->M_usuarios->dame_usuario($rowEncabezado['id_usuario_revisor']).'</strong>';
+            $v = $v.'</td>';
+            $v = $v.'<td width=25%>';
+            $v = $v.'<strong><big><span style="color: #517901">Fecha &uacuteltima revici&oacuten:</span></big> '.$rowEncabezado['f_obs'].'</strong>';
+            $v = $v.'</td>';
+            $v = $v.'<td width=25%>';
+            $v = $v.'<strong><big><span style="color: #517901">Reactivos:</span></big> '.$rowEncabezado['reactivos'].'</strong>';
+            $v = $v.'</td>';
+            $v = $v.'<td width=25%>';
+            $v = $v.'<strong><big><span style="color: #517901">Reactivos aprovados:</span></big> '.$rowEncabezado['reactivos_aprovados'].'</strong>';
+            $v = $v.'</td>';
+            $v = $v.'</tr>';
+            
+            $v = $v.'</table>';
+            
+            $v = $v.'</td></tr>';
+            //Fin encabezado
+
+            //Area de datos
+            $v = $v.'<form id="form" method="post">';//Se crea una forma post
+            $v = $v.'<tr><td>';
+            
+            $v = $v.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
+            $v = $v.'<tr><td widht=40%>';
+            
+            $v = $v.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
+            $v = $v.'<tr>';
+            $v = $v.'<td width=50%><strong><big><span style="color: #517901">';
+            $v = $v.'Pregunta:';
+            $v = $v.'</span></big></strong></td>';
+            $v = $v.'<td><input maxlength="2" name="parcial" id="parcial" size="2" type="text" value="ggggg" /></td>';
+            $v = $v.'</tr>';
+            
+            $v = $v.'<tr>';
+            $v = $v.'<td width=50%><strong><big><span style="color: #517901">';
+            $v = $v.'Opcion A:';
+            $v = $v.'</span></big></strong></td>';
+            $v = $v.'<td><input maxlength="2" name="bloque" id="bloque" size="2" type="text" value="dfdf" /></td>';
+            $v = $v.'</tr>';
+            
+            $v = $v.'<tr>';
+            $v = $v.'<td width=50%><strong><big><span style="color: #517901">';
+            $v = $v.'Opción B:';
+            $v = $v.'</span></big></strong></td>';
+            $v = $v.'<td><input maxlength="2" name="secuencia" id="secuencia" size="2" type="text" value="dfgdf" /></td>';
+            $v = $v.'</tr>';
+            
+            $v = $v.'<tr>';
+            $v = $v.'<td width=50%><strong><big><span style="color: #517901">';
+            $v = $v.'Opción C:';
+            $v = $v.'</span></big></strong></td>';
+            $v = $v.'<td>kuyi</td>';
+            $v = $v.'</tr>';
+            
+            $v = $v.'<tr>';
+            $v = $v.'<td width=50%><strong><big><span style="color: #517901">';
+            $v = $v.'Opción D:';
+            $v = $v.'</span></big></strong></td>';
+            $v = $v.'<td>dfgdf</td>';
+            $v = $v.'</tr>';
+            
+            $v = $v.'<tr>';
+            $v = $v.'<td width=50%><strong><big><span style="color: #517901">';
+            $v = $v.'Opción Correcta:';
+            $v = $v.'</span></big></strong></td>';
+            $v = $v.'<td></td>';
+            $v = $v.'</tr>';
+            $v = $v.'</table>';
+            
+            $v = $v.'<input id="guardar" name="guardar" size="44" style="height: 33px; width: 179px" type="submit" value="Guardar" />    ';
+            $v = $v.'<input id="regresar" name="regresar" size="44" style="height: 33px; width: 179px" type="submit" value="Regresar" />';            
+            
+            if (isset($_POST['regresar']))
+                {header('Location: '.  site_url('c_reactivos/tabla_esp/elaborador/'.$rowEncabezado['id_asignatura'].'/'.$this->M_tablas_esp->dame_id_ciclo($rowEncabezado['ciclo']).'/'.$order.'/'.$pag));}
+            if (isset($_POST['guardar']))
+                {$v = $v.'<br><strong><big><span style="color: #517901">Observaciones Guardadas correctamente</span></big></strong>';}
+            
+            $v = $v.'</td><td widht=60%>';
+            //Para observaciones
+                        
+            $v = $v.'<h2>Observaciones de revisor:</h2><br>'.str_replace("\n", "<br>", $registro['observaciones_revisor']).'<br><br>';
+            $v = $v.'<h2>Aprovado:</h2>';
+            if ($registro['aprovado'] == 1)
+            {$v = $v.'Si<br><br>';}
+            else
+            {$v = $v.'No<br><br>';}
+            $v = $v.'<h2>Fecha de observaci&oacuten: </h2>'.$registro['f_obs'].'<br><br>';
+            
+            $v = $v.'</form>';
+                   
+            $v = $v.'</td></tr></table>';
+            $v = $v.'</td></tr>';
+            //Fin area de datos
+             
+            
+            $v = $v.'</table>';
+            //Cargar vista
+            $datos_vista = array(
+            'datos_inicio'   =>  $v,
+            'menu'           =>  $menu
+            );
+            $this->load->view('v_limpia',$datos_vista);
+        }
+        else{header('Location: '.site_url('c_main'));}
     }
 }
 ?>

@@ -1395,7 +1395,7 @@ class C_reactivos extends CI_Controller
             $v = $v.'<td width=50%><strong><big><span style="color: #517901">';
             $v = $v.'Pregunta:';
             $v = $v.'</span></big></strong></td>';
-            $v = $v.'<td><input maxlength="2" name="parcial" id="parcial" size="2" type="text" value="ggggg" /></td>';
+            $v = $v.'<td><textarea id="reactivo" name="reactivo" rows="12">lj</textarea></td>';
             $v = $v.'</tr>';
             
             $v = $v.'<tr>';
@@ -1466,7 +1466,7 @@ class C_reactivos extends CI_Controller
             'datos_inicio'   =>  $v,
             'menu'           =>  $menu
             );
-            $this->load->view('v_limpia',$datos_vista);
+            $this->load->view('v_limpia_editor',$datos_vista);
         }
         else{header('Location: '.site_url('c_main'));}
     }

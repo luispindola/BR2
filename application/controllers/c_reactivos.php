@@ -1305,6 +1305,7 @@ class C_reactivos extends CI_Controller
         if (($this->session->userdata('nivel_acceso') == 'Administrador') OR ($this->session->userdata('nivel_acceso') == 'Elaborador'))//Validar nivel de acceso de session
         {
             $this->load->model('M_tablas_esp');
+            $this->load->model('M_reactivos');
             
             if (isset($_POST['guardar']))
             {
@@ -1323,6 +1324,8 @@ class C_reactivos extends CI_Controller
             }
             
             $registro = $this->M_tablas_esp->dame_registro_br_tablas_esp($id_tablas_esp);
+            $reactivo = $this->M_reactivos->dame_registro_br_reactivos($id_tablas_esp);
+            
             $menu = $this->M_creador->menu();//Creador de menu
             $v = '<h1>Editando Reactivo como elavorador</h1>';
             $v = $v.'<form id="form" method="post">';//Se crea una forma post
@@ -1388,49 +1391,50 @@ class C_reactivos extends CI_Controller
             $v = $v.'<tr><td>';
             
             $v = $v.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
-            $v = $v.'<tr><td widht=40%>';
+            $v = $v.'<tr><td widht=50%>';
             
             $v = $v.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
             $v = $v.'<tr>';
-            $v = $v.'<td width=50%><strong><big><span style="color: #517901">';
+            $v = $v.'<td><strong><big><span style="color: #517901">';
             $v = $v.'Pregunta:';
-            $v = $v.'</span></big></strong></td>';
-            $v = $v.'<td><textarea id="reactivo" name="reactivo" rows="12">lj</textarea></td>';
+            $v = $v.'</span></big></strong><br>';
+            $v = $v.'<textarea id="reactivo" name="reactivo" rows="12">'.$reactivo['pregunta'].'</textarea></td>';
             $v = $v.'</tr>';
             
             $v = $v.'<tr>';
-            $v = $v.'<td width=50%><strong><big><span style="color: #517901">';
-            $v = $v.'Opcion A:';
-            $v = $v.'</span></big></strong></td>';
-            $v = $v.'<td><input maxlength="2" name="bloque" id="bloque" size="2" type="text" value="dfdf" /></td>';
+            $v = $v.'<td><strong><big><span style="color: #517901">';
+            $v = $v.'Opci&oacuten A:';
+            $v = $v.'</span></big></strong><br>';
+            $v = $v.'<textarea id="opcion_a" name="opcion_a" rows="12">'.$reactivo['opcion_a'].'</textarea></td>';
             $v = $v.'</tr>';
             
             $v = $v.'<tr>';
-            $v = $v.'<td width=50%><strong><big><span style="color: #517901">';
+            $v = $v.'<td><strong><big><span style="color: #517901">';
             $v = $v.'Opción B:';
-            $v = $v.'</span></big></strong></td>';
-            $v = $v.'<td><input maxlength="2" name="secuencia" id="secuencia" size="2" type="text" value="dfgdf" /></td>';
+            $v = $v.'</span></big></strong><br>';
+            $v = $v.'<textarea id="opcion_b" name="opcion_b" rows="7">'.$reactivo['opcion_b'].'</textarea></td>';
             $v = $v.'</tr>';
             
             $v = $v.'<tr>';
-            $v = $v.'<td width=50%><strong><big><span style="color: #517901">';
-            $v = $v.'Opción C:';
-            $v = $v.'</span></big></strong></td>';
-            $v = $v.'<td>kuyi</td>';
+            $v = $v.'<td><strong><big><span style="color: #517901">';
+            $v = $v.'Opci&oacuten C:';
+            $v = $v.'</span></big></strong><br>';
+            $v = $v.'<textarea id="opcion_c" name="opcion_c" rows="7">'.$reactivo['opcion_c'].'</textarea></td>';
             $v = $v.'</tr>';
             
             $v = $v.'<tr>';
-            $v = $v.'<td width=50%><strong><big><span style="color: #517901">';
-            $v = $v.'Opción D:';
-            $v = $v.'</span></big></strong></td>';
-            $v = $v.'<td>dfgdf</td>';
+            $v = $v.'<td><strong><big><span style="color: #517901">';
+            $v = $v.'Opci&oacuten D:';
+            $v = $v.'</span></big></strong><br>';
+            $v = $v.'<textarea id="opcion_d" name="opcion_d" rows="7">'.$reactivo['opcion_d'].'</textarea></td>';
             $v = $v.'</tr>';
             
             $v = $v.'<tr>';
-            $v = $v.'<td width=50%><strong><big><span style="color: #517901">';
+            $v = $v.'<td><strong><big><span style="color: #517901">';
             $v = $v.'Opción Correcta:';
-            $v = $v.'</span></big></strong></td>';
-            $v = $v.'<td></td>';
+            $v = $v.'</span></big></strong><br>';
+            $v = $v.$this->M_reactivos->desplegable_opcion_correcta($reactivo['opcion_correcta']);
+            $v = $v.'</td>';
             $v = $v.'</tr>';
             $v = $v.'</table>';
             
@@ -1442,9 +1446,9 @@ class C_reactivos extends CI_Controller
             if (isset($_POST['guardar']))
                 {$v = $v.'<br><strong><big><span style="color: #517901">Observaciones Guardadas correctamente</span></big></strong>';}
             
-            $v = $v.'</td><td widht=60%>';
+            $v = $v.'</td><td widht=50%>';
             //Para observaciones
-                        
+//ojo                        
             $v = $v.'<h2>Observaciones de revisor:</h2><br>'.str_replace("\n", "<br>", $registro['observaciones_revisor']).'<br><br>';
             $v = $v.'<h2>Aprovado:</h2>';
             if ($registro['aprovado'] == 1)

@@ -22,6 +22,38 @@ class M_reactivos extends CI_Model
             return $row;
         }
     }
+     function desplegable_opcion_correcta($opcion_correcta = null)
+    {
+        $option = '<select id="opcion_correcta" name="opcion_correcta" size="1" style="width: 150px">';
+        $option = $option.'<option ';
+        if ($opcion_correcta == 'A')
+        {$option = $option.'selected="selected" ';}
+        $option = $option.'value = "A">A</option>';
+        
+        $option = $option.'<option ';
+        if ($opcion_correcta == 'B')
+        {$option = $option.'selected="selected" ';}
+        $option = $option.'value = "B">B</option>';
+        
+        $option = $option.'<option ';
+        if ($opcion_correcta == 'C')
+        {$option = $option.'selected="selected" ';}
+        $option = $option.'value = "C">C</option>';
+        
+        $option = $option.'<option ';
+        if ($opcion_correcta == 'D')
+        {$option = $option.'selected="selected" ';}
+        $option = $option.'value = "D">D</option>';
+        
+        if (($opcion_correcta <> 'A') and ($opcion_correcta <> 'B') and ($opcion_correcta <> 'C') and ($opcion_correcta <> 'D'))
+        {
+            $option = $option.'<option ';
+            $option = $option.'selected="selected" ';
+            $option = $option.'value = " "> </option>';
+        }
+        $option = $option.'</select>';
+        return $option;
+    }
     
     
 }

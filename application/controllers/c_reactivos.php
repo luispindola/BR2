@@ -1405,7 +1405,7 @@ class C_reactivos extends CI_Controller
             $v = $v.'<td><strong><big><span style="color: #517901">';
             $v = $v.'Opci&oacuten A:';
             $v = $v.'</span></big></strong><br>';
-            $v = $v.'<textarea id="opcion_a" name="opcion_a" rows="12">'.$reactivo['opcion_a'].'</textarea></td>';
+            $v = $v.'<textarea id="opcion_a" name="opcion_a" rows="7">'.$reactivo['opcion_a'].'</textarea></td>';
             $v = $v.'</tr>';
             
             $v = $v.'<tr>';
@@ -1431,7 +1431,7 @@ class C_reactivos extends CI_Controller
             
             $v = $v.'<tr>';
             $v = $v.'<td><strong><big><span style="color: #517901">';
-            $v = $v.'Opción Correcta:';
+            $v = $v.'Opci&oacuten Correcta:';
             $v = $v.'</span></big></strong><br>';
             $v = $v.$this->M_reactivos->desplegable_opcion_correcta($reactivo['opcion_correcta']);
             $v = $v.'</td>';
@@ -1448,7 +1448,17 @@ class C_reactivos extends CI_Controller
             
             $v = $v.'</td><td widht=50%>';
             //Para observaciones
-//ojo                        
+            
+            //Datos Tabla de Especificaciones                               
+            $v = $v.'<h2>Datos Tabla de Especificaciones</h2><br>';
+            $v = $v.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
+            $v = $v.'<tr><td>';
+            $v = $v.'<h2>Bloque</h2>';
+            $v = $v.'ss';
+            $v = $v.'</td></tr>';
+            $v = $v.'</table>';
+            
+            
             $v = $v.'<h2>Observaciones de revisor:</h2><br>'.str_replace("\n", "<br>", $registro['observaciones_revisor']).'<br><br>';
             $v = $v.'<h2>Aprovado:</h2>';
             if ($registro['aprovado'] == 1)

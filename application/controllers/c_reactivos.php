@@ -1450,12 +1450,25 @@ class C_reactivos extends CI_Controller
             //Para observaciones
             
             //Datos Tabla de Especificaciones                               
-            $v = $v.'<h2>Datos Tabla de Especificaciones</h2><br>';
+            
             $v = $v.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
             $v = $v.'<tr><td>';
-            $v = $v.'<h2>Bloque</h2>';
-            $v = $v.'ss';
+            $v = $v.'<h2>Datos Tabla de Especificaciones:</h2>';
             $v = $v.'</td></tr>';
+            $v = $v.'<tr><td>';
+            $v = $v.'<strong><big><span style="color: #517901">Parcial:</span></big></strong><br>';
+            $v = $v.$registro['parcial'].'<br><br>';
+            $v = $v.'<strong><big><span style="color: #517901">Bloque:</span></big></strong><br>';
+            $v = $v.$registro['bloque'].'<br><br>';
+            $v = $v.'<strong><big><span style="color: #517901">Secuencia:</span></big></strong><br>';
+            $v = $v.$registro['secuencia'].'<br><br>';
+            $v = $v.'<strong><big><span style="color: #517901">Aprendizaje, Indicadores, Objetivo:</span></big></strong><br>';
+            $v = $v.$registro['apr_indi_obj'].'<br><br>';
+            $v = $v.'<strong><big><span style="color: #517901">Saberes:</span></big></strong><br>';
+            $v = $v.$registro['saberes'].'<br><br>';
+            $v = $v.'<strong><big><span style="color: #517901">Dificultad:</span></big></strong><br>';
+            $v = $v.$registro['dificultad_docente'].'<br><br>';
+            $v = $v.'</td></tr>';            
             $v = $v.'</table>';
             
             

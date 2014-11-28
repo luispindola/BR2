@@ -80,12 +80,12 @@ class C_reactivos extends CI_Controller
             $v = $v.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';  
             //Encabezados:
             $v = $v.'<tr bgcolor="#517901", style="color: #FFFFFF">';//Define fondo y color de letra
-            $v = $v.'<th><a href="'.site_url('c_tablas_esp/listado/asignatura/'.$pag).'"><font color="#FFFFFF">Asignatura</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_tablas_esp/listado/ciclo/'.$pag).'"><font color="#FFFFFF">Ciclo</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_tablas_esp/listado/semestre/'.$pag).'"><font color="#FFFFFF">Semestre</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_tablas_esp/listado/componente/'.$pag).'"><font color="#FFFFFF">Componente</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_tablas_esp/listado/reactivos/'.$pag).'"><font color="#FFFFFF">Reactivos</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_tablas_esp/listado/f_creacion/'.$pag).'"><font color="#FFFFFF">Fecha Creaci&oacuten</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/listado/asignatura/'.$pag).'"><font color="#FFFFFF">Asignatura</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/listado/ciclo/'.$pag).'"><font color="#FFFFFF">Ciclo</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/listado/semestre/'.$pag).'"><font color="#FFFFFF">Semestre</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/listado/componente/'.$pag).'"><font color="#FFFFFF">Componente</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/listado/reactivos/'.$pag).'"><font color="#FFFFFF">Reactivos</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/listado/f_creacion/'.$pag).'"><font color="#FFFFFF">Fecha Creaci&oacuten</font></a></th>';
             $v = $v.'<th width=10%>Editar</th>';
             $v = $v.'</tr>';
             //Fin Encabezados
@@ -1221,14 +1221,14 @@ class C_reactivos extends CI_Controller
             $v = $v.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';  
             //Encabezados:
             $v = $v.'<tr bgcolor="#517901", style="color: #FFFFFF">';//Define fondo y color de letra
-            $v = $v.'<th><a href="'.site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/parcial/'.$pag).'"><font color="#FFFFFF">Parcial</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/bloque/'.$pag).'"><font color="#FFFFFF">Bloque</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/secuencia/'.$pag).'"><font color="#FFFFFF">Secuencia</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/apr_indi_obj/'.$pag).'"><font color="#FFFFFF">Aprendizaje, Indicadores, Objetivos</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/saberes/'.$pag).'"><font color="#FFFFFF">Saberes</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/dificultad_docente/'.$pag).'"><font color="#FFFFFF">Dificultad</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/f_obs/'.$pag).'"><font color="#FFFFFF">Fecha &uacuteltima observaci&oacuten</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/aprovado/'.$pag).'"><font color="#FFFFFF">Aprovado</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/parcial/'.$pag).'"><font color="#FFFFFF">Parcial</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/bloque/'.$pag).'"><font color="#FFFFFF">Bloque</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/secuencia/'.$pag).'"><font color="#FFFFFF">Secuencia</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/apr_indi_obj/'.$pag).'"><font color="#FFFFFF">Aprendizaje, Indicadores, Objetivos</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/saberes/'.$pag).'"><font color="#FFFFFF">Saberes</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/dificultad_docente/'.$pag).'"><font color="#FFFFFF">Dificultad</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/f_obs/'.$pag).'"><font color="#FFFFFF">Fecha &uacuteltima observaci&oacuten</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/aprovado/'.$pag).'"><font color="#FFFFFF">Aprovado</font></a></th>';
             $v = $v.'<th width=10%>Acciones</th>';
             $v = $v.'</tr>';
             //Fin Encabezados
@@ -1310,17 +1310,17 @@ class C_reactivos extends CI_Controller
             if (isset($_POST['guardar']))
             {
                 date_default_timezone_set('America/Los_Angeles'); //Establece Zona horaria
-                $SQL = "UPDATE br_tablas_esp SET ";
-                $SQL = $SQL."parcial = '".$_POST['parcial']."', ";
-                $SQL = $SQL."bloque = '".$_POST['bloque']."', ";
-                $SQL = $SQL."secuencia = '".$_POST['secuencia']."', ";
-                $SQL = $SQL."apr_indi_obj = '".$_POST['apr_indi_obj']."', ";
-                $SQL = $SQL."saberes = '".$_POST['saberes']."', ";
-                $SQL = $SQL."dificultad_docente = '".$_POST['dificultad_docente']."', ";
+                $SQL = "UPDATE br_reactivos SET ";
+                $SQL = $SQL."pregunta = '".$_POST['pregunta']."', ";
+                $SQL = $SQL."opcion_a = '".$_POST['opcion_a']."', ";
+                $SQL = $SQL."opcion_b = '".$_POST['opcion_b']."', ";
+                $SQL = $SQL."opcion_c = '".$_POST['opcion_c']."', ";
+                $SQL = $SQL."opcion_d = '".$_POST['opcion_d']."', ";
+                $SQL = $SQL."opcion_correcta = '".$_POST['opcion_correcta']."', ";                
                 $SQL = $SQL."f_edicion = '".date("Y-m-d H:i:s")."' ";
                 $SQL = $SQL."WHERE id_tablas_esp = ".$id_tablas_esp;
-                //$query = $this->db->query($SQL);//Ejecuta el query
-                //$this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Elaborador a T de E","id_tabla_esp: ".$id_tablas_esp); //Crea registro de visita                           
+                $query = $this->db->query($SQL);//Ejecuta el query
+                $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Elaborador de Reactivo","id_tabla_esp: ".$id_tablas_esp); //Crea registro de visita                           
             }
             
             $registro = $this->M_tablas_esp->dame_registro_br_tablas_esp($id_tablas_esp);
@@ -1398,7 +1398,7 @@ class C_reactivos extends CI_Controller
             $v = $v.'<td><strong><big><span style="color: #517901">';
             $v = $v.'Pregunta:';
             $v = $v.'</span></big></strong><br>';
-            $v = $v.'<textarea id="reactivo" name="reactivo" rows="12">'.$reactivo['pregunta'].'</textarea></td>';
+            $v = $v.'<textarea id="pregunta" name="pregunta" rows="12">'.$reactivo['pregunta'].'</textarea></td>';
             $v = $v.'</tr>';
             
             $v = $v.'<tr>';

@@ -1319,8 +1319,8 @@ class C_reactivos extends CI_Controller
                 $SQL = $SQL."dificultad_docente = '".$_POST['dificultad_docente']."', ";
                 $SQL = $SQL."f_edicion = '".date("Y-m-d H:i:s")."' ";
                 $SQL = $SQL."WHERE id_tablas_esp = ".$id_tablas_esp;
-                $query = $this->db->query($SQL);//Ejecuta el query
-                $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Elaborador a T de E","id_tabla_esp: ".$id_tablas_esp); //Crea registro de visita                           
+                //$query = $this->db->query($SQL);//Ejecuta el query
+                //$this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Elaborador a T de E","id_tabla_esp: ".$id_tablas_esp); //Crea registro de visita                           
             }
             
             $registro = $this->M_tablas_esp->dame_registro_br_tablas_esp($id_tablas_esp);
@@ -1471,21 +1471,25 @@ class C_reactivos extends CI_Controller
             $v = $v.'</td></tr>';            
             $v = $v.'</table>';
             
-            
-            $v = $v.'<h2>Observaciones de revisor:</h2><br>'.str_replace("\n", "<br>", $registro['observaciones_revisor']).'<br><br>';
+            $v = $v.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
+            $v = $v.'<tr><td>';
+            $v = $v.'<h2>Observaciones de revisor:</h2>';
+            $v = $v.'</td></tr>';
+            $v = $v.'<tr><td>';
+            $v = $v.str_replace("\n", "<br>", $reactivo['observaciones']).'<br><br>';
             $v = $v.'<h2>Aprovado:</h2>';
-            if ($registro['aprovado'] == 1)
-            {$v = $v.'Si<br><br>';}
+            if ($reactivo['aprovado'] == 1)
+                {$v = $v.'Si<br><br>';}
             else
-            {$v = $v.'No<br><br>';}
-            $v = $v.'<h2>Fecha de observaci&oacuten: </h2>'.$registro['f_obs'].'<br><br>';
-            
-            $v = $v.'</form>';
+                {$v = $v.'No<br><br>';}
+            $v = $v.'<h2>Fecha de observaci&oacuten: </h2>'.$reactivo['f_obs'].'<br><br>';
+            $v = $v.'</td></tr>';
+            $v = $v.'</table>';                        
                    
             $v = $v.'</td></tr></table>';
             $v = $v.'</td></tr>';
-            //Fin area de datos
-             
+            $v = $v.'</form>';
+            //Fin area de datos             
             
             $v = $v.'</table>';
             //Cargar vista

@@ -1007,7 +1007,7 @@ class C_reactivos extends CI_Controller
         {
             $menu = $this->M_creador->menu();//Creador de menu
             
-            $v = '<h1>Desasignar Elaborador de Reactivos</h1>';
+            $v = '<h1>Desasignar Revidor de Reactivos</h1>';
             
             if (isset($_POST['guardar']))//Si se presionó el boton guardar
             {
@@ -1073,7 +1073,7 @@ class C_reactivos extends CI_Controller
                     {
                     $v = $v.'<tr><td><h2>Usuario asignado: </h2></td><td>'.$this->M_usuarios->dame_usuario($row->id_usuario).'</td></tr>';
                     }
-                    $v = $v.'<tr><td><h2> </h2></td><td><input id="guardar" name="guardar" size="44" style="height: 33px; width: 179px" type="submit" value="Desasignar Elaborador" /></td></tr>';
+                    $v = $v.'<tr><td><h2> </h2></td><td><input id="guardar" name="guardar" size="44" style="height: 33px; width: 179px" type="submit" value="Desasignar Revisor" /></td></tr>';
                 }
             }
             
@@ -1311,13 +1311,245 @@ class C_reactivos extends CI_Controller
             {
                 date_default_timezone_set('America/Los_Angeles'); //Establece Zona horaria
                 $SQL = "UPDATE br_reactivos SET ";
-                $SQL = $SQL."pregunta = '".$_POST['pregunta']."', ";
-                $SQL = $SQL."opcion_a = '".$_POST['opcion_a']."', ";
-                $SQL = $SQL."opcion_b = '".$_POST['opcion_b']."', ";
-                $SQL = $SQL."opcion_c = '".$_POST['opcion_c']."', ";
-                $SQL = $SQL."opcion_d = '".$_POST['opcion_d']."', ";
+                $SQL = $SQL."pregunta = '".str_replace('\\','3&6&',$_POST['pregunta'])."', ";
+                $SQL = $SQL."opcion_a = '".str_replace('\\','3&6&',$_POST['opcion_a'])."', ";
+                $SQL = $SQL."opcion_b = '".str_replace('\\','3&6&',$_POST['opcion_b'])."', ";
+                $SQL = $SQL."opcion_c = '".str_replace('\\','3&6&',$_POST['opcion_c'])."', ";
+                $SQL = $SQL."opcion_d = '".str_replace('\\','3&6&',$_POST['opcion_d'])."', ";
                 $SQL = $SQL."opcion_correcta = '".$_POST['opcion_correcta']."', ";                
                 $SQL = $SQL."f_edicion = '".date("Y-m-d H:i:s")."' ";
+                $SQL = $SQL."WHERE id_tablas_esp = ".$id_tablas_esp;
+                $query = $this->db->query($SQL);//Ejecuta el query
+                $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Elaborador de Reactivo","id_tabla_esp: ".$id_tablas_esp); //Crea registro de visita                           
+            }
+            
+            $registro = $this->M_tablas_esp->dame_registro_br_tablas_esp($id_tablas_esp);
+            $reactivo = $this->M_reactivos->dame_registro_br_reactivos($id_tablas_esp);
+            
+            $menu = $this->M_creador->menu();//Creador de menu
+            $v = '<h1>Editando Reactivo como elaborador</h1>';
+            $v = $v.'<form id="form" method="post">';//Se crea una forma post
+            $v = $v.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
+            
+            $v = $v.'<tr><td>';
+            //Seccion de encabezados           
+            $SQL = "SELECT br_tablas_esp.id_asignatura, br_tablas_esp.ciclo, br_reactivos.id_usuario_editor, ";
+            $SQL = $SQL."Max(br_reactivos.f_edicion) AS f_edicion, br_reactivos.id_usuario_revisor, ";
+            $SQL = $SQL."Max(br_reactivos.f_obs) AS f_obs, Count(br_reactivos.id_tablas_esp) AS reactivos, ";
+            $SQL = $SQL."Sum(br_reactivos.aprovado) AS reactivos_aprovados ";
+            $SQL = $SQL."FROM br_tablas_esp INNER JOIN br_reactivos ON br_tablas_esp.id_tablas_esp = br_reactivos.id_tablas_esp ";
+            $SQL = $SQL."GROUP BY br_tablas_esp.id_asignatura, br_tablas_esp.ciclo, br_reactivos.id_usuario_editor, ";
+            $SQL = $SQL."br_reactivos.id_usuario_revisor ";         
+            $SQL = $SQL."HAVING (((br_tablas_esp.id_asignatura)=".$registro['id_asignatura'].") ";
+            $SQL = $SQL."AND ((br_tablas_esp.ciclo)='".$registro['ciclo']."'))";
+            
+            $query = $this->db->query($SQL);//Ejecuta el query
+            if ($query->num_rows() > 0)
+            {
+                $rowEncabezado = $query->row_array();//Carga el registro en un arreglo
+            }
+            
+            $v = $v.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
+            
+            $v = $v.'<tr>';
+            $v = $v.'<td width=25%>';
+            $v = $v.'<strong><big><span style="color: #517901">Asignatura:</span></big> '.$this->M_tablas_esp->dame_asignatura($rowEncabezado['id_asignatura']).'</strong>';
+            $v = $v.'</td>';
+            $v = $v.'<td width=25%>';
+            $v = $v.'<strong><big><span style="color: #517901">Ciclo:</span></big> '.$rowEncabezado['ciclo'].'</strong>';
+            $v = $v.'</td>';
+            $v = $v.'<td width=25%>';
+            $v = $v.'<strong><big><span style="color: #517901">Usuario elaborador:</span></big> '.$this->M_usuarios->dame_usuario($rowEncabezado['id_usuario_editor']).'</strong>';
+            $v = $v.'</td>';
+            $v = $v.'<td width=25%>';
+            $v = $v.'<strong><big><span style="color: #517901">Fecha &uacuteltima edici&oacuten:</span></big> '.$rowEncabezado['f_edicion'].'</strong>';
+            $v = $v.'</td>';
+            $v = $v.'</tr>';
+            
+            $v = $v.'<tr>';
+            $v = $v.'<td width=25%>';
+            $v = $v.'<strong><big><span style="color: #517901">Usuario revisor:</span></big> '.$this->M_usuarios->dame_usuario($rowEncabezado['id_usuario_revisor']).'</strong>';
+            $v = $v.'</td>';
+            $v = $v.'<td width=25%>';
+            $v = $v.'<strong><big><span style="color: #517901">Fecha &uacuteltima revici&oacuten:</span></big> '.$rowEncabezado['f_obs'].'</strong>';
+            $v = $v.'</td>';
+            $v = $v.'<td width=25%>';
+            $v = $v.'<strong><big><span style="color: #517901">Reactivos:</span></big> '.$rowEncabezado['reactivos'].'</strong>';
+            $v = $v.'</td>';
+            $v = $v.'<td width=25%>';
+            $v = $v.'<strong><big><span style="color: #517901">Reactivos aprovados:</span></big> '.$rowEncabezado['reactivos_aprovados'].'</strong>';
+            $v = $v.'</td>';
+            $v = $v.'</tr>';
+            
+            $v = $v.'</table>';
+            
+            $v = $v.'</td></tr>';
+            //Fin encabezado
+
+            //Area de datos
+            $v = $v.'<form id="form" method="post">';//Se crea una forma post
+            $v = $v.'<tr><td>';
+            
+            $v = $v.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
+            $v = $v.'<tr><td widht=50%>';
+            
+            $v = $v.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
+            $v = $v.'<tr>';
+            $v = $v.'<td><strong><big><span style="color: #517901">';
+            $v = $v.'Pregunta:';
+            $v = $v.'</span></big></strong><br>';
+            $v = $v.'<textarea id="pregunta" name="pregunta" rows="12">'.str_replace('3&6&','\\',$reactivo['pregunta']).'</textarea></td>';
+            $v = $v.'</tr>';
+            
+            $v = $v.'<tr>';
+            $v = $v.'<td><strong><big><span style="color: #517901">';
+            $v = $v.'Opci&oacuten A:';
+            $v = $v.'</span></big></strong><br>';
+            $v = $v.'<textarea id="opcion_a" name="opcion_a" rows="7">'.str_replace('3&6&','\\',$reactivo['opcion_a']).'</textarea></td>';
+            $v = $v.'</tr>';
+            
+            $v = $v.'<tr>';
+            $v = $v.'<td><strong><big><span style="color: #517901">';
+            $v = $v.'Opci&oacuten B:';
+            $v = $v.'</span></big></strong><br>';
+            $v = $v.'<textarea id="opcion_b" name="opcion_b" rows="7">'.str_replace('3&6&','\\',$reactivo['opcion_b']).'</textarea></td>';
+            $v = $v.'</tr>';
+            
+            $v = $v.'<tr>';
+            $v = $v.'<td><strong><big><span style="color: #517901">';
+            $v = $v.'Opci&oacuten C:';
+            $v = $v.'</span></big></strong><br>';
+            $v = $v.'<textarea id="opcion_c" name="opcion_c" rows="7">'.str_replace('3&6&','\\',$reactivo['opcion_c']).'</textarea></td>';
+            $v = $v.'</tr>';
+            
+            $v = $v.'<tr>';
+            $v = $v.'<td><strong><big><span style="color: #517901">';
+            $v = $v.'Opci&oacuten D:';
+            $v = $v.'</span></big></strong><br>';
+            $v = $v.'<textarea id="opcion_d" name="opcion_d" rows="7">'.str_replace('3&6&','\\',$reactivo['opcion_d']).'</textarea></td>';
+            $v = $v.'</tr>';
+            
+            $v = $v.'<tr>';
+            $v = $v.'<td><strong><big><span style="color: #517901">';
+            $v = $v.'Opci&oacuten Correcta:';
+            $v = $v.'</span></big></strong><br>';
+            $v = $v.$this->M_reactivos->desplegable_opcion_correcta($reactivo['opcion_correcta']);
+            $v = $v.'</td>';
+            $v = $v.'</tr>';
+            $v = $v.'</table>';
+            
+            $v = $v.'<input id="guardar" name="guardar" size="44" style="height: 33px; width: 179px" type="submit" value="Guardar" />    ';
+            $v = $v.'<input id="regresar" name="regresar" size="44" style="height: 33px; width: 179px" type="submit" value="Regresar" />';            
+            
+            if (isset($_POST['regresar']))
+                {header('Location: '.  site_url('c_reactivos/tabla_esp/elaborador/'.$rowEncabezado['id_asignatura'].'/'.$this->M_tablas_esp->dame_id_ciclo($rowEncabezado['ciclo']).'/'.$order.'/'.$pag));}
+            if (isset($_POST['guardar']))
+                {$v = $v.'<br><strong><big><span style="color: #517901">Observaciones Guardadas correctamente</span></big></strong>';}
+            
+            $v = $v.'</td><td widht=50%>';
+            //Para observaciones
+            
+            //Datos Tabla de Especificaciones                               
+            
+            $v = $v.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
+            $v = $v.'<tr><td>';
+            $v = $v.'<h2>Datos Tabla de Especificaciones:</h2>';
+            $v = $v.'</td></tr>';
+            $v = $v.'<tr><td>';
+            $v = $v.'<strong><big><span style="color: #517901">Parcial:</span></big></strong><br>';
+            $v = $v.$registro['parcial'].'<br><br>';
+            $v = $v.'<strong><big><span style="color: #517901">Bloque:</span></big></strong><br>';
+            $v = $v.$registro['bloque'].'<br><br>';
+            $v = $v.'<strong><big><span style="color: #517901">Secuencia:</span></big></strong><br>';
+            $v = $v.$registro['secuencia'].'<br><br>';
+            $v = $v.'<strong><big><span style="color: #517901">Aprendizaje, Indicadores, Objetivo:</span></big></strong><br>';
+            $v = $v.$registro['apr_indi_obj'].'<br><br>';
+            $v = $v.'<strong><big><span style="color: #517901">Saberes:</span></big></strong><br>';
+            $v = $v.$registro['saberes'].'<br><br>';
+            $v = $v.'<strong><big><span style="color: #517901">Dificultad:</span></big></strong><br>';
+            $v = $v.$registro['dificultad_docente'].'<br><br>';
+            $v = $v.'</td></tr>';            
+            $v = $v.'</table>';
+            
+            $v = $v.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
+            $v = $v.'<tr><td>';
+            $v = $v.'<h2>Observaciones de revisor:</h2>';
+            $v = $v.'</td></tr>';
+            $v = $v.'<tr><td>';
+            $v = $v.str_replace("\n", "<br>", $reactivo['observaciones']).'<br><br>';
+            $v = $v.'<h2>Aprovado:</h2>';
+            if ($reactivo['aprovado'] == 1)
+                {$v = $v.'Si<br><br>';}
+            else
+                {$v = $v.'No<br><br>';}
+            $v = $v.'<h2>Fecha de observaci&oacuten: </h2>'.$reactivo['f_obs'].'<br><br>';
+            $v = $v.'</td></tr>';
+            
+            $v = $v.'<tr><td>';            
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';            
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';
+            $v = $v.'<p>&nbsp;</p>';    
+            $v = $v.'</td></tr>';
+            
+            $v = $v.'</table>';                        
+                      
+            $v = $v.'</td></tr></table>';                        
+            
+            $v = $v.'</td></tr>';
+            $v = $v.'</form>';
+            //Fin area de datos             
+            
+            $v = $v.'</table>';
+            //Cargar vista
+            $datos_vista = array(
+            'datos_inicio'   =>  $v,
+            'menu'           =>  $menu
+            );
+            $this->load->view('v_limpia_editor',$datos_vista);
+        }
+        else{header('Location: '.site_url('c_main'));}
+    }
+    public function revisor($id_tablas_esp = null, $order = null, $pag = null)
+    {
+        if (($this->session->userdata('nivel_acceso') == 'Administrador') OR ($this->session->userdata('nivel_acceso') == 'Revisor'))//Validar nivel de acceso de session
+        {
+            $this->load->model('M_tablas_esp');
+            $this->load->model('M_reactivos');
+            
+            if (isset($_POST['guardar']))
+            {
+                date_default_timezone_set('America/Los_Angeles'); //Establece Zona horaria
+                $SQL = "UPDATE br_reactivos SET ";
+                $SQL = $SQL."observaciones = '".$_POST['observaciones']."', ";
+                $SQL = $SQL."aprovado = '".$_POST['aprovado']."', ";
+                $SQL = $SQL."f_obs = '".date("Y-m-d H:i:s")."' ";
                 $SQL = $SQL."WHERE id_tablas_esp = ".$id_tablas_esp;
                 $query = $this->db->query($SQL);//Ejecuta el query
                 $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Elaborador de Reactivo","id_tabla_esp: ".$id_tablas_esp); //Crea registro de visita                           
@@ -1398,53 +1630,45 @@ class C_reactivos extends CI_Controller
             $v = $v.'<td><strong><big><span style="color: #517901">';
             $v = $v.'Pregunta:';
             $v = $v.'</span></big></strong><br>';
-            $v = $v.'<textarea id="pregunta" name="pregunta" rows="12">'.$reactivo['pregunta'].'</textarea></td>';
+            $v = $v.str_replace('3&6&','\\',$reactivo['pregunta']).'</td>';
             $v = $v.'</tr>';
             
             $v = $v.'<tr>';
             $v = $v.'<td><strong><big><span style="color: #517901">';
             $v = $v.'Opci&oacuten A:';
             $v = $v.'</span></big></strong><br>';
-            $v = $v.'<textarea id="opcion_a" name="opcion_a" rows="7">'.$reactivo['opcion_a'].'</textarea></td>';
+            $v = $v.str_replace('3&6&','\\',$reactivo['opcion_a']).'</td>';
             $v = $v.'</tr>';
             
             $v = $v.'<tr>';
             $v = $v.'<td><strong><big><span style="color: #517901">';
-            $v = $v.'Opción B:';
+            $v = $v.'Opci&oacuten B:';
             $v = $v.'</span></big></strong><br>';
-            $v = $v.'<textarea id="opcion_b" name="opcion_b" rows="7">'.$reactivo['opcion_b'].'</textarea></td>';
+            $v = $v.str_replace('3&6&','\\',$reactivo['opcion_b']).'</td>';
             $v = $v.'</tr>';
             
             $v = $v.'<tr>';
             $v = $v.'<td><strong><big><span style="color: #517901">';
             $v = $v.'Opci&oacuten C:';
             $v = $v.'</span></big></strong><br>';
-            $v = $v.'<textarea id="opcion_c" name="opcion_c" rows="7">'.$reactivo['opcion_c'].'</textarea></td>';
+            $v = $v.str_replace('3&6&','\\',$reactivo['opcion_c']).'</td>';
             $v = $v.'</tr>';
             
             $v = $v.'<tr>';
             $v = $v.'<td><strong><big><span style="color: #517901">';
             $v = $v.'Opci&oacuten D:';
             $v = $v.'</span></big></strong><br>';
-            $v = $v.'<textarea id="opcion_d" name="opcion_d" rows="7">'.$reactivo['opcion_d'].'</textarea></td>';
+            $v = $v.str_replace('3&6&','\\',$reactivo['opcion_d']).'</td>';
             $v = $v.'</tr>';
             
             $v = $v.'<tr>';
             $v = $v.'<td><strong><big><span style="color: #517901">';
             $v = $v.'Opci&oacuten Correcta:';
             $v = $v.'</span></big></strong><br>';
-            $v = $v.$this->M_reactivos->desplegable_opcion_correcta($reactivo['opcion_correcta']);
+            $v = $v.$reactivo['opcion_correcta'];
             $v = $v.'</td>';
             $v = $v.'</tr>';
             $v = $v.'</table>';
-            
-            $v = $v.'<input id="guardar" name="guardar" size="44" style="height: 33px; width: 179px" type="submit" value="Guardar" />    ';
-            $v = $v.'<input id="regresar" name="regresar" size="44" style="height: 33px; width: 179px" type="submit" value="Regresar" />';            
-            
-            if (isset($_POST['regresar']))
-                {header('Location: '.  site_url('c_reactivos/tabla_esp/elaborador/'.$rowEncabezado['id_asignatura'].'/'.$this->M_tablas_esp->dame_id_ciclo($rowEncabezado['ciclo']).'/'.$order.'/'.$pag));}
-            if (isset($_POST['guardar']))
-                {$v = $v.'<br><strong><big><span style="color: #517901">Observaciones Guardadas correctamente</span></big></strong>';}
             
             $v = $v.'</td><td widht=50%>';
             //Para observaciones
@@ -1476,17 +1700,48 @@ class C_reactivos extends CI_Controller
             $v = $v.'<h2>Observaciones de revisor:</h2>';
             $v = $v.'</td></tr>';
             $v = $v.'<tr><td>';
-            $v = $v.str_replace("\n", "<br>", $reactivo['observaciones']).'<br><br>';
-            $v = $v.'<h2>Aprovado:</h2>';
-            if ($reactivo['aprovado'] == 1)
-                {$v = $v.'Si<br><br>';}
+            $v = $v.'<textarea cols="100" id="observaciones" name="observaciones" rows="12">'.$reactivo['observaciones'].'</textarea><br>';
+            $conDatos = "no";
+            $v = $v.'<h2>Aprovado: </h2>';
+            $v = $v.'<select id="aprovado" name="aprovado" size="1" style="width: 100px">';
+            if ($reactivo['aprovado'] == 1)   
+            {
+                $conDatos = "si";
+                $v = $v.'<option selected="selected" value="1">Si</option>';
+            }
             else
-                {$v = $v.'No<br><br>';}
-            $v = $v.'<h2>Fecha de observaci&oacuten: </h2>'.$reactivo['f_obs'].'<br><br>';
-            $v = $v.'</td></tr>';
-            $v = $v.'</table>';                        
-                   
-            $v = $v.'</td></tr></table>';
+            {
+                $v = $v.'<option value="1">Si</option>';
+            }
+            if ($reactivo['aprovado'] == 0)   
+            {
+                $conDatos = "si";
+                $v = $v.'<option selected="selected" value="0">No</option>';
+            }
+            else
+            {
+                $v = $v.'<option value="0">No</option>';
+            }
+            if ($conDatos == "no")
+            {
+                $v = $v.'<option selected="selected" value=""> </option>';
+            }
+            
+            $v = $v.'</select><br>';
+            $v = $v.'</td></tr>';                        
+            
+            $v = $v.'</table>';  
+                        
+            $v = $v.'<input id="guardar" name="guardar" size="34" style="height: 33px; width: 179px" type="submit" value="Guardar" />    ';
+            $v = $v.'<input id="regresar" name="regresar" size="34" style="height: 33px; width: 179px" type="submit" value="Regresar" />';            
+            
+            if (isset($_POST['regresar']))
+                {header('Location: '.  site_url('c_reactivos/tabla_esp/revisor/'.$rowEncabezado['id_asignatura'].'/'.$this->M_tablas_esp->dame_id_ciclo($rowEncabezado['ciclo']).'/'.$order.'/'.$pag));}
+            if (isset($_POST['guardar']))
+                {$v = $v.'<br><strong><big><span style="color: #517901">Observaciones Guardadas correctamente</span></big></strong>';}
+                                  
+            $v = $v.'</td></tr></table>';                        
+            
             $v = $v.'</td></tr>';
             $v = $v.'</form>';
             //Fin area de datos             
@@ -1497,7 +1752,7 @@ class C_reactivos extends CI_Controller
             'datos_inicio'   =>  $v,
             'menu'           =>  $menu
             );
-            $this->load->view('v_limpia_editor',$datos_vista);
+            $this->load->view('v_limpia',$datos_vista);
         }
         else{header('Location: '.site_url('c_main'));}
     }

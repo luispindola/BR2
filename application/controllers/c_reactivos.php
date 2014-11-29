@@ -1305,7 +1305,7 @@ class C_reactivos extends CI_Controller
         if (($this->session->userdata('nivel_acceso') == 'Administrador') OR ($this->session->userdata('nivel_acceso') == 'Elaborador'))//Validar nivel de acceso de session
         {
             $this->load->model('M_tablas_esp');
-            $this->load->model('M_reactivos');
+            $this->load->model('M_reactivos');            
             
             if (isset($_POST['guardar']))
             {
@@ -1623,7 +1623,7 @@ class C_reactivos extends CI_Controller
             $v = $v.'<tr><td>';
             
             $v = $v.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
-            $v = $v.'<tr><td widht=50%>';
+            $v = $v.'<tr><td widht="50%">';
             
             $v = $v.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';
             $v = $v.'<tr>';
@@ -1670,7 +1670,7 @@ class C_reactivos extends CI_Controller
             $v = $v.'</tr>';
             $v = $v.'</table>';
             
-            $v = $v.'</td><td widht=50%>';
+            $v = $v.'</td><td widht="50%">';
             //Para observaciones
             
             //Datos Tabla de Especificaciones                               
@@ -1700,7 +1700,7 @@ class C_reactivos extends CI_Controller
             $v = $v.'<h2>Observaciones de revisor:</h2>';
             $v = $v.'</td></tr>';
             $v = $v.'<tr><td>';
-            $v = $v.'<textarea cols="100" id="observaciones" name="observaciones" rows="12">'.$reactivo['observaciones'].'</textarea><br>';
+            $v = $v.'<textarea cols="50" id="observaciones" name="observaciones" rows="12">'.$reactivo['observaciones'].'</textarea><br>';
             $conDatos = "no";
             $v = $v.'<h2>Aprovado: </h2>';
             $v = $v.'<select id="aprovado" name="aprovado" size="1" style="width: 100px">';

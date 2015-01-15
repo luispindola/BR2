@@ -1165,7 +1165,7 @@ class C_reactivos extends CI_Controller
             $v = $v.'<strong><big><span style="color: #517901">Reactivos:</span></big> '.$rowEncabezado['reactivos'].'</strong>';
             $v = $v.'</td>';
             $v = $v.'<td width=25%>';
-            $v = $v.'<strong><big><span style="color: #517901">Reactivos aprovados:</span></big> '.$rowEncabezado['reactivos_aprovados'].'</strong>';
+            $v = $v.'<strong><big><span style="color: #517901">Reactivos aprobados:</span></big> '.$rowEncabezado['reactivos_aprovados'].'</strong>';
             $v = $v.'</td>';
             $v = $v.'</tr>';
             
@@ -1228,7 +1228,7 @@ class C_reactivos extends CI_Controller
             $v = $v.'<th><a href="'.site_url('c_reactivos/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/saberes/'.$pag).'"><font color="#FFFFFF">Saberes</font></a></th>';
             $v = $v.'<th><a href="'.site_url('c_reactivos/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/dificultad_docente/'.$pag).'"><font color="#FFFFFF">Dificultad</font></a></th>';
             $v = $v.'<th><a href="'.site_url('c_reactivos/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/f_obs/'.$pag).'"><font color="#FFFFFF">Fecha &uacuteltima observaci&oacuten</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_reactivos/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/aprovado/'.$pag).'"><font color="#FFFFFF">Aprovado</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/aprovado/'.$pag).'"><font color="#FFFFFF">Aprobado</font></a></th>';
             $v = $v.'<th width=10%>Acciones</th>';
             $v = $v.'</tr>';
             //Fin Encabezados
@@ -1377,7 +1377,7 @@ class C_reactivos extends CI_Controller
             $v = $v.'<strong><big><span style="color: #517901">Reactivos:</span></big> '.$rowEncabezado['reactivos'].'</strong>';
             $v = $v.'</td>';
             $v = $v.'<td width=25%>';
-            $v = $v.'<strong><big><span style="color: #517901">Reactivos aprovados:</span></big> '.$rowEncabezado['reactivos_aprovados'].'</strong>';
+            $v = $v.'<strong><big><span style="color: #517901">Reactivos aprobados:</span></big> '.$rowEncabezado['reactivos_aprovados'].'</strong>';
             $v = $v.'</td>';
             $v = $v.'</tr>';
             
@@ -1477,7 +1477,7 @@ class C_reactivos extends CI_Controller
             $v = $v.'</td></tr>';
             $v = $v.'<tr><td>';
             $v = $v.str_replace("\n", "<br>", $reactivo['observaciones']).'<br><br>';
-            $v = $v.'<h2>Aprovado:</h2>';
+            $v = $v.'<h2>Aprobado:</h2>';
             if ($reactivo['aprovado'] == 1)
                 {$v = $v.'Si<br><br>';}
             else
@@ -1609,7 +1609,7 @@ class C_reactivos extends CI_Controller
             $v = $v.'<strong><big><span style="color: #517901">Reactivos:</span></big> '.$rowEncabezado['reactivos'].'</strong>';
             $v = $v.'</td>';
             $v = $v.'<td width=25%>';
-            $v = $v.'<strong><big><span style="color: #517901">Reactivos aprovados:</span></big> '.$rowEncabezado['reactivos_aprovados'].'</strong>';
+            $v = $v.'<strong><big><span style="color: #517901">Reactivos aprobados:</span></big> '.$rowEncabezado['reactivos_aprovados'].'</strong>';
             $v = $v.'</td>';
             $v = $v.'</tr>';
             
@@ -1702,7 +1702,7 @@ class C_reactivos extends CI_Controller
             $v = $v.'<tr><td>';
             $v = $v.'<textarea cols="50" id="observaciones" name="observaciones" rows="12">'.$reactivo['observaciones'].'</textarea><br>';
             $conDatos = "no";
-            $v = $v.'<h2>Aprovado: </h2>';
+            $v = $v.'<h2>Aprobado: </h2>';
             $v = $v.'<select id="aprovado" name="aprovado" size="1" style="width: 100px">';
             if ($reactivo['aprovado'] == 1)   
             {

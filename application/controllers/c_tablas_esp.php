@@ -813,7 +813,7 @@ class C_tablas_esp extends CI_Controller
             $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Reactivos:</span></big> '.$rowEncabezado['reactivos'].'</strong>';
             $datos_inicio = $datos_inicio.'</td>';
             $datos_inicio = $datos_inicio.'<td width=25%>';
-            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Reactivos aprovados:</span></big> '.$rowEncabezado['reactivos_aprovados'].'</strong>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Reactivos aprobados:</span></big> '.$rowEncabezado['reactivos_aprovados'].'</strong>';
             $datos_inicio = $datos_inicio.'</td>';
             $datos_inicio = $datos_inicio.'</tr>';
             
@@ -873,7 +873,7 @@ class C_tablas_esp extends CI_Controller
             $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/saberes/'.$pag).'"><font color="#FFFFFF">Saberes</font></a></th>';
             $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/dificultad_docente/'.$pag).'"><font color="#FFFFFF">Dificultad</font></a></th>';
             $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/f_obs/'.$pag).'"><font color="#FFFFFF">Fecha &uacuteltima observaci&oacuten</font></a></th>';
-            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/aprovado/'.$pag).'"><font color="#FFFFFF">Aprovado</font></a></th>';
+            $datos_inicio = $datos_inicio.'<th><a href="'.site_url('c_tablas_esp/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/aprovado/'.$pag).'"><font color="#FFFFFF">Aprobado</font></a></th>';
             $datos_inicio = $datos_inicio.'<th width=10%>Acciones</th>';
             $datos_inicio = $datos_inicio.'</tr>';
             //Fin Encabezados
@@ -1016,7 +1016,7 @@ class C_tablas_esp extends CI_Controller
             $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Reactivos:</span></big> '.$rowEncabezado['reactivos'].'</strong>';
             $datos_inicio = $datos_inicio.'</td>';
             $datos_inicio = $datos_inicio.'<td width=25%>';
-            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Reactivos aprovados:</span></big> '.$rowEncabezado['reactivos_aprovados'].'</strong>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Reactivos aprobados:</span></big> '.$rowEncabezado['reactivos_aprovados'].'</strong>';
             $datos_inicio = $datos_inicio.'</td>';
             $datos_inicio = $datos_inicio.'</tr>';
             
@@ -1078,7 +1078,7 @@ class C_tablas_esp extends CI_Controller
             $datos_inicio = $datos_inicio.'<textarea cols="100" name="observaciones" rows="10" style="height: 166px; width: 100%">'.$registro['observaciones_revisor'].'</textarea>';
             
             $conDatos = "no";
-            $datos_inicio = $datos_inicio.'<br><br><h2>Aprovado: </h2>';
+            $datos_inicio = $datos_inicio.'<br><br><h2>Aprobado: </h2>';
             $datos_inicio = $datos_inicio.'<select id="aprovado" name="aprovado" size="1" style="width: 100px">';
             if ($registro['aprovado'] == 1)   
             {
@@ -1205,7 +1205,7 @@ class C_tablas_esp extends CI_Controller
             $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Reactivos:</span></big> '.$rowEncabezado['reactivos'].'</strong>';
             $datos_inicio = $datos_inicio.'</td>';
             $datos_inicio = $datos_inicio.'<td width=25%>';
-            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Reactivos aprovados:</span></big> '.$rowEncabezado['reactivos_aprovados'].'</strong>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Reactivos aprobados:</span></big> '.$rowEncabezado['reactivos_aprovados'].'</strong>';
             $datos_inicio = $datos_inicio.'</td>';
             $datos_inicio = $datos_inicio.'</tr>';
             
@@ -1272,7 +1272,7 @@ class C_tablas_esp extends CI_Controller
             //Para observaciones
                         
             $datos_inicio = $datos_inicio.'<h2>Observaciones de revisor:</h2><br>'.str_replace("\n", "<br>", $registro['observaciones_revisor']).'<br><br>';
-            $datos_inicio = $datos_inicio.'<h2>Aprovado:</h2>';
+            $datos_inicio = $datos_inicio.'<h2>Aprobado:</h2>';
             if ($registro['aprovado'] == 1)
             {$datos_inicio = $datos_inicio.'Si<br><br>';}
             else

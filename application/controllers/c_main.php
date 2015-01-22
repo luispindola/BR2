@@ -20,7 +20,7 @@ class C_main extends CI_Controller
                 //Si encontró usuario
                 $datos_inicio = '<h1>Bienvenido</h1>';
                 $datos_inicio = $datos_inicio.'<table width=50% BORDER CELLPADDING=10 CELLSPACING=0>';       
-                $datos_inicio = $datos_inicio.'<tr><td><h2>Nombre: </h2></td><td>'.$user->username.'</td></tr>'; 
+                $datos_inicio = $datos_inicio.'<tr><td><h2>N&uacutemero de empleado: </h2></td><td>'.$user->username.'</td></tr>'; 
                 $datos_inicio = $datos_inicio.'<tr><td><h2>Correo electr&oacute;nico: </h2></td><td>'.$user->email.'</td></tr>'; 
                 $SQL = 'SELECT * FROM br_usuarios WHERE id_usuario = '.$user->id;   
                 $query = $this->db->query($SQL);//Ejecuta la consulta

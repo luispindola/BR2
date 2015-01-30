@@ -54,7 +54,9 @@ function no_resaltar(elem){
 <table cellpadding="2" cellspacing="2" border="0" width="100%">
 	<tr>
 		<td>Haga click sobre una imagen para insertarla en el texto.<br>[<?= $num_elem; ?> im&aacute;genes]</td>
+                <!--
 		<td align="right" valign="top"><input type="button" value="Eliminar im&aacute;genes seleccionadas" onClick="document.f.submit()"></td>
+                -->
 	</tr>
 </table>
 <br><br>

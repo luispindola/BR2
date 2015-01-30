@@ -826,7 +826,7 @@ class C_reactivos extends CI_Controller
             $per_page = 10;//Registros por pagina
             
             //Configuracion del paginador
-            $config['base_url'] = site_url('c_reactivos/usuarios_elaboradores/'.$order.'/');
+            $config['base_url'] = site_url('c_reactivos/usuarios_revisores/'.$order.'/');
             $config['uri_segment'] = 4; //Que segmento del URL tiene el num de pagina
             $config['total_rows'] = $total_rows; //total de registros
             $config['per_page'] = $per_page; //registros por pagina
@@ -849,13 +849,13 @@ class C_reactivos extends CI_Controller
             $v = $v.'<table width=100% BORDER CELLPADDING=10 CELLSPACING=0>';  
             //Encabezados:
             $v = $v.'<tr bgcolor="#517901", style="color: #FFFFFF">';//Define fondo y color de letra
-            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_elaboradores/id_usuario/'.$pag).'"><font color="#FFFFFF">Id</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_elaboradores/username/'.$pag).'"><font color="#FFFFFF">Nombre</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_elaboradores/email/'.$pag).'"><font color="#FFFFFF">Correo electr&oacutenico</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_elaboradores/asignatura/'.$pag).'"><font color="#FFFFFF">Asignatura</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_elaboradores/semestre/'.$pag).'"><font color="#FFFFFF">Semestre</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_elaboradores/ciclo/'.$pag).'"><font color="#FFFFFF">Ciclo</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_elaboradores/reactivos/'.$pag).'"><font color="#FFFFFF">Reactivos</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_revisores/id_usuario/'.$pag).'"><font color="#FFFFFF">Id</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_revisores/username/'.$pag).'"><font color="#FFFFFF">Nombre</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_revisores/email/'.$pag).'"><font color="#FFFFFF">Correo electr&oacutenico</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_revisores/asignatura/'.$pag).'"><font color="#FFFFFF">Asignatura</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_revisores/semestre/'.$pag).'"><font color="#FFFFFF">Semestre</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_revisores/ciclo/'.$pag).'"><font color="#FFFFFF">Ciclo</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/usuarios_revisores/reactivos/'.$pag).'"><font color="#FFFFFF">Reactivos</font></a></th>';
             $v = $v.'<th width=10%>Acciones</th>';
             $v = $v.'</tr>';
             //Fin Encabezados
@@ -1159,7 +1159,7 @@ class C_reactivos extends CI_Controller
             $v = $v.'<strong><big><span style="color: #517901">Usuario revisor:</span></big> '.$this->M_usuarios->dame_usuario($rowEncabezado['id_usuario_revisor']).'</strong>';
             $v = $v.'</td>';
             $v = $v.'<td width=25%>';
-            $v = $v.'<strong><big><span style="color: #517901">Fecha &uacuteltima revici&oacuten:</span></big> '.$rowEncabezado['f_obs'].'</strong>';
+            $v = $v.'<strong><big><span style="color: #517901">Fecha &uacuteltima revisi&oacuten:</span></big> '.$rowEncabezado['f_obs'].'</strong>';
             $v = $v.'</td>';
             $v = $v.'<td width=25%>';
             $v = $v.'<strong><big><span style="color: #517901">Reactivos:</span></big> '.$rowEncabezado['reactivos'].'</strong>';
@@ -1371,7 +1371,7 @@ class C_reactivos extends CI_Controller
             $v = $v.'<strong><big><span style="color: #517901">Usuario revisor:</span></big> '.$this->M_usuarios->dame_usuario($rowEncabezado['id_usuario_revisor']).'</strong>';
             $v = $v.'</td>';
             $v = $v.'<td width=25%>';
-            $v = $v.'<strong><big><span style="color: #517901">Fecha &uacuteltima revici&oacuten:</span></big> '.$rowEncabezado['f_obs'].'</strong>';
+            $v = $v.'<strong><big><span style="color: #517901">Fecha &uacuteltima revisi&oacuten:</span></big> '.$rowEncabezado['f_obs'].'</strong>';
             $v = $v.'</td>';
             $v = $v.'<td width=25%>';
             $v = $v.'<strong><big><span style="color: #517901">Reactivos:</span></big> '.$rowEncabezado['reactivos'].'</strong>';
@@ -1603,7 +1603,7 @@ class C_reactivos extends CI_Controller
             $v = $v.'<strong><big><span style="color: #517901">Usuario revisor:</span></big> '.$this->M_usuarios->dame_usuario($rowEncabezado['id_usuario_revisor']).'</strong>';
             $v = $v.'</td>';
             $v = $v.'<td width=25%>';
-            $v = $v.'<strong><big><span style="color: #517901">Fecha &uacuteltima revici&oacuten:</span></big> '.$rowEncabezado['f_obs'].'</strong>';
+            $v = $v.'<strong><big><span style="color: #517901">Fecha &uacuteltima revisi&oacuten:</span></big> '.$rowEncabezado['f_obs'].'</strong>';
             $v = $v.'</td>';
             $v = $v.'<td width=25%>';
             $v = $v.'<strong><big><span style="color: #517901">Reactivos:</span></big> '.$rowEncabezado['reactivos'].'</strong>';

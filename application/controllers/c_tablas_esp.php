@@ -807,7 +807,7 @@ class C_tablas_esp extends CI_Controller
             $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Usuario revisor:</span></big> '.$this->M_usuarios->dame_usuario($rowEncabezado['id_usuario_revisor']).'</strong>';
             $datos_inicio = $datos_inicio.'</td>';
             $datos_inicio = $datos_inicio.'<td width=25%>';
-            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Fecha &uacuteltima revici&oacuten:</span></big> '.$rowEncabezado['f_obs'].'</strong>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Fecha &uacuteltima revisi&oacuten:</span></big> '.$rowEncabezado['f_obs'].'</strong>';
             $datos_inicio = $datos_inicio.'</td>';
             $datos_inicio = $datos_inicio.'<td width=25%>';
             $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Reactivos:</span></big> '.$rowEncabezado['reactivos'].'</strong>';
@@ -1010,7 +1010,7 @@ class C_tablas_esp extends CI_Controller
             $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Usuario revisor:</span></big> '.$this->M_usuarios->dame_usuario($rowEncabezado['id_usuario_revisor']).'</strong>';
             $datos_inicio = $datos_inicio.'</td>';
             $datos_inicio = $datos_inicio.'<td width=25%>';
-            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Fecha &uacuteltima revici&oacuten:</span></big> '.$rowEncabezado['f_obs'].'</strong>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Fecha &uacuteltima revisi&oacuten:</span></big> '.$rowEncabezado['f_obs'].'</strong>';
             $datos_inicio = $datos_inicio.'</td>';
             $datos_inicio = $datos_inicio.'<td width=25%>';
             $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Reactivos:</span></big> '.$rowEncabezado['reactivos'].'</strong>';
@@ -1199,7 +1199,7 @@ class C_tablas_esp extends CI_Controller
             $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Usuario revisor:</span></big> '.$this->M_usuarios->dame_usuario($rowEncabezado['id_usuario_revisor']).'</strong>';
             $datos_inicio = $datos_inicio.'</td>';
             $datos_inicio = $datos_inicio.'<td width=25%>';
-            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Fecha &uacuteltima revici&oacuten:</span></big> '.$rowEncabezado['f_obs'].'</strong>';
+            $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Fecha &uacuteltima revisi&oacuten:</span></big> '.$rowEncabezado['f_obs'].'</strong>';
             $datos_inicio = $datos_inicio.'</td>';
             $datos_inicio = $datos_inicio.'<td width=25%>';
             $datos_inicio = $datos_inicio.'<strong><big><span style="color: #517901">Reactivos:</span></big> '.$rowEncabezado['reactivos'].'</strong>';

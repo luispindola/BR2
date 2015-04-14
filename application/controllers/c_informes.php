@@ -54,18 +54,20 @@ class C_informes extends CI_Controller
             $v = $v.'<tr bgcolor="#517901", style="color: #FFFFFF">';//Define fondo y color de letra
             $v = $v.'<th><a href="'.site_url('c_informes/listado/id_asignatura').'"><font color="#FFFFFF">Asignatura</font></a></th>';
             $v = $v.'<th><a href="'.site_url('c_informes/listado/ciclo').'"><font color="#FFFFFF">Ciclo</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_informes/listado/id_usuario_editor').'"><font color="#FFFFFF">Usuario Editor</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_informes/listado/id_usuario_revisor').'"><font color="#FFFFFF">Usuario Revisor</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_informes/listado/f_edicion').'"><font color="#FFFFFF">'.$this->M_creador->quita_acentos('Última Edición').'</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_informes/listado/f_obs').'"><font color="#FFFFFF">'.$this->M_creador->quita_acentos('Última Revisión').'</font></a></th>';
             $v = $v.'<th><a href="'.site_url('c_informes/listado/reactivos').'"><font color="#FFFFFF">Reactivos Solicitados</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_informes/listado/aprovados').'"><font color="#FFFFFF">Reactivos Aprobados</font></a></th>';            
+            $v = $v.'<th><a href="'.site_url('c_informes/listado/id_usuario_editor').'"><font color="#FFFFFF">Usuario Editor</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_informes/listado/f_edicion').'"><font color="#FFFFFF">'.$this->M_creador->quita_acentos('Última Edición').'</font></a></th>';
             $v = $v.'<th width=10%>Reactivos Elaborados</th>';
+            $v = $v.'<th><a href="'.site_url('c_informes/listado/id_usuario_revisor').'"><font color="#FFFFFF">Usuario Revisor</font></a></th>';            
+            $v = $v.'<th><a href="'.site_url('c_informes/listado/f_obs').'"><font color="#FFFFFF">'.$this->M_creador->quita_acentos('Última Revisión').'</font></a></th>';            
+            $v = $v.'<th><a href="'.site_url('c_informes/listado/aprovados').'"><font color="#FFFFFF">Reactivos Aprobados</font></a></th>';            
+            
             $v = $v.'</tr>';
             //Fin Encabezados
             //Inician Datos
             $reactivos_solicitados = 0;
             $reactivos_aprovados = 0;
+            $reactivos_elaborados = 0;
             if ($query->num_rows() > 0)
             {
                 foreach ($query->result() as $row)//Recorre la tabla
@@ -77,31 +79,33 @@ class C_informes extends CI_Controller
                     $this->load->model('M_tablas_esp');
                     $this->load->model('M_fechas');
                     $this->load->model('M_informes');
+                    $elaborados = $this->M_informes->dame_reactivos_elaborados($row->id_asignatura, $row->ciclo);
+                    $reactivos_solicitados = $reactivos_solicitados + $row->reactivos;
+                    $reactivos_aprovados = $reactivos_aprovados + $row->aprovados;
+                    $reactivos_elaborados = $reactivos_elaborados + $elaborados;
                     
                     $v=$v.'<td>'.$this->M_tablas_esp->dame_asignatura($row->id_asignatura).'</td>';
                     $v=$v.'<td>'.$row->ciclo.'</td>';
-                    $v=$v.'<td>'.$this->M_usuarios->dame_usuario($row->id_usuario_editor).'</td>';
-                    $v=$v.'<td>'.$this->M_usuarios->dame_usuario($row->id_usuario_revisor).'</td>';
-                    $v=$v.'<td>'.$this->M_fechas->tiempodesde($row->f_edicion).'</td>';
-                    $v=$v.'<td>'.$this->M_fechas->tiempodesde($row->f_obs).'</td>';
                     $v=$v.'<td>'.$row->reactivos.'</td>';
-                    $v=$v.'<td>'.$row->aprovados.'</td>';
-                    $v=$v.'<td>'.$this->M_informes->dame_reactivos_elaborados($row->id_asignatura, $row->ciclo).'</td>';
-                    $reactivos_solicitados = $reactivos_solicitados + $row->reactivos;
-                    $reactivos_aprovados = $reactivos_aprovados + $row->aprovados;
-                    
+                    $v=$v.'<td>'.$this->M_usuarios->dame_usuario($row->id_usuario_editor).'</td>';
+                    $v=$v.'<td>'.$this->M_fechas->tiempodesde($row->f_edicion).'</td>';
+                    $v=$v.'<td>'.$elaborados.'</td>';
+                    $v=$v.'<td>'.$this->M_usuarios->dame_usuario($row->id_usuario_revisor).'</td>';                    
+                    $v=$v.'<td>'.$this->M_fechas->tiempodesde($row->f_obs).'</td>';                    
+                    $v=$v.'<td>'.$row->aprovados.'</td>';                    
+                                        
                     $v=$v.'</tr>';
                 }
             }
             $v=$v.'<td></td>';
             $v=$v.'<td></td>';
-            $v=$v.'<td></td>';
-            $v=$v.'<td></td>';
-            $v=$v.'<td></td>';
-            $v=$v.'<td></td>';
             $v=$v.'<td>'.$reactivos_solicitados.'</td>';
+            $v=$v.'<td></td>';
+            $v=$v.'<td></td>';
+            $v=$v.'<td>'.$reactivos_elaborados.'</td>';
+            $v=$v.'<td></td>';
+            $v=$v.'<td></td>';                        
             $v=$v.'<td>'.$reactivos_aprovados.'</td>';
-            $v=$v.'<td>--</td>';
             
             
             $v=$v.'</table>';           

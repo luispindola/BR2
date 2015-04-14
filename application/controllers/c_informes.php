@@ -76,6 +76,7 @@ class C_informes extends CI_Controller
                     
                     $this->load->model('M_tablas_esp');
                     $this->load->model('M_fechas');
+                    $this->load->model('M_informes');
                     
                     $v=$v.'<td>'.$this->M_tablas_esp->dame_asignatura($row->id_asignatura).'</td>';
                     $v=$v.'<td>'.$row->ciclo.'</td>';
@@ -85,7 +86,7 @@ class C_informes extends CI_Controller
                     $v=$v.'<td>'.$this->M_fechas->tiempodesde($row->f_obs).'</td>';
                     $v=$v.'<td>'.$row->reactivos.'</td>';
                     $v=$v.'<td>'.$row->aprovados.'</td>';
-                    $v=$v.'<td>--</td>';
+                    $v=$v.'<td>'.$this->M_informes->dame_reactivos_elaborados($row->id_asignatura, $row->ciclo).'</td>';
                     $reactivos_solicitados = $reactivos_solicitados + $row->reactivos;
                     $reactivos_aprovados = $reactivos_aprovados + $row->aprovados;
                     

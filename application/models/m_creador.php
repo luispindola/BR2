@@ -71,10 +71,10 @@ class M_creador extends CI_Model
         
         if ($this->session->userdata('id_usuario')) //MENU Informes
         {//Muestra el resto del menu si hay variables de session
-            $menu = $menu.'<li><a href="'.site_url('c_informes').'">Informes</a>';
+            $menu = $menu.'<li><a href="'.site_url('c_informes/listado/id_asignatura').'">Informes</a>';
                 $menu = $menu.'<ul>';
                 if ($this->session->userdata('nivel_acceso') == 'Administrador')
-                {$menu = $menu.'<li><a href="'.site_url('c_informes/listado').'">Listado</a></li>';}                
+                {$menu = $menu.'<li><a href="'.site_url('c_informes/listado/id_asignatura').'">Listado</a></li>';}                
                                 
                 $menu = $menu.'</ul>';
             $menu = $menu.'</li>';
@@ -144,11 +144,17 @@ class M_creador extends CI_Model
     }
     function quita_acentos($strCadena = null)
     {
-        $quita_acentos = str_replace("á", "&aacute", $strCadena);
-        $quita_acentos = str_replace("é", "&eacute", $strCadena);
-        $quita_acentos = str_replace("í", "&iacute", $strCadena);
-        $quita_acentos = str_replace("ó", "&oacute", $strCadena);
-        $quita_acentos = str_replace("ú", "&uacute", $strCadena);
+        $strCadena = str_replace("á", "&aacute", $strCadena);
+        $strCadena = str_replace("é", "&eacute", $strCadena);
+        $strCadena = str_replace("í", "&iacute", $strCadena);
+        $strCadena = str_replace("ó", "&oacute", $strCadena);
+        $strCadena = str_replace("ú", "&uacute", $strCadena);
+        $strCadena = str_replace("Á", "&Aacute", $strCadena);
+        $strCadena = str_replace("É", "&Eacute", $strCadena);
+        $strCadena = str_replace("Í", "&Iacute", $strCadena);
+        $strCadena = str_replace("Ó", "&Oacute", $strCadena);
+        $strCadena = str_replace("Ú", "&Uacute", $strCadena);
+        return $strCadena;
     }
     
 }

@@ -1186,7 +1186,8 @@ class C_reactivos extends CI_Controller
             $SQL = "SELECT br_tablas_esp.id_tablas_esp, br_tablas_esp.id_asignatura, br_tablas_esp.ciclo, ";
             $SQL = $SQL."br_tablas_esp.parcial, br_tablas_esp.bloque, br_tablas_esp.secuencia, ";
             $SQL = $SQL."br_tablas_esp.apr_indi_obj, br_tablas_esp.saberes, br_tablas_esp.dificultad_docente, ";
-            $SQL = $SQL."br_reactivos.observaciones, br_reactivos.f_obs, br_reactivos.aprovado ";
+            $SQL = $SQL."br_reactivos.observaciones, br_reactivos.f_obs, br_reactivos.f_edicion, br_reactivos.aprovado ";
+            //$SQL = $SQL."br_reactivos.observaciones, br_reactivos.f_obs, br_reactivos.aprovado "; Modificacion
             $SQL = $SQL."FROM br_tablas_esp INNER JOIN br_reactivos ON br_tablas_esp.id_tablas_esp = br_reactivos.id_tablas_esp ";
             $SQL = $SQL."";
             $SQL = $SQL."";
@@ -1227,7 +1228,8 @@ class C_reactivos extends CI_Controller
             $v = $v.'<th><a href="'.site_url('c_reactivos/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/apr_indi_obj/'.$pag).'"><font color="#FFFFFF">Aprendizaje, Indicadores, Objetivos</font></a></th>';
             $v = $v.'<th><a href="'.site_url('c_reactivos/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/saberes/'.$pag).'"><font color="#FFFFFF">Saberes</font></a></th>';
             $v = $v.'<th><a href="'.site_url('c_reactivos/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/dificultad_docente/'.$pag).'"><font color="#FFFFFF">Dificultad</font></a></th>';
-            $v = $v.'<th><a href="'.site_url('c_reactivos/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/f_obs/'.$pag).'"><font color="#FFFFFF">Fecha &uacuteltima observaci&oacuten</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/f_obs/'.$pag).'"><font color="#FFFFFF">&Uacuteltima observaci&oacuten</font></a></th>';
+            $v = $v.'<th><a href="'.site_url('c_reactivos/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/f_edicion/'.$pag).'"><font color="#FFFFFF">&Uacuteltima edici&oacuten</font></a></th>';
             $v = $v.'<th><a href="'.site_url('c_reactivos/tabla_esp/'.$modo.'/'.$id_asignatura.'/'.$id_ciclo.'/aprovado/'.$pag).'"><font color="#FFFFFF">Aprobado</font></a></th>';
             $v = $v.'<th width=10%>Acciones</th>';
             $v = $v.'</tr>';
@@ -1254,7 +1256,8 @@ class C_reactivos extends CI_Controller
                     $v = $v.'<td>'.$row->apr_indi_obj.'</td>';
                     $v = $v.'<td>'.$row->saberes.'</td>';
                     $v = $v.'<td>'.$row->dificultad_docente.'</td>';
-                    $v = $v.'<td>'.$row->f_obs.'</td>';
+                    $v = $v.'<td>'.$this->M_fechas->tiempodesde($row->f_obs).'</td>';
+                    $v = $v.'<td>'.$this->M_fechas->tiempodesde($row->f_edicion).'</td>';//Ojo Aqui poner editor de fechas
                     $v = $v.'<td>'.$row->aprovado.'</td>';
                     $v = $v.'<td>';
                     if ($modo == 'revisor')

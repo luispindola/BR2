@@ -7,8 +7,8 @@ class M_fechas extends CI_Model
     }
     function tiempodesde($date)
     {// en el formato date("Y-m-d H:i:s")
-        //if (isset($date)<>"0000-00-00 00:00:00")
-        //{
+        if ($date<>"0000-00-00 00:00:00")
+        {
             date_default_timezone_set('America/Los_Angeles'); //Establece Zona horaria
             if(empty($date)) {
                 return "Fecha no proporcionada";
@@ -41,11 +41,11 @@ class M_fechas extends CI_Model
                 $periods[$j].= "s";
             }
             return " {$tense} $difference $periods[$j]";
-        //}
-        //else
-        //{
-        //    return "Nunca";
-        //}
+        }
+        else
+        {
+            return "Nunca";
+        }
             
     }
     function mktime($fecha_SQL = null)

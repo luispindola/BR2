@@ -69,6 +69,17 @@ class M_creador extends CI_Model
             $menu = $menu.'</li>';
         }
         
+        if ($this->session->userdata('id_usuario')) //MENU Informes
+        {//Muestra el resto del menu si hay variables de session
+            $menu = $menu.'<li><a href="'.site_url('c_informes').'">Informes</a>';
+                $menu = $menu.'<ul>';
+                if ($this->session->userdata('nivel_acceso') == 'Administrador')
+                {$menu = $menu.'<li><a href="'.site_url('c_informes/listado').'">Listado</a></li>';}                
+                                
+                $menu = $menu.'</ul>';
+            $menu = $menu.'</li>';
+        }
+        
         $menu = $menu.'</ul>';
         return $menu;
     }

@@ -135,48 +135,84 @@ class C_informes extends CI_Controller
         }
         else{header('Location: '.site_url('c_main'));}
     }
-    public function vistaprevia($id_asignatura = null, $id_ciclo = null)
+    public function vistaprevia($id_asignatura = null, $id_ciclo = null, $pag = null)
     {
-        $this->load->model('M_tablas_esp');
-        $v='<h3 align=center>'.$this->M_tablas_esp->dame_asignatura($id_asignatura).'</h2><br>';
-        $v = $v.'<h3 align=center>'.$this->M_tablas_esp->dame_ciclo($id_ciclo).'</h2><br>';
-        
-        /*
-        SELECT br_tablas_esp.id_asignatura, br_tablas_esp.ciclo, br_reactivos.pregunta,
-        br_reactivos.opcion_a, br_reactivos.opcion_b, br_reactivos.opcion_c, br_reactivos.opcion_d
-        FROM br_reactivos INNER JOIN br_tablas_esp 
-        ON br_reactivos.id_tablas_esp = br_tablas_esp.id_tablas_esp
-        WHERE (((br_tablas_esp.id_asignatura)="1"));
-         */
-        $SQL = 'SELECT br_tablas_esp.id_asignatura, br_tablas_esp.ciclo, br_reactivos.pregunta, ';
-        $SQL = $SQL.'br_reactivos.opcion_a, br_reactivos.opcion_b, br_reactivos.opcion_c, br_reactivos.opcion_d ';
-        $SQL = $SQL.'FROM br_reactivos INNER JOIN br_tablas_esp ';
-        $SQL = $SQL.'ON br_reactivos.id_tablas_esp = br_tablas_esp.id_tablas_esp ';
-        $SQL = $SQL.'WHERE (((br_tablas_esp.id_asignatura) = "'.$id_asignatura.'") AND ((br_tablas_esp.ciclo) = "'.$this->M_tablas_esp->dame_ciclo($id_ciclo).'"))';
-        
-        $query = $this->db->query($SQL);//Ejecuta la consulta
-        $total_rows = $query->num_rows();//Calculado num de registros
-        
-        $num_reactivo = 1;
-        if ($query->num_rows() > 0)
+        if (($this->session->userdata('nivel_acceso') == 'Administrador') OR ($this->session->userdata('id_usuario') == $this->M_usuarios->usuario_editor_vista_previa($id_asignatura, $id_ciclo)))
         {
-            foreach ($query->result() as $row)//Recorre la tabla
-            {  
-                $v = $v.$num_reactivo.' ';
-                $v = $v.$row->pregunta.'<br>';
-                $v = $v.'(A): '.$row->opcion_a.'<br>';
-                $v = $v.'(B): '.$row->opcion_b.'<br>';
-                $v = $v.'(C): '.$row->opcion_c.'<br>';
-                $v = $v.'(D): '.$row->opcion_d.'<br>';
-                $num_reactivo = $num_reactivo + 1;
+            $this->load->model('M_tablas_esp');
+            $v='<h3 align=center>'.$this->M_tablas_esp->dame_asignatura($id_asignatura).'</h2><br>';
+            $v = $v.'<h3 align=center>'.$this->M_tablas_esp->dame_ciclo($id_ciclo).'</h2><br>';
+            //$v = $v.$this->M_usuarios->usuario_editor_vista_previa($id_asignatura, $id_ciclo);
+            /*
+            SELECT br_tablas_esp.id_asignatura, br_tablas_esp.ciclo, br_reactivos.pregunta,
+            br_reactivos.opcion_a, br_reactivos.opcion_b, br_reactivos.opcion_c, br_reactivos.opcion_d
+            FROM br_reactivos INNER JOIN br_tablas_esp 
+            ON br_reactivos.id_tablas_esp = br_tablas_esp.id_tablas_esp
+            WHERE (((br_tablas_esp.id_asignatura)="1"));
+             */
+            $SQL = 'SELECT br_tablas_esp.id_asignatura, br_tablas_esp.ciclo, br_reactivos.pregunta, ';
+            $SQL = $SQL.'br_reactivos.opcion_a, br_reactivos.opcion_b, br_reactivos.opcion_c, br_reactivos.opcion_d ';
+            $SQL = $SQL.'FROM br_reactivos INNER JOIN br_tablas_esp ';
+            $SQL = $SQL.'ON br_reactivos.id_tablas_esp = br_tablas_esp.id_tablas_esp ';
+            $SQL = $SQL.'WHERE (((br_tablas_esp.id_asignatura) = "'.$id_asignatura.'") AND ((br_tablas_esp.ciclo) = "'.$this->M_tablas_esp->dame_ciclo($id_ciclo).'"))';
+
+            $query = $this->db->query($SQL);//Ejecuta la consulta
+            $total_rows = $query->num_rows();//Calculado num de registros
+            
+            
+            $per_page = 10;//Registros por pagina
+            
+            //Configuracion del paginador
+            $this->load->library('pagination');//Libreria de paginador
+            $config['base_url'] = site_url('c_informes/vistaprevia/'.$id_asignatura.'/'.$id_ciclo.'');
+            $config['uri_segment'] = 5; //Que segmento del URL tiene el num de pagina
+            $config['total_rows'] = $total_rows; //total de registros
+            $config['per_page'] = $per_page; //registros por pagina
+            $config['first_link'] = '1'; //Ir al inicio
+            $config['next_link'] = '>>'; //Siguiente pag
+            $config['prev_link'] = '<<'; //Pag Anterior
+            $config['last_link'] = ceil($total_rows/$per_page);//Ultima pagina (ceil: Redondea hacia arriba)
+            $this->pagination->initialize($config); 
+            //Termina Configuracion del paginador   
+            
+            if (isset($pag))//Se agrega LIMIT a la consulta para seleccionar la pagina
+            {
+                $SQL = $SQL.' LIMIT '.$pag.', '.$per_page;
+                $num_reactivo = $pag + 1;
+            }//Si se ha seleccionado una pagina
+            else
+            {
+                $SQL = $SQL.' LIMIT 0, '.$per_page;
+                $num_reactivo = 1;
+            }//Si es la primera pagina
+                                    
+            $query = $this->db->query($SQL);//Ejecuta la consulta                       
+            
+            //$v = $v.$SQL;
+            $v = $v.'<p align=center>';
+            $v = $v. $this->pagination->create_links();//Se crean los links del paginador
+            $v = $v.'</p><br>';
+            
+            if ($query->num_rows() > 0)
+            {
+                foreach ($query->result() as $row)//Recorre la tabla
+                {  
+                    $v = $v.$num_reactivo.' ';
+                    $v = $v.$row->pregunta.'<br>';
+                    $v = $v.'(A): '.$row->opcion_a.'<br>';
+                    $v = $v.'(B): '.$row->opcion_b.'<br>';
+                    $v = $v.'(C): '.$row->opcion_c.'<br>';
+                    $v = $v.'(D): '.$row->opcion_d.'<br>';
+                    $num_reactivo = $num_reactivo + 1;
+                }
             }
+
+            $v = $v.'Reactivos listados: '.$total_rows;
+            $datos_vista = array(
+              'datos_inicio'     =>   $v  
+            );
+            $this->load->view('v_vistaprevia',$datos_vista);
         }
-        
-        $v = $v.'Reactivos listados: '.$total_rows;
-        $datos_vista = array(
-          'datos_inicio'     =>   $v  
-        );
-        $this->load->view('v_vistaprevia',$datos_vista);
     }
 }
 ?>

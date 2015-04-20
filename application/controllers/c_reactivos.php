@@ -115,7 +115,10 @@ class C_reactivos extends CI_Controller
                     
                     $this->load->model('M_tablas_esp');
                     if ($row->id_usuario_editor == $this->session->userdata('id_usuario'))
-                    {$v = $v.'<input type="button" value="Entrar como Elaborador" onClick="window.location =\''.  site_url('c_reactivos/tabla_esp/elaborador/'.$row->id_asignatura.'/'.$this->M_tablas_esp->dame_id_ciclo($row->ciclo)).'/parcial\';"/>';}  
+                    {
+                        $v = $v.'<input type="button" value="Entrar como Elaborador" onClick="window.location =\''.  site_url('c_reactivos/tabla_esp/elaborador/'.$row->id_asignatura.'/'.$this->M_tablas_esp->dame_id_ciclo($row->ciclo)).'/parcial\';"/>';
+                        $v = $v.'<input type="button" value="Vista Previa" onClick="window.location =\''.  site_url('c_informes/vistaprevia/'.$row->id_asignatura.'/'.$this->M_tablas_esp->dame_id_ciclo($row->ciclo)).'\';"/>';
+                    }  
                     
                     if ($row->id_usuario_revisor == $this->session->userdata('id_usuario'))
                     {$v = $v.'<input type="button" value="Entrar como Revisor" onClick="window.location =\''.  site_url('c_reactivos/tabla_esp/revisor/'.$row->id_asignatura.'/'.$this->M_tablas_esp->dame_id_ciclo($row->ciclo)).'/parcial\';"/>';}                     

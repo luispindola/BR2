@@ -65,5 +65,30 @@ class M_usuarios extends CI_Model
             return $row['name'];
         }
     }
+    function usuario_editor_vista_previa($id_asignatura, $id_ciclo)
+    {
+        $this->load->model('M_tablas_esp');
+        /*
+        SELECT br_reactivos.id_usuario_editor
+        FROM br_reactivos INNER JOIN br_tablas_esp 
+        ON br_reactivos.id_tablas_esp = br_tablas_esp.id_tablas_esp
+        WHERE (((br_tablas_esp.id_asignatura)="1"));                        
+         */
+        
+        $SQL = 'SELECT br_reactivos.id_usuario_editor ';
+        $SQL = $SQL.'FROM br_reactivos INNER JOIN br_tablas_esp ';
+        $SQL = $SQL.'ON br_reactivos.id_tablas_esp = br_tablas_esp.id_tablas_esp ';
+        $SQL = $SQL.'WHERE (((br_tablas_esp.id_asignatura) = "'.$id_asignatura.'") AND ((br_tablas_esp.ciclo) = "'.$this->M_tablas_esp->dame_ciclo($id_ciclo).'"))';
+        
+        $query = $this->db->query($SQL);//Ejecuta la consulta
+        
+        if ($query->num_rows() > 0)
+        {
+            foreach ($query->result() as $row)//Recorre la tabla
+            {  
+                 return $row->id_usuario_editor;
+            }
+        }
+    }
 }
 ?>

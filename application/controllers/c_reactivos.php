@@ -1322,6 +1322,7 @@ class C_reactivos extends CI_Controller
                 $SQL = $SQL."opcion_correcta = '".$_POST['opcion_correcta']."', ";                
                 $SQL = $SQL."f_edicion = '".date("Y-m-d H:i:s")."' ";
                 $SQL = $SQL."WHERE id_tablas_esp = ".$id_tablas_esp;
+                //echo $SQL;
                 $query = $this->db->query($SQL);//Ejecuta el query
                 $this->M_usuarios->registrar($this->session->userdata('id_usuario'),"Elaborador de Reactivo","id_tabla_esp: ".$id_tablas_esp); //Crea registro de visita                           
             }

@@ -84,7 +84,13 @@ class C_informes extends CI_Controller
                     $reactivos_aprovados = $reactivos_aprovados + $row->aprovados;
                     $reactivos_elaborados = $reactivos_elaborados + $elaborados;
                     
-                    $v=$v.'<td>'.$this->M_tablas_esp->dame_asignatura($row->id_asignatura).'</td>';
+                    if ($this->session->userdata('nivel_acceso') == 'Administrador')
+                    {
+                        $v=$v.'<td><a href = "'.site_url('c_informes/vistaprevia/'.$row->id_asignatura.'/'.$this->M_tablas_esp->dame_id_ciclo($row->ciclo)).'" target="_blank" >'.$this->M_tablas_esp->dame_asignatura($row->id_asignatura).'</a></td>';
+                    }else
+                    {
+                        $v=$v.'<td>'.$this->M_tablas_esp->dame_asignatura($row->id_asignatura).'</td>';
+                    }
                     $v=$v.'<td>'.$row->ciclo.'</td>';
                     $v=$v.'<td>'.$row->reactivos.'</td>';
                     $v=$v.'<td>'.$this->M_usuarios->dame_usuario($row->id_usuario_editor).'</td>';
@@ -129,6 +135,48 @@ class C_informes extends CI_Controller
         }
         else{header('Location: '.site_url('c_main'));}
     }
-    
+    public function vistaprevia($id_asignatura = null, $id_ciclo = null)
+    {
+        $this->load->model('M_tablas_esp');
+        $v='<h3 align=center>'.$this->M_tablas_esp->dame_asignatura($id_asignatura).'</h2><br>';
+        $v = $v.'<h3 align=center>'.$this->M_tablas_esp->dame_ciclo($id_ciclo).'</h2><br>';
+        
+        /*
+        SELECT br_tablas_esp.id_asignatura, br_tablas_esp.ciclo, br_reactivos.pregunta,
+        br_reactivos.opcion_a, br_reactivos.opcion_b, br_reactivos.opcion_c, br_reactivos.opcion_d
+        FROM br_reactivos INNER JOIN br_tablas_esp 
+        ON br_reactivos.id_tablas_esp = br_tablas_esp.id_tablas_esp
+        WHERE (((br_tablas_esp.id_asignatura)="1"));
+         */
+        $SQL = 'SELECT br_tablas_esp.id_asignatura, br_tablas_esp.ciclo, br_reactivos.pregunta, ';
+        $SQL = $SQL.'br_reactivos.opcion_a, br_reactivos.opcion_b, br_reactivos.opcion_c, br_reactivos.opcion_d ';
+        $SQL = $SQL.'FROM br_reactivos INNER JOIN br_tablas_esp ';
+        $SQL = $SQL.'ON br_reactivos.id_tablas_esp = br_tablas_esp.id_tablas_esp ';
+        $SQL = $SQL.'WHERE (((br_tablas_esp.id_asignatura) = "'.$id_asignatura.'") AND ((br_tablas_esp.ciclo) = "'.$this->M_tablas_esp->dame_ciclo($id_ciclo).'"))';
+        
+        $query = $this->db->query($SQL);//Ejecuta la consulta
+        $total_rows = $query->num_rows();//Calculado num de registros
+        
+        $num_reactivo = 1;
+        if ($query->num_rows() > 0)
+        {
+            foreach ($query->result() as $row)//Recorre la tabla
+            {  
+                $v = $v.$num_reactivo.' ';
+                $v = $v.$row->pregunta.'<br>';
+                $v = $v.'(A): '.$row->opcion_a.'<br>';
+                $v = $v.'(B): '.$row->opcion_b.'<br>';
+                $v = $v.'(C): '.$row->opcion_c.'<br>';
+                $v = $v.'(D): '.$row->opcion_d.'<br>';
+                $num_reactivo = $num_reactivo + 1;
+            }
+        }
+        
+        $v = $v.'Reactivos listados: '.$total_rows;
+        $datos_vista = array(
+          'datos_inicio'     =>   $v  
+        );
+        $this->load->view('v_vistaprevia',$datos_vista);
+    }
 }
 ?>

@@ -117,7 +117,7 @@ class C_reactivos extends CI_Controller
                     if ($row->id_usuario_editor == $this->session->userdata('id_usuario'))
                     {
                         $v = $v.'<input type="button" value="Entrar como Elaborador" onClick="window.location =\''.  site_url('c_reactivos/tabla_esp/elaborador/'.$row->id_asignatura.'/'.$this->M_tablas_esp->dame_id_ciclo($row->ciclo)).'/parcial\';"/>';
-                        $v = $v.'<input type="button" value="Vista Previa" onClick="window.location =\''.  site_url('c_informes/vistaprevia/'.$row->id_asignatura.'/'.$this->M_tablas_esp->dame_id_ciclo($row->ciclo)).'\';"/>';
+                        $v = $v.'<a href = "'.site_url('c_informes/vistaprevia/'.$row->id_asignatura.'/'.$this->M_tablas_esp->dame_id_ciclo($row->ciclo)).'" target="_blank" >Vista previa: '.$this->M_tablas_esp->dame_asignatura($row->id_asignatura).'</a>';
                     }  
                     
                     if ($row->id_usuario_revisor == $this->session->userdata('id_usuario'))
